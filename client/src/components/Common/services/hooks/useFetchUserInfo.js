@@ -42,7 +42,7 @@ const useFetchUserInfo = (to_fetch_array) => {
 
   useEffect(() => {
     if (user_id && state && !leagues && !isLoadingLeagues && !errorLeagues) {
-      dispatch(fetchLeagues(user_id));
+      dispatch(fetchLeagues(user_id, state.league_season));
     }
   }, [dispatch, user_id, state, leagues, isLoadingLeagues, errorLeagues]);
 

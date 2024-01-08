@@ -97,13 +97,21 @@ const Heading = () => {
           <select
             className="nav active click"
             value={navTab}
-            onChange={(e) => navigate(`/${e.target.value}/${username}`)}
+            onChange={(e) => {
+              if (e.target.value === "trades") {
+                window.location.href = `${window.location.protocol}//${
+                  window.location.hostname +
+                  (window.location.port && `:${window.location.port}`)
+                }/${e.target.value}/${username}`;
+              } else {
+                navigate(`/${e.target.value}/${username}`);
+              }
+            }}
           >
             <option>players</option>
-            <option>trades</option>
             <option>leagues</option>
             <option>leaguemates</option>
-            <option>lineups</option>
+            <option>trades</option>
           </select>
         </div>
       </div>

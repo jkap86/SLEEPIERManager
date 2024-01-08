@@ -68,7 +68,7 @@ const Homepage = () => {
                 window.location.hostname +
                 (window.location.port && `:${window.location.port}`)
               }/${
-                localStorage.getItem("navTab") || "lineups"
+                localStorage.getItem("navTab") || "players"
               }/${username_searched}`)
             }
           >

@@ -127,6 +127,9 @@ const LeaguemateRecords = ({ secondaryTable }) => {
         0
       );
 
+      const user_games = user_wins + user_losses + user_ties;
+      const lm_games = lm_wins + lm_losses + lm_ties;
+
       return {
         id: lm.user_id,
         search: {
@@ -155,14 +158,10 @@ const LeaguemateRecords = ({ secondaryTable }) => {
           {
             text: (
               <p
-                className={
-                  lm_winpct > 0.5
-                    ? "green stat"
-                    : lm_winpct < 0.5
-                    ? " red stat"
-                    : "stat"
+                className={"stat"}
+                style={
+                  (lm_games > 0 && getTrendColor(lm_winpct - 0.5, 0.0005)) || {}
                 }
-                style={getTrendColor(lm_winpct - 0.5, 0.0005)}
               >
                 {lm_wins}-{lm_losses}
                 {lm_ties > 0 ? `-${lm_ties}` : ""}
@@ -174,14 +173,10 @@ const LeaguemateRecords = ({ secondaryTable }) => {
           {
             text: (
               <p
-                className={
-                  lm_winpct > 0.5
-                    ? "green stat"
-                    : lm_winpct < 0.5
-                    ? " red stat"
-                    : "stat"
+                className={"stat"}
+                style={
+                  (lm_games > 0 && getTrendColor(lm_winpct - 0.5, 0.0005)) || {}
                 }
-                style={getTrendColor(lm_winpct - 0.5, 0.0005)}
               >
                 {lm_fpts?.toLocaleString("en-US", {
                   maximumFractionDigits: 2,
@@ -195,14 +190,12 @@ const LeaguemateRecords = ({ secondaryTable }) => {
           {
             text: (
               <p
-                className={
-                  user_winpct > 0.5
-                    ? "green stat"
-                    : user_winpct < 0.5
-                    ? " red stat"
-                    : "stat"
+                className={"stat"}
+                style={
+                  (user_games > 0 &&
+                    getTrendColor(user_winpct - 0.5, 0.0005)) ||
+                  {}
                 }
-                style={getTrendColor(user_winpct - 0.5, 0.0005)}
               >
                 {user_wins}-{user_losses}
                 {user_ties > 0 ? `-${user_ties}` : ""}
@@ -214,14 +207,12 @@ const LeaguemateRecords = ({ secondaryTable }) => {
           {
             text: (
               <p
-                className={
-                  user_winpct > 0.5
-                    ? "green stat"
-                    : user_winpct < 0.5
-                    ? " red stat"
-                    : "stat"
+                className={"stat"}
+                style={
+                  (user_games > 0 &&
+                    getTrendColor(user_winpct - 0.5, 0.0005)) ||
+                  {}
                 }
-                style={getTrendColor(user_winpct - 0.5, 0.0005)}
               >
                 {user_fpts?.toLocaleString("en-US", {
                   maximumFractionDigits: 2,

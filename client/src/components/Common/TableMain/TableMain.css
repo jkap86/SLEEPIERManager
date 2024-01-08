@@ -162,6 +162,7 @@ table td.left:hover > p {
   position: relative;
   width: fit-content;
   z-index: 2;
+  min-width: 100%;
 }
 table th.left:last-child:hover,
 table td.left:last-child:hover {

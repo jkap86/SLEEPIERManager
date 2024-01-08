@@ -6,6 +6,7 @@ import { Suspense, lazy } from "react";
 import Leagues from "./components/Leagues";
 import Players from "./components/Players";
 import Leaguemates from "./components/Leaguemates";
+import PickTracker from "./components/Picktracker/picktracker";
 const Layout = lazy(() => import("./components/Common/Layout"));
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
               path="/leaguemates/:username"
               element={<Layout display={<Leaguemates />} />}
             />
+            <Route path="/picktracker/:league_id" element={<PickTracker />} />
           </Routes>
         </Suspense>
       </BrowserRouter>

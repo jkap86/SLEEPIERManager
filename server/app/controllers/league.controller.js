@@ -7,6 +7,7 @@ const {
   updateUserLeagueRelationships,
 } = require("../helpers/upsertLeagues");
 const JSONStream = require("JSONStream");
+const axios = require("axios");
 
 exports.upsert = async (req, res) => {
   res.setHeader("Content-Type", "application/json");
@@ -60,4 +61,63 @@ exports.upsert = async (req, res) => {
     stream.write(data);
   }
   stream.end();
+};
+
+exports.picktracker = async (req, res) => {
+  let active_draft;
+  let league;
+  let league_drafts;
+  try {
+    league = await axios.get(
+      `https://api.sleeper.app/v1/league/${req.body.league_id}`
+    );
+    league_drafts = await axios.get(
+      `https://api.sleeper.app/v1/league/${req.body.league_id}/drafts`
+    );
+    active_draft = league_drafts.data?.find(
+      (d) =>
+        d.settings.slots_k > 0 &&
+        d.settings.rounds > league.data.settings.draft_rounds
+    );
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (active_draft) {
+    const allplayers = require("../../data/allplayers.json");
+    const draft_picks = await axios.get(
+      `https://api.sleeper.app/v1/draft/${active_draft.draft_id}/picks`
+    );
+    const users = await axios.get(
+      `https://api.sleeper.app/v1/league/${req.body.league_id}/users`
+    );
+    const teams = Object.keys(active_draft.draft_order).length;
+
+    const picktracker = draft_picks.data
+      .filter((pick) => pick.metadata.position === "K")
+      .map((pick, index) => {
+        return {
+          pick:
+            Math.floor(index / teams) +
+            1 +
+            "." +
+            ((index % teams) + 1).toLocaleString("en-US", {
+              minimumIntegerDigits: 2,
+            }),
+          player: allplayers[pick.player_id]?.full_name,
+          player_id: pick.player_id,
+          picked_by: users.data.find((u) => u.user_id === pick.picked_by)
+            ?.display_name,
+          picked_by_avatar: users.data.find((u) => u.user_id === pick.picked_by)
+            ?.avatar,
+        };
+      });
+
+    res.send({
+      league: league.data,
+      picks: picktracker,
+    });
+  } else {
+    res.send([]);
+  }
 };

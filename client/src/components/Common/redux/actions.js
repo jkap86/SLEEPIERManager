@@ -60,7 +60,7 @@ export const fetchUser = (username) => {
   };
 };
 
-export const fetchLeagues = (user_id) => {
+export const fetchLeagues = (user_id, season) => {
   return async (dispatch) => {
     dispatch({ type: "FETCH_LEAGUES_START" });
 
@@ -68,7 +68,7 @@ export const fetchLeagues = (user_id) => {
       const response = await fetch(
         `/league/upsert?user_id=${encodeURIComponent(
           user_id
-        )}&season=${encodeURIComponent(2024)}`,
+        )}&season=${encodeURIComponent(season)}`,
         {
           method: "GET",
           headers: {
