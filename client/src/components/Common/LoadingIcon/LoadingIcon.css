@@ -1,0 +1,62 @@
+div.loading {
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    width: 90%;
+    height: 100%;
+    margin: auto;
+}
+
+img.loading {
+    width: 75rem;
+    height: auto;
+    margin: auto;
+    vertical-align: middle;
+    padding: 12.5rem;
+    border-radius: 50%;
+    border-radius: 50%;
+    filter: drop-shadow(0 0 3rem var(--color2));
+}
+
+.z_one,
+.z_two,
+.z_three {
+    position: absolute;
+    font-size: 10rem;
+    color: rgb(0, 195, 255);
+
+    opacity: 0;
+    filter: brightness(2);
+    animation-name: snooze;
+    animation-timing-function: ease-out;
+    animation-iteration-count: infinite;
+    animation-duration: 3s;
+}
+
+.z_two {
+    animation-delay: .5s;
+}
+
+.z_three {
+    animation-delay: 1.5s;
+}
+
+@keyframes snooze {
+    0% {
+        transform: translateY(0rem) translateX(0rem);
+        font-size: 10rem;
+        opacity: 0;
+    }
+
+    10% {
+        transform: translateY(-10rem) translateX(5rem);
+        font-size: 11rem;
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-100rem) translateX(50rem);
+        font-size: 20rem;
+        opacity: 1;
+    }
+}

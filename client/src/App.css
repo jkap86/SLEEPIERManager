@@ -1,0 +1,184 @@
+html,
+body {
+  --color1: rgb(0, 0, 25);
+  --color2: #00ceb8;
+  --color3: midnightblue;
+  --color4: #1a1c20;
+  --color5: #4169e1;
+  --color6: rgb(50, 50, 50);
+  --sticky1: 0rem;
+  --sticky2: 7rem;
+  --sticky3: 14rem;
+  --qb: #ff2a6d;
+  --rb: #00ceb8;
+  --wr: #58a7ff;
+  --te: #ffae58;
+  --font1: 'Ubuntu Mono',
+    sans-serif;
+  --font2: 'Pulang',
+    sans-serif;
+  --font3: 'GROUPE',
+    sans-serif;
+  --font4: 'Monomaniac One',
+    sans-serif;
+  font-size: 1vmin;
+  background-color: var(--color1);
+
+  text-align: center;
+  color: white;
+
+  overflow-x: hidden;
+  width: 100%;
+  height: 100%;
+  font-family: 'Ubuntu Mono', sans-serif;
+
+  margin: auto;
+  margin: 0;
+  padding: 0;
+  position: relative;
+
+}
+
+
+
+* {
+  box-sizing: border-box;
+}
+
+.click:hover {
+  cursor: pointer;
+}
+
+.relative {
+  position: relative;
+}
+
+.font2 {
+  font-family: var(--font2);
+}
+
+a {
+  color: white;
+  text-decoration: none;
+
+}
+
+.left {
+  text-align: left;
+}
+
+a.external_link {
+  font-family: var(--font2);
+  letter-spacing: .5rem;
+  background-image: radial-gradient( blue -100%,green 100%);
+}
+p {
+  margin: 0;
+}
+
+
+li {
+  list-style: none;
+}
+
+.red {
+  color: rgb(255, 0, 0);
+}
+
+.green {
+  color: rgb(0, 255, 0);
+}
+
+.yellow {
+  color: gold
+}
+
+.greenb {
+  background-color: rgb(0, 255, 0);
+}
+
+span.player_score,
+p.stat {
+  font-family: 'Monomaniac One', sans-serif;
+  width: 100%;
+  padding: 0 .5rem;
+  display: inline;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 0 .5rem black;
+  white-space: nowrap;
+}
+
+
+.check {
+  font-size: 4rem;
+  text-shadow: 0 0 .5rem black;
+}
+
+em {
+  position: relative;
+}
+
+p.stat:hover {
+  overflow: visible;
+  width: fit-content;
+  background-color: black;
+  position: absolute;
+  z-index: 2;
+  box-shadow: 0 0 1.5rem white;
+  top: 0;
+  bottom: 0;
+  height: fit-content;
+  right: 0;
+  left: 0;
+  margin: auto;
+}
+div.flex>p.stat:hover {
+  right: 50%;
+}
+td:last-child>p.stat:hover,
+p.stat.value:hover {
+  
+}
+
+p.stat.value {
+  display: block;
+}
+
+::-webkit-scrollbar {
+  background-color: transparent;
+  width: 1rem;
+  height: 1rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color2);
+}
+
+.rotate {
+  animation: rotate 4s linear infinite;
+}
+
+h1>select,
+h2>select {
+    font: inherit;
+    color: inherit;
+    background-color: var(--color6);
+    text-align: center;
+    width: fit-content;
+    box-shadow: inset 0 0 2.5rem var(--color2), 0 0 1rem var(--te);
+    text-shadow: 0 0 .5rem black;
+    padding: 1rem 0;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+    /* Start with no rotation (0 degrees) */
+  }
+
+  100% {
+    transform: rotate(360deg);
+    /* Rotate the element 360 degrees for a full rotation */
+  }
+}

@@ -1,0 +1,238 @@
+ol.page_numbers {
+  display: flex;
+  background-color: var(--color1);
+  font-size: 3rem;
+  margin: auto;
+  max-width: 80%;
+  overflow: auto;
+  padding: 1rem 0;
+  width: fit-content;
+  filter: drop-shadow(0 0 0.2rem silver);
+}
+ol.page_numbers li {
+  margin: 0 1rem;
+  padding: 2rem;
+  box-sizing: border-box;
+  opacity: 0.25;
+}
+ol.page_numbers li.active {
+  margin: 0 1rem;
+  padding: 2rem;
+  box-sizing: border-box;
+  opacity: 1;
+  border: 0.1rem ridge var(--color2);
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin: auto;
+  table-layout: fixed;
+  width: 100%;
+}
+table.summary {
+  box-shadow: 0 0 3rem white;
+  font-size: 3rem;
+  width: 50rem;
+}
+table.summary tr:first-child {
+  color: var(--color2);
+  letter-spacing: 1rem;
+}
+table.summary tr td,
+table.summary tr th {
+  background-image: radial-gradient(var(--color3) 0, var(--color6) 250%);
+  box-shadow: inset 0 0 5rem var(--color3);
+  filter: drop-shadow(0 0 2rem black);
+  text-shadow: 0 0 1rem black;
+}
+table.half {
+  display: inline-table;
+  vertical-align: top;
+  width: 50%;
+}
+table.half.secondary {
+  position: sticky;
+  top: 21rem;
+  z-index: 6;
+}
+table.half.secondary tr.active_wrapper {
+  position: sticky;
+  top: 28rem;
+  z-index: 6;
+}
+table.half.tertiary {
+  position: sticky;
+  top: 35rem;
+  z-index: 4;
+}
+table.half.tertiary tr.active_wrapper {
+  position: sticky;
+  top: 42rem;
+  z-index: 4;
+}
+table.half p.username {
+  color: var(--te);
+  font-family: var(--font2);
+  letter-spacing: 0.25rem;
+}
+table.half td {
+  background-image: radial-gradient(black -50%, orchid 250%) !important;
+}
+table.half:last-child td {
+  background-image: radial-gradient(green -250%, black 250%) !important;
+}
+table.primary > thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+table.primary tr.active {
+  top: 7rem;
+  z-index: 9;
+}
+table.primary tr td {
+  background-image: radial-gradient(var(--wr) -300%, var(--color4) 100%);
+}
+table.primary div.secondary.nav {
+  position: sticky;
+  z-index: 8;
+  top: 14rem;
+}
+table.secondary > thead {
+  position: sticky;
+  top: 21rem;
+  z-index: 7;
+}
+table.secondary tr.active {
+  top: 28rem;
+  z-index: 6;
+}
+table.secondary tr td {
+  background-image: radial-gradient(var(--color3) 0%, rgb(65, 0, 0) 300%);
+}
+table.tertiary > thead {
+  position: sticky;
+  top: 35rem;
+  z-index: 5;
+}
+table.tertiary tr.active {
+  top: 42rem;
+  z-index: 4;
+}
+table.tertiary tr td {
+  background-image: radial-gradient(black -500%, #262832 150%);
+}
+table thead {
+  filter: drop-shadow(0 0 1rem silver);
+}
+table thead th {
+  background-image: radial-gradient(white -250%, black 100%);
+}
+table thead th.half {
+  height: 3.5rem;
+  font-size: 2rem;
+}
+table tr.active {
+  filter: drop-shadow(0 0 0.5rem silver);
+  position: sticky;
+}
+table tr.active > td {
+  background-image: radial-gradient(var(--color4) -50%, var(--color2) 100%) !important;
+}
+table tr.active_wrapper {
+  filter: drop-shadow(0 0 1rem var(--color2));
+  position: relative;
+  z-index: 2;
+}
+table th,
+table td {
+  height: 7rem;
+  white-space: nowrap;
+  font-size: 3rem;
+  box-shadow: inset 0 0 1rem black;
+  position: relative;
+}
+table th.left:hover > p,
+table td.left:hover > p {
+  background-color: black;
+  box-shadow: 0 0 1rem white;
+  overflow: visible;
+  padding-right: 2rem;
+  position: relative;
+  width: fit-content;
+  z-index: 2;
+}
+table th.left:last-child:hover,
+table td.left:last-child:hover {
+  direction: rtl;
+}
+table th.left:last-child:hover > p,
+table td.left:last-child:hover > p {
+  direction: ltr;
+}
+table th p,
+table td p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  margin: 0 1rem 0 0;
+}
+table th {
+  font-weight: 700;
+}
+table th select {
+  appearance: none;
+  background-color: black;
+  background-image: inherit;
+  border: none;
+  color: var(--color2);
+  font-family: var(--font3);
+  font-size: inherit;
+  height: 100%;
+  text-align: center;
+  width: 100%;
+}
+table th p.option {
+  text-align: center;
+  min-width: 100%;
+  position: relative;
+}
+table th p.option select {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+table td {
+  font-weight: 100;
+}
+table div.nav {
+  background-color: var(--color4);
+  display: flex;
+  filter: drop-shadow(0 0 0.5rem silver);
+  height: 7rem;
+  justify-content: space-evenly;
+  width: 100%;
+}
+table div.nav button {
+  background-color: inherit;
+  font-family: var(--font1);
+  font-size: 3rem;
+  opacity: 0.5;
+  color: silver;
+  border: 0.5rem double silver;
+  box-shadow: inset 0 0 3rem silver;
+  text-shadow: 0 0 0.5rem black;
+}
+table div.nav button.active {
+  border-color: var(--color2);
+  color: var(--color2);
+  box-shadow: inset 0 0 3rem var(--color2);
+  opacity: 1;
+}
+
+/*# sourceMappingURL=TableMain.css.map */
