@@ -1,0 +1,12 @@
+
+div.rounds>ol {
+    display: flex;
+    margin: auto;
+    font-size: 3.5rem;
+    justify-content: space-evenly;
+}
+
+div.rounds>ol>li.active {
+    background-color: rgb(0, 255, 0);
+    color: black;
+}

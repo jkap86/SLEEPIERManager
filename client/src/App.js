@@ -7,6 +7,7 @@ import Leagues from "./components/Leagues";
 import Players from "./components/Players";
 import Leaguemates from "./components/Leaguemates";
 import PickTracker from "./components/Picktracker/picktracker";
+import PlayoffPool from "./components/PlayoffPool/PlayoffPool";
 const Layout = lazy(() => import("./components/Common/Layout"));
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
               element={<Layout display={<Leaguemates />} />}
             />
             <Route path="/picktracker/:league_id" element={<PickTracker />} />
+            <Route path="/playoffs/:league_id" element={<PlayoffPool />} />
           </Routes>
         </Suspense>
       </BrowserRouter>

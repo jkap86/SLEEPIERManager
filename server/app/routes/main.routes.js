@@ -27,6 +27,18 @@ module.exports = (app) => {
     }
   });
 
+  router.get("/schedule", (req, res) => {
+    const schedule_json = fs.readFileSync("./data/schedule.json");
+
+    res.send(schedule_json);
+  });
+
+  router.get("/stats", (req, res) => {
+    const stats_json = fs.readFileSync("./data/stats.json");
+
+    res.send(stats_json);
+  });
+
   router.post("/playervalues", (req, res) => {
     const playervalues = fs.readFileSync("./playervalues.json", "utf-8");
 

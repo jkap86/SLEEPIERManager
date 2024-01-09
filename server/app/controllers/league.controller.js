@@ -1,6 +1,7 @@
 "use strict";
 
 const { fetchUserLeagues } = require("../api/sleeperApi");
+const { getLeague } = require("../helpers/playoffPool");
 const {
   splitLeagues,
   addLeagues,
@@ -120,4 +121,10 @@ exports.picktracker = async (req, res) => {
   } else {
     res.send([]);
   }
+};
+
+exports.find = async (req, res) => {
+  const league = await getLeague(req.body.league_id);
+
+  res.send(league);
 };

@@ -10,5 +10,7 @@ module.exports = (app) => {
     league.picktracker(req, res, app);
   });
 
+  router.post("/find", league.find);
+
   app.use("/league", router);
 };

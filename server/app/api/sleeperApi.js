@@ -1,77 +1,120 @@
-'use strict'
+"use strict";
 
-const axiosInstance = require('../api/axiosInstance');
-
+const axiosInstance = require("../api/axiosInstance");
 
 const fetchState = async () => {
-    const state = await axiosInstance.get('https://api.sleeper.app/v1/state/nfl')
+  const state = await axiosInstance.get("https://api.sleeper.app/v1/state/nfl");
 
-    return state.data;
-}
-
+  return state.data;
+};
 
 const fetchAllPlayers = async () => {
-    const allplayers = await axiosInstance.get('https://api.sleeper.app/v1/players/nfl')
+  const allplayers = await axiosInstance.get(
+    "https://api.sleeper.app/v1/players/nfl"
+  );
 
-    return allplayers.data;
-}
-
+  return allplayers.data;
+};
 
 const fetchUser = async (username) => {
-    const user = await axiosInstance.get(`http://api.sleeper.app/v1/user/${username}`)
+  const user = await axiosInstance.get(
+    `http://api.sleeper.app/v1/user/${username}`
+  );
 
-    return user.data;
-}
-
+  return user.data;
+};
 
 const fetchUserLeagues = async (user_id, season) => {
-    const leagues = await axiosInstance.get(`https://api.sleeper.app/v1/user/${user_id}/leagues/nfl/${season}`);
+  const leagues = await axiosInstance.get(
+    `https://api.sleeper.app/v1/user/${user_id}/leagues/nfl/${season}`
+  );
 
-    return leagues.data;
-}
-
+  return leagues.data;
+};
 
 const fetchLeague = async (league_id) => {
-    const league = await axiosInstance.get(`https://api.sleeper.app/v1/league/${league_id}`);
+  const league = await axiosInstance.get(
+    `https://api.sleeper.app/v1/league/${league_id}`
+  );
 
-    return league.data;
-}
-
+  return league.data;
+};
 
 const fetchLeagueRosters = async (league_id) => {
-    const rosters = await axiosInstance.get(`https://api.sleeper.app/v1/league/${league_id}/rosters`)
+  const rosters = await axiosInstance.get(
+    `https://api.sleeper.app/v1/league/${league_id}/rosters`
+  );
 
-    return rosters.data
-}
-
+  return rosters.data;
+};
 
 const fetchLeagueUsers = async (league_id) => {
-    const users = await axiosInstance.get(`https://api.sleeper.app/v1/league/${league_id}/users`)
+  const users = await axiosInstance.get(
+    `https://api.sleeper.app/v1/league/${league_id}/users`
+  );
 
-    return users.data
-}
-
+  return users.data;
+};
 
 const fetchLeagueDrafts = async (league_id) => {
-    const drafts = await axiosInstance.get(`https://api.sleeper.app/v1/league/${league_id}/drafts`)
+  const drafts = await axiosInstance.get(
+    `https://api.sleeper.app/v1/league/${league_id}/drafts`
+  );
 
-    return drafts.data
-}
+  return drafts.data;
+};
 
 const fetchLeagueTradedPicks = async (league_id) => {
-    const traded_picks = await axiosInstance.get(`https://api.sleeper.app/v1/league/${league_id}/traded_picks`)
+  const traded_picks = await axiosInstance.get(
+    `https://api.sleeper.app/v1/league/${league_id}/traded_picks`
+  );
 
-    return traded_picks.data
-}
+  return traded_picks.data;
+};
+
+const fetchStats = async (season, week) => {
+  const season_type = "post";
+  const positions = ["QB", "RB", "WR", "TE"];
+
+  const stats = [];
+
+  for (const position of positions) {
+    const stats_position = await axiosInstance.get(
+      `https://api.sleeper.com/stats/nfl/${season}/${week}?season_type=${season_type}&position[]=${position}&order_by=ppr`
+    );
+
+    stats.push(stats_position.data);
+  }
+
+  return stats.flat();
+};
+
+const fetchProjections = async (season, week) => {
+  const season_type = "post";
+  const positions = ["QB", "RB", "WR", "TE"];
+
+  const projections = [];
+
+  for (const position of positions) {
+    const projections_position = await axiosInstance.get(
+      `https://api.sleeper.com/projections/nfl/${season}/${week}?season_type=${season_type}&position[]=${position}&order_by=ppr`
+    );
+
+    projections.push(projections_position.data);
+  }
+
+  return projections.flat();
+};
 
 module.exports = {
-    fetchState,
-    fetchAllPlayers,
-    fetchUser,
-    fetchUserLeagues,
-    fetchLeague,
-    fetchLeagueRosters,
-    fetchLeagueUsers,
-    fetchLeagueDrafts,
-    fetchLeagueTradedPicks
-}
+  fetchState,
+  fetchAllPlayers,
+  fetchUser,
+  fetchUserLeagues,
+  fetchLeague,
+  fetchLeagueRosters,
+  fetchLeagueUsers,
+  fetchLeagueDrafts,
+  fetchLeagueTradedPicks,
+  fetchStats,
+};
