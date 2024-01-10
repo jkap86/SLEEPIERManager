@@ -62,7 +62,13 @@ a {
   text-decoration: none;
 
 }
-
+a.home {
+    font-size: 3rem;
+    display: block;
+    width: fit-content;
+    padding-left: 2rem;
+    padding-top: 2rem;
+}
 .left {
   text-align: left;
 }

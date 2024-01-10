@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import Avatar from "../Common/Avatar";
 import TableMain from "../Common/TableMain";
 import axios from "axios";
@@ -106,7 +106,7 @@ const PlayoffPool = () => {
   };
 
   const getPlayersLeft = (roster_id) => {
-    const last_week = Math.max(...activeWeeks);
+    const last_week = Math.max(...activeWeeks.filter((x) => stats[x]));
 
     const active = weeklyResults[last_week]?.[roster_id]?.optimal_lineup
       .filter((player) => player.playing)
@@ -242,6 +242,9 @@ const PlayoffPool = () => {
 
   return (
     <>
+      <Link to="/" className="home">
+        Home
+      </Link>
       <h1>
         <p className="image">
           <Avatar
@@ -261,13 +264,11 @@ const PlayoffPool = () => {
                 key={round.week}
                 className={activeWeeks.includes(round.week) ? "active" : ""}
                 onClick={() =>
-                  Object.keys(stats).includes(round.week.toString())
-                    ? activeWeeks.includes(round.week)
-                      ? setActiveWeeks(
-                          activeWeeks.filter((x) => x !== round.week)
-                        )
-                      : setActiveWeeks([...activeWeeks, round.week])
-                    : ""
+                  activeWeeks.includes(round.week)
+                    ? setActiveWeeks(
+                        activeWeeks.filter((x) => x !== round.week)
+                      )
+                    : setActiveWeeks([...activeWeeks, round.week])
                 }
               >
                 {round.name}
