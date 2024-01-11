@@ -109,7 +109,12 @@ const PlayoffPool = () => {
     const last_week = Math.max(...activeWeeks.filter((x) => stats[x]));
 
     const active = weeklyResults[last_week]?.[roster_id]?.optimal_lineup
-      .filter((player) => player.playing)
+      .filter(
+        (player) =>
+          player.playing ||
+          (last_week === 19 &&
+            ["SF", "BAL"].includes(allplayers[player.player_id].team))
+      )
       .map((player) => player.player_id);
 
     return active;
@@ -139,22 +144,43 @@ const PlayoffPool = () => {
         ],
       ];
 
+      const getFpPlayer = (player_id) => {
+        const fp_player = Object.keys(weeklyResults)
+          .filter((week) => activeWeeks.includes(parseInt(week)))
+          .reduce(
+            (acc, cur) =>
+              acc +
+              weeklyResults[cur][roster.roster_id].optimal_lineup.find(
+                (ol) => ol.player_id === player_id
+              ).score,
+            0
+          );
+        return fp_player;
+      };
+
       const secondary_body =
         activeWeeks.length === 1
           ? weeklyResults[activeWeeks[0]]?.[
               roster.roster_id
             ]?.optimal_lineup?.map((op) => {
+              const className = players_left.includes(op.player_id)
+                ? ""
+                : "red";
               return {
                 id: op.player_id,
                 list: [
                   {
                     text: op.slot_abbrev,
+                    className: className,
                     colSpan: 1,
                   },
                   {
-                    text: allplayers[op.player_id]?.full_name,
+                    text:
+                      allplayers[op.player_id]?.full_name +
+                      " " +
+                      allplayers[op.player_id]?.team,
                     colSpan: 3,
-                    className: "left",
+                    className: "left " + className,
                     image: {
                       src: op.player_id,
                       alt: "headshot",
@@ -163,47 +189,49 @@ const PlayoffPool = () => {
                   },
                   {
                     text: op.score.toFixed(2),
+                    className: className,
                     colSpan: 2,
                   },
                 ],
               };
             })
-          : roster.players.map((player_id) => {
-              const fp_player = Object.keys(weeklyResults)
-                .filter((week) => activeWeeks.includes(parseInt(week)))
-                .reduce(
-                  (acc, cur) =>
-                    acc +
-                    weeklyResults[cur][roster.roster_id].optimal_lineup.find(
-                      (ol) => ol.player_id === player_id
-                    ).score,
-                  0
-                );
+          : roster.players
+              ?.sort((a, b) => getFpPlayer(b) - getFpPlayer(a))
+              ?.map((player_id) => {
+                const fp_player = getFpPlayer(player_id);
 
-              return {
-                id: player_id,
-                list: [
-                  {
-                    text: allplayers[player_id]?.position,
-                    colSpan: 1,
-                  },
-                  {
-                    text: allplayers[player_id]?.full_name,
-                    colSpan: 3,
-                    className: "left",
-                    image: {
-                      src: player_id,
-                      alt: "headshot",
-                      type: "player",
+                const className = players_left?.includes(player_id)
+                  ? ""
+                  : "red";
+                return {
+                  id: player_id,
+                  list: [
+                    {
+                      text: allplayers[player_id]?.position,
+                      className: className,
+                      colSpan: 1,
                     },
-                  },
-                  {
-                    text: fp_player.toFixed(2),
-                    colSpan: 2,
-                  },
-                ],
-              };
-            });
+                    {
+                      text:
+                        allplayers[player_id]?.full_name +
+                        " " +
+                        allplayers[player_id]?.team,
+                      colSpan: 3,
+                      className: "left " + className,
+                      image: {
+                        src: player_id,
+                        alt: "headshot",
+                        type: "player",
+                      },
+                    },
+                    {
+                      text: fp_player.toFixed(2),
+                      className: className,
+                      colSpan: 2,
+                    },
+                  ],
+                };
+              });
 
       return {
         id: roster.roster_id,

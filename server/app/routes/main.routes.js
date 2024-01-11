@@ -38,7 +38,7 @@ module.exports = (app) => {
 
     res.send(stats_json);
   });
-
+  /*
   router.post("/playervalues", (req, res) => {
     const playervalues = fs.readFileSync("./playervalues.json", "utf-8");
 
@@ -59,6 +59,6 @@ module.exports = (app) => {
 
     res.send([...data, ...players_without_values]);
   });
-
+*/
   app.use("/main", router);
 };

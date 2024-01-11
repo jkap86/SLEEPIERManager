@@ -102,19 +102,21 @@ const Roster = ({ roster, league, type }) => {
             list: [
               {
                 text: (
-                  <span>
-                    &nbsp;&nbsp;
-                    {`${pick.season} Round ${pick.round}${
-                      pick.order &&
-                      pick.season === parseInt(state.league_season)
-                        ? `.${pick.order.toLocaleString("en-US", {
-                            minimumIntegerDigits: 2,
-                          })}`
-                        : pick.original_user.user_id === roster?.user_id
-                        ? ""
-                        : `(${pick.original_user?.username || "Orphan"})`
-                    }`.toString()}
-                  </span>
+                  <p>
+                    <span>
+                      &nbsp;&nbsp;
+                      {`${pick.season} Round ${pick.round}${
+                        parseInt(pick.order) &&
+                        pick.season === parseInt(state.league_season)
+                          ? `.${pick.order.toLocaleString("en-US", {
+                              minimumIntegerDigits: 2,
+                            })}`
+                          : pick.original_user.user_id === roster?.user_id
+                          ? ""
+                          : ` (${pick.original_user?.username || "Orphan"})`
+                      }`.toString()}
+                    </span>
+                  </p>
                 ),
                 colSpan: 27,
                 className: "left",

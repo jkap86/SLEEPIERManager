@@ -52,12 +52,12 @@ module.exports = async (app) => {
         delay = (60 - sec) * 1000;
       } else {
         const next_kickoff = Math.min(
-          schedule_week.nflSchedule.matchup
+          ...schedule_week.nflSchedule.matchup
             ?.filter((g) => parseInt(g.kickoff) * 1000 > new Date().getTime())
             ?.map((g) => parseInt(g.kickoff) * 1000)
         );
 
-        console.log({ next_kickoff: new Date(next_kickoff) });
+        console.log(schedule_week.nflSchedule.matchup);
 
         delay = next_kickoff - new Date().getTime();
       }
