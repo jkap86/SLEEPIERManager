@@ -139,7 +139,7 @@ export const getOptimalLineup = (
       const optimal_player = slot_options[0];
 
       players_w_score_remaining = players_w_score_remaining.filter(
-        (x) => x.player_id !== optimal_player.player_id
+        (x) => x.player_id !== optimal_player?.player_id
       );
 
       optimal_lineup.push({

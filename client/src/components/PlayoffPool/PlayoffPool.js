@@ -113,7 +113,7 @@ const PlayoffPool = () => {
         (player) =>
           player.playing ||
           (last_week === 19 &&
-            ["SF", "BAL"].includes(allplayers[player.player_id].team))
+            ["SF", "BAL"].includes(allplayers[player.player_id]?.team))
       )
       .map((player) => player.player_id);
 
@@ -188,7 +188,7 @@ const PlayoffPool = () => {
                     },
                   },
                   {
-                    text: op.score.toFixed(2),
+                    text: op.score?.toFixed(2),
                     className: className,
                     colSpan: 2,
                   },
