@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { resetState } from "../../redux/actions";
 import { fetchUser, fetchLeagues } from "../../redux/actions";
 import { fetchCommon } from "../../redux/actions";
+import { checkIndexedDB } from "../helpers/indexedDb";
 
 const useFetchUserInfo = (to_fetch_array) => {
   const dispatch = useDispatch();
@@ -42,7 +43,12 @@ const useFetchUserInfo = (to_fetch_array) => {
 
   useEffect(() => {
     if (user_id && state && !leagues && !isLoadingLeagues && !errorLeagues) {
-      dispatch(fetchLeagues(user_id, state.league_season));
+      checkIndexedDB(
+        user_id,
+        "leagues",
+        () => dispatch(fetchLeagues(user_id, state.league_season)),
+        (data) => dispatch({ type: "FETCH_LEAGUES_SUCCESS", payload: data })
+      );
     }
   }, [dispatch, user_id, state, leagues, isLoadingLeagues, errorLeagues]);
 
