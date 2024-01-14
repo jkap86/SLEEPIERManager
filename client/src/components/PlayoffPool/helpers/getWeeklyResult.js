@@ -97,11 +97,37 @@ export const getOptimalLineup = (
       ? true
       : false;
 
+    const advanced = schedule_week.find((m) =>
+      m.team.find(
+        (t) =>
+          matchTeam(t.id) === allplayers[player_id]?.team &&
+          m.gameSecondsRemaining === "0" &&
+          parseInt(t.score) >=
+            parseInt(m.team.find((t2) => t.id !== t2.id).score)
+      )
+    )
+      ? true
+      : false;
+
+    const in_progress = schedule_week.find((m) =>
+      m.team.find(
+        (t) =>
+          matchTeam(t.id) === allplayers[player_id]?.team &&
+          parseInt(m.gameSecondsRemaining) > 0 &&
+          (parseInt(m.gameSecondsRemaining) < 3600 ||
+            parseInt(m.kickoff) * 1000 < new Date().getTime())
+      )
+    )
+      ? true
+      : false;
+
     const player_stats =
       stats_week.find((s) => s.player_id === player_id) || {};
     return {
       player_id: player_id,
       playing: playing,
+      in_progress: in_progress,
+      advanced: advanced,
       score: getPlayerScore([player_stats], scoring_settings, "stats", true),
     };
   });

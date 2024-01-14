@@ -5,6 +5,7 @@ import TableMain from "../Common/TableMain";
 import axios from "axios";
 import "./PlayoffPool.css";
 import { getWeeklyResult } from "./helpers/getWeeklyResult";
+import Search from "../Common/Search";
 
 const PlayoffPool = () => {
   const params = useParams();
@@ -17,6 +18,7 @@ const PlayoffPool = () => {
   const [activeWeeks, setActiveWeeks] = useState([]);
   const [weeklyResults, setWeeklyResults] = useState({});
   const [itemActive, setItemActive] = useState("");
+  const [searched, setSearched] = useState("");
 
   const rounds = [
     { week: 19, name: "Wild Card" },
@@ -120,7 +122,11 @@ const PlayoffPool = () => {
     return active;
   };
 
+  console.log({ searched });
   const body = league.rosters
+    ?.filter(
+      (roster) => searched === "" || roster.players?.includes(searched.id)
+    )
     ?.sort((a, b) => getFp(b.roster_id) - getFp(a.roster_id))
     ?.map((roster) => {
       const fp = getFp(roster.roster_id);
@@ -164,7 +170,11 @@ const PlayoffPool = () => {
               roster.roster_id
             ]?.optimal_lineup?.map((op) => {
               const className = players_left.includes(op.player_id)
-                ? ""
+                ? op.in_progress
+                  ? "yellow"
+                  : op.advanced
+                  ? "green"
+                  : ""
                 : "red";
               return {
                 id: op.player_id,
@@ -306,6 +316,24 @@ const PlayoffPool = () => {
           })}
         </ol>
       </div>
+      <br />
+      <br />
+      <Search
+        list={league.rosters?.flatMap((roster) =>
+          roster.players.map((player_id) => {
+            return {
+              id: player_id,
+              text: allplayers[player_id]?.full_name,
+              image: { src: player_id, alt: "player", type: "player" },
+            };
+          })
+        )}
+        searched={searched}
+        setSearched={setSearched}
+        placeholder={"Players"}
+      />
+      <br />
+      <br />
       <TableMain
         type={"primary"}
         headers={headers}
