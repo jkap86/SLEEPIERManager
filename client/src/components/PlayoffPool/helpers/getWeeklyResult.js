@@ -61,7 +61,7 @@ export const getWeeklyResult = (
 
     const fp = optimal_lineup
       .filter((slot) => Object.keys(position_map).includes(slot.slot))
-      .reduce((acc, cur) => acc + cur.score, 0);
+      .reduce((acc, cur) => acc + (cur.score || 0), 0);
 
     standings[roster.roster_id] = {
       username: roster.username,
@@ -90,7 +90,8 @@ export const getOptimalLineup = (
         (t) =>
           matchTeam(t.id) === allplayers[player_id]?.team &&
           (m.gameSecondsRemaining !== "0" ||
-            t.score >= m.team.find((t2) => t.id !== t2.id).score)
+            parseInt(t.score) >=
+              parseInt(m.team.find((t2) => t.id !== t2.id).score))
       )
     )
       ? true

@@ -175,10 +175,11 @@ const PlayoffPool = () => {
                     colSpan: 1,
                   },
                   {
-                    text:
-                      allplayers[op.player_id]?.full_name +
-                      " " +
-                      allplayers[op.player_id]?.team,
+                    text: !allplayers[op.player_id]
+                      ? "-"
+                      : allplayers[op.player_id]?.full_name +
+                          " " +
+                          allplayers[op.player_id]?.team || "FA",
                     colSpan: 3,
                     className: "left " + className,
                     image: {
@@ -188,7 +189,7 @@ const PlayoffPool = () => {
                     },
                   },
                   {
-                    text: op.score?.toFixed(2),
+                    text: op.score?.toFixed(2) || "-",
                     className: className,
                     colSpan: 2,
                   },
