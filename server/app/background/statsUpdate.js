@@ -6,7 +6,7 @@ const fs = require("fs");
 
 module.exports = async (app) => {
   setTimeout(async () => {
-    const getSchedule = async () => {
+    const getSchedule = async (boot = false) => {
       const schedule_week = await fetchScheduleWeek(
         Math.max(app.get("state")?.week + 18, 19)
       );
@@ -32,7 +32,7 @@ module.exports = async (app) => {
 
       let delay;
 
-      if (games_in_progress?.kickoff) {
+      if (games_in_progress?.kickoff || boot) {
         const stats_week = await fetchStats(
           "2023",
           Math.max(schedule_week.nflSchedule.week - 18, 1)
@@ -77,6 +77,6 @@ module.exports = async (app) => {
       }, delay);
     };
 
-    getSchedule();
+    getSchedule(true);
   }, 5000);
 };
