@@ -32,20 +32,34 @@ module.exports = async (app) => {
         console.log({ games_in_progress });
 
         let delay;
+        let data;
+        const stats_json = fs.readFileSync("./data/stats.json");
 
         if (games_in_progress?.kickoff || boot) {
-          const stats_week = await fetchStats(
-            "2023",
-            Math.max(schedule_week.nflSchedule.week - 18, 1)
-          );
+          if (boot) {
+            const stats = {};
 
-          const stats_json = fs.readFileSync("./data/stats.json");
+            for (let i = 1; i <= schedule_week.nflSchedule.week - 18; i++) {
+              const stats_week = await fetchStats("2023", i);
 
-          const data = {
-            ...JSON.parse(stats_json),
-            [schedule_week.nflSchedule.week]: stats_week,
-          };
+              stats[i + 18] = stats_week;
+            }
 
+            data = {
+              ...JSON.parse(stats_json),
+              ...stats,
+            };
+          } else {
+            const stats_week = await fetchStats(
+              "2023",
+              Math.max(schedule_week.nflSchedule.week - 18, 1)
+            );
+
+            data = {
+              ...JSON.parse(stats_json),
+              [schedule_week.nflSchedule.week]: stats_week,
+            };
+          }
           fs.writeFileSync("./data/stats.json", JSON.stringify(data));
 
           const sec = new Date().getSeconds();

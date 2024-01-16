@@ -1,6 +1,9 @@
 "use strict";
 
-const { fetchUserLeagues } = require("../api/sleeperApi");
+const {
+  fetchUserLeagues,
+  fetchLeagueTransactions,
+} = require("../api/sleeperApi");
 const { getLeague } = require("../helpers/playoffPool");
 const {
   splitLeagues,
@@ -126,5 +129,45 @@ exports.picktracker = async (req, res) => {
 exports.find = async (req, res) => {
   const league = await getLeague(req.body.league_id);
 
-  res.send(league);
+  const transactions = await fetchLeagueTransactions(req.body.league_id, 1);
+
+  const adds = {};
+
+  transactions.forEach((t) =>
+    Object.keys(t.adds || {}).forEach((player_id) => {
+      const roster_id = t.adds[player_id];
+
+      if (!adds[roster_id]) {
+        adds[roster_id] = [];
+      }
+
+      adds[roster_id].push({
+        player_id: player_id,
+        timestamp: t.status_updated,
+      });
+    })
+  );
+
+  const drops = {};
+
+  transactions.forEach((t) =>
+    Object.keys(t.drops || {}).forEach((player_id) => {
+      const roster_id = t.drops[player_id];
+
+      if (!drops[roster_id]) {
+        drops[roster_id] = [];
+      }
+
+      drops[roster_id].push({
+        player_id: player_id,
+        timestamp: t.status_updated,
+      });
+    })
+  );
+
+  res.send({
+    ...league,
+    adds,
+    drops,
+  });
 };

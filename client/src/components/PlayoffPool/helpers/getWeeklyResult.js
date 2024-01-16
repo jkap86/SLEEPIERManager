@@ -36,21 +36,56 @@ export const matchTeam = (team) => {
   return team_abbrev[team] || team;
 };
 
+export const getAdjustedRosterPlayers = (
+  players,
+  adds,
+  drops,
+  cutoff_start,
+  cutoff_end
+) => {
+  const players_to_add = (adds || [])
+    .filter((add) => add.timestamp > cutoff_start && add.timestamp < cutoff_end)
+    .map((add) => add.player_id);
+
+  let players_adjusted = Array.from(new Set([...players, ...players_to_add]));
+
+  const players_to_drop = (drops || [])
+    .filter(
+      (drop) => drop.timestamp > cutoff_start && drop.timestamp < cutoff_end
+    )
+    .map((drop) => drop.player_id);
+
+  return players_adjusted.filter(
+    (player_id) => !players_to_drop.includes(player_id)
+  );
+};
+
 export const getWeeklyResult = (
   rosters,
   roster_slots,
   scoring_settings,
   schedule_week,
   stats_week,
-  allplayers
+  allplayers,
+  adds,
+  drops,
+  cutoff_start,
+  cutoff_end
 ) => {
   const standings = {};
 
   rosters?.forEach((roster) => {
+    const players_w_adjustments = getAdjustedRosterPlayers(
+      roster.players || [],
+      adds[roster.roster_id],
+      drops[roster.roster_id],
+      cutoff_start,
+      cutoff_end
+    );
     const optimal_lineup =
       roster.players?.length > 0
         ? getOptimalLineup(
-            roster.players,
+            players_w_adjustments,
             roster_slots,
             scoring_settings,
             schedule_week,
@@ -58,6 +93,8 @@ export const getWeeklyResult = (
             allplayers
           )
         : [];
+
+    console.log({ username: roster.username, players_w_adjustments });
 
     const fp = optimal_lineup
       .filter((slot) => Object.keys(position_map).includes(slot.slot))

@@ -21,10 +21,30 @@ const PlayoffPool = () => {
   const [searched, setSearched] = useState("");
 
   const rounds = [
-    { week: 19, name: "Wild Card" },
-    { week: 20, name: "Divisional" },
-    { week: 21, name: "Conference" },
-    { week: 22, name: "Super Bowl" },
+    {
+      week: 19,
+      name: "Wild Card",
+      cutoff_start: new Date("January 16, 2023").getTime(),
+      cutoff_end: new Date("January 13, 2024").getTime(),
+    },
+    {
+      week: 20,
+      name: "Divisional",
+      cutoff_start: new Date("January 16, 2024").getTime(),
+      cutoff_end: new Date("January 20, 2024").getTime(),
+    },
+    {
+      week: 21,
+      name: "Conference",
+      cutoff_start: new Date("January 23, 2024").getTime(),
+      cutoff_end: new Date("January 27, 2024").getTime(),
+    },
+    {
+      week: 22,
+      name: "Super Bowl",
+      cutoff_start: new Date("January 30, 2024").getTime(),
+      cutoff_end: new Date("February 11, 2024").getTime(),
+    },
   ];
 
   useEffect(() => {
@@ -64,14 +84,28 @@ const PlayoffPool = () => {
       const weeklyResults_update = {};
 
       Object.keys(stats).forEach((key) => {
-        weeklyResults_update[key] = getWeeklyResult(
-          league.rosters,
-          league.roster_positions,
-          league.scoring_settings,
-          schedule[key],
-          stats[key],
-          allplayers
-        );
+        const cutoff_start = rounds.find(
+          (r) => r.week === parseInt(key)
+        )?.cutoff_start;
+
+        const cutoff_end = rounds.find(
+          (r) => r.week === parseInt(key)
+        )?.cutoff_end;
+
+        if (cutoff_start !== undefined) {
+          weeklyResults_update[key] = getWeeklyResult(
+            league.rosters,
+            league.roster_positions,
+            league.scoring_settings,
+            schedule[key],
+            stats[key],
+            allplayers,
+            league.adds,
+            league.drops,
+            cutoff_start,
+            cutoff_end
+          );
+        }
       });
 
       setWeeklyResults(weeklyResults_update);
@@ -206,7 +240,15 @@ const PlayoffPool = () => {
                 ],
               };
             })
-          : roster.players
+          : Array.from(
+              new Set(
+                activeWeeks.flatMap((week_key) =>
+                  weeklyResults[week_key]?.[
+                    roster.roster_id
+                  ]?.optimal_lineup.map((op) => op.player_id)
+                )
+              )
+            )
               ?.sort((a, b) => getFpPlayer(b) - getFpPlayer(a))
               ?.map((player_id) => {
                 const fp_player = getFpPlayer(player_id);
