@@ -320,7 +320,7 @@ const PlayoffPool = () => {
       <br />
       <Search
         list={league.rosters?.flatMap((roster) =>
-          roster.players.map((player_id) => {
+          (roster.players || [])?.map((player_id) => {
             return {
               id: player_id,
               text: allplayers[player_id]?.full_name,
