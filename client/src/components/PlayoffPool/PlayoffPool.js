@@ -190,9 +190,9 @@ const PlayoffPool = () => {
           .reduce(
             (acc, cur) =>
               acc +
-              weeklyResults[cur][roster.roster_id].optimal_lineup.find(
-                (ol) => ol.player_id === player_id
-              ).score,
+                weeklyResults[cur][roster.roster_id].optimal_lineup.find(
+                  (ol) => ol.player_id === player_id
+                )?.score || 0,
             0
           );
         return fp_player;
