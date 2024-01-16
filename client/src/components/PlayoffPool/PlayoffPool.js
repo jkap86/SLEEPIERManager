@@ -6,6 +6,7 @@ import axios from "axios";
 import "./PlayoffPool.css";
 import { getWeeklyResult } from "./helpers/getWeeklyResult";
 import Search from "../Common/Search";
+import FilterIcons from "../Common/FilterIcons";
 
 const PlayoffPool = () => {
   const params = useParams();
@@ -19,6 +20,8 @@ const PlayoffPool = () => {
   const [weeklyResults, setWeeklyResults] = useState({});
   const [itemActive, setItemActive] = useState("");
   const [searched, setSearched] = useState("");
+  const [filterPosition, setFilterPosition] = useState("W/R/T/Q");
+  const [filterTeam, setFilterTeam] = useState("All");
 
   const rounds = [
     {
@@ -141,15 +144,25 @@ const PlayoffPool = () => {
     return fp;
   };
 
-  const getPlayersLeft = (roster_id) => {
+  const getPlayersLeft = (roster_id, filter = false) => {
     const last_week = Math.max(...activeWeeks.filter((x) => stats[x]));
 
     const active = weeklyResults[last_week]?.[roster_id]?.optimal_lineup
       .filter(
         (player) =>
-          player.playing ||
-          (last_week === 19 &&
-            ["SF", "BAL"].includes(allplayers[player.player_id]?.team))
+          (player.playing ||
+            (last_week === 19 &&
+              ["SF", "BAL"].includes(allplayers[player.player_id]?.team))) &&
+          (filter
+            ? (filterTeam === "All" ||
+                allplayers[player.player_id]?.team === filterTeam) &&
+              (filterPosition === allplayers[player.player_id]?.position ||
+                filterPosition
+                  .split("/")
+                  .includes(
+                    allplayers[player.player_id]?.position?.slice(0, 1)
+                  ))
+            : true)
       )
       .map((player) => player.player_id);
 
@@ -306,7 +319,8 @@ const PlayoffPool = () => {
             colSpan: 3,
           },
           {
-            text: players_left?.length || "-",
+            text:
+              getPlayersLeft(roster.roster_id, true)?.length?.toString() || "-",
             colSpan: 2,
           },
         ],
@@ -385,6 +399,16 @@ const PlayoffPool = () => {
         searched={searched}
         setSearched={setSearched}
         placeholder={"Players"}
+      />
+      <FilterIcons
+        type={"position"}
+        filterPosition={filterPosition}
+        setFilterPosition={setFilterPosition}
+      />
+      <FilterIcons
+        type={"team"}
+        filterTeam={filterTeam}
+        setFilterTeam={setFilterTeam}
       />
       <br />
       <br />
