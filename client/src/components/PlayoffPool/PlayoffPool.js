@@ -206,7 +206,9 @@ const PlayoffPool = () => {
               const className = players_left.includes(op.player_id)
                 ? op.in_progress
                   ? "yellow"
-                  : op.advanced
+                  : op.advanced ||
+                    (activeWeeks[0] === 19 &&
+                      ["SF", "BAL"].includes(allplayers[op.player_id]?.team))
                   ? "green"
                   : ""
                 : "red";
@@ -321,6 +323,24 @@ const PlayoffPool = () => {
       };
     });
 
+  const players_list = league.rosters?.flatMap((roster) =>
+    Array.from(
+      new Set(
+        activeWeeks.flatMap((week_key) =>
+          weeklyResults[week_key]?.[roster.roster_id]?.optimal_lineup.map(
+            (op) => op.player_id
+          )
+        )
+      )
+    )?.map((player_id) => {
+      return {
+        id: player_id,
+        text: allplayers[player_id]?.full_name,
+        image: { src: player_id, alt: "player", type: "player" },
+      };
+    })
+  );
+
   return (
     <>
       <Link to="/" className="home">
@@ -361,15 +381,7 @@ const PlayoffPool = () => {
       <br />
       <br />
       <Search
-        list={league.rosters?.flatMap((roster) =>
-          (roster.players || [])?.map((player_id) => {
-            return {
-              id: player_id,
-              text: allplayers[player_id]?.full_name,
-              image: { src: player_id, alt: "player", type: "player" },
-            };
-          })
-        )}
+        list={players_list}
         searched={searched}
         setSearched={setSearched}
         placeholder={"Players"}

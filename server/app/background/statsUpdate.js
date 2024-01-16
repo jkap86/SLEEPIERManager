@@ -5,21 +5,40 @@ const { fetchStats } = require("../api/sleeperApi");
 const fs = require("fs");
 
 module.exports = async (app) => {
-  if (process.env.NODE_ENV === "production") {
+  if (process.env.NODE_ENV !== "production") {
     setTimeout(async () => {
       const getSchedule = async (boot = false) => {
-        const schedule_week = await fetchScheduleWeek(
-          Math.max(app.get("state")?.week + 18, 19)
-        );
-
         const schedule_json = fs.readFileSync("./data/schedule.json");
+        let updated_schedule;
+        let schedule_week;
+        if (boot) {
+          const schedule = {};
+
+          for (let i = 1; i <= app.get("state")?.week; i++) {
+            const schedule_prev = await fetchScheduleWeek(i + 18);
+
+            if (i === app.get("state")?.week) {
+              schedule_week = schedule_prev;
+            }
+            schedule[i + 18] = schedule_prev.nflSchedule.matchup;
+          }
+
+          updated_schedule = {
+            ...JSON.parse(schedule_json),
+            ...schedule,
+          };
+        } else {
+          schedule_week = await fetchScheduleWeek(app.get("state")?.week + 18);
+
+          updated_schedule = {
+            ...JSON.parse(schedule_json),
+            [schedule_week.nflSchedule.week]: schedule_week.nflSchedule.matchup,
+          };
+        }
 
         fs.writeFileSync(
           "./data/schedule.json",
-          JSON.stringify({
-            ...JSON.parse(schedule_json),
-            [schedule_week.nflSchedule.week]: schedule_week.nflSchedule.matchup,
-          })
+          JSON.stringify(updated_schedule)
         );
 
         const games_in_progress = schedule_week.nflSchedule.matchup.find(
