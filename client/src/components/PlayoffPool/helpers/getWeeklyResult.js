@@ -44,19 +44,27 @@ export const getAdjustedRosterPlayers = (
   cutoff_end
 ) => {
   const players_to_add = (adds || [])
-    .filter((add) => add.timestamp > cutoff_start && add.timestamp < cutoff_end)
+    .filter(
+      (add) =>
+        (add.timestamp > cutoff_start && add.timestamp < cutoff_end) ||
+        add.type === "commissioner"
+    )
     .map((add) => add.player_id);
 
-  let players_adjusted = Array.from(new Set([...players, ...players_to_add]));
+  const players_added_after = (adds || [])
+    .filter((add) => add.timestamp > cutoff_end && add.type !== "commissioner")
+    .map((add) => add.player_id);
 
-  const players_to_drop = (drops || [])
-    .filter(
-      (drop) => drop.timestamp > cutoff_start && drop.timestamp < cutoff_end
-    )
+  const players_dropped_after = (drops || [])
+    .filter((drop) => drop.timestamp > cutoff_end)
     .map((drop) => drop.player_id);
 
+  let players_adjusted = Array.from(
+    new Set([...players, ...players_to_add, ...players_dropped_after])
+  );
+
   return players_adjusted.filter(
-    (player_id) => !players_to_drop.includes(player_id)
+    (player_id) => !players_added_after.includes(player_id)
   );
 };
 
@@ -94,7 +102,15 @@ export const getWeeklyResult = (
           )
         : [];
 
-    console.log({ username: roster.username, players_w_adjustments });
+    console.log({
+      username: roster.username,
+      adds: adds[roster.roster_id]?.map((x) => {
+        return {
+          ...x,
+          date: new Date(x.timestamp),
+        };
+      }),
+    });
 
     const fp = optimal_lineup
       .filter((slot) => Object.keys(position_map).includes(slot.slot))

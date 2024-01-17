@@ -144,6 +144,7 @@ exports.find = async (req, res) => {
       adds[roster_id].push({
         player_id: player_id,
         timestamp: t.status_updated,
+        type: t.type,
       });
     })
   );
@@ -161,6 +162,7 @@ exports.find = async (req, res) => {
       drops[roster_id].push({
         player_id: player_id,
         timestamp: t.status_updated,
+        type: t.type,
       });
     })
   );

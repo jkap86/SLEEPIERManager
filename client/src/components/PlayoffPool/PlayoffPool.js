@@ -28,12 +28,12 @@ const PlayoffPool = () => {
       week: 19,
       name: "Wild Card",
       cutoff_start: new Date("January 16, 2023").getTime(),
-      cutoff_end: new Date("January 13, 2024").getTime(),
+      cutoff_end: new Date("January 16, 2024").getTime(),
     },
     {
       week: 20,
       name: "Divisional",
-      cutoff_start: new Date("January 16, 2024").getTime(),
+      cutoff_start: new Date("January 17, 2024").getTime(),
       cutoff_end: new Date("January 20, 2024").getTime(),
     },
     {
@@ -118,7 +118,7 @@ const PlayoffPool = () => {
   useEffect(() => {
     setActiveWeeks(rounds.slice(0, Math.max(state.week, 1)).map((r) => r.week));
   }, [state]);
-  console.log({ weeklyResults });
+
   const headers = [
     [
       {
@@ -139,7 +139,7 @@ const PlayoffPool = () => {
   const getFp = (roster_id) => {
     const fp = Object.keys(weeklyResults)
       .filter((week) => activeWeeks.includes(parseInt(week)))
-      .reduce((acc, cur) => acc + weeklyResults[cur][roster_id]?.fp || 0, 0);
+      .reduce((acc, cur) => acc + (weeklyResults[cur][roster_id]?.fp || 0), 0);
 
     return fp;
   };
@@ -185,27 +185,45 @@ const PlayoffPool = () => {
           {
             text: activeWeeks.length === 1 ? "Slot" : "Position",
             colSpan: 1,
+            rowSpan: activeWeeks.length > 1 ? 2 : 1,
           },
           {
             text: "Player",
             colSpan: 3,
+            rowSpan: activeWeeks.length > 1 ? 2 : 1,
           },
           {
             text: "FP",
             colSpan: 2,
+            className: activeWeeks.length > 1 ? "half" : "",
           },
         ],
+        activeWeeks.length > 1
+          ? [
+              {
+                text: "Lineup",
+                colSpan: 1,
+                className: "half",
+              },
+              {
+                text: "Bench",
+                colSpan: 1,
+                className: "half",
+              },
+            ]
+          : [],
       ];
 
-      const getFpPlayer = (player_id) => {
+      const getFpPlayer = (player_id, bench = false) => {
         const fp_player = Object.keys(weeklyResults)
           .filter((week) => activeWeeks.includes(parseInt(week)))
           .reduce(
             (acc, cur) =>
               acc +
-                weeklyResults[cur][roster.roster_id].optimal_lineup.find(
-                  (ol) => ol.player_id === player_id
-                )?.score || 0,
+              (weeklyResults[cur][roster.roster_id].optimal_lineup.find(
+                (ol) =>
+                  ol.player_id === player_id && (bench || ol.slot !== "BN")
+              )?.score || 0),
             0
           );
         return fp_player;
@@ -267,6 +285,7 @@ const PlayoffPool = () => {
               ?.sort((a, b) => getFpPlayer(b) - getFpPlayer(a))
               ?.map((player_id) => {
                 const fp_player = getFpPlayer(player_id);
+                const fp_player_total = getFpPlayer(player_id, true);
 
                 const className = players_left?.includes(player_id)
                   ? ""
@@ -295,7 +314,12 @@ const PlayoffPool = () => {
                     {
                       text: fp_player.toFixed(2),
                       className: className,
-                      colSpan: 2,
+                      colSpan: 1,
+                    },
+                    {
+                      text: (fp_player_total - fp_player).toFixed(2),
+                      className: className,
+                      colSpan: 1,
                     },
                   ],
                 };
