@@ -14,8 +14,11 @@ module.exports = (sequelize, Sequelize) => {
       status_updated: {
         type: DataTypes.BIGINT,
       },
-      rosters: {
-        type: Sequelize.JSONB,
+      managers: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+      },
+      players: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
       },
       adds: {
         type: Sequelize.JSONB,
@@ -26,20 +29,19 @@ module.exports = (sequelize, Sequelize) => {
       draft_picks: {
         type: Sequelize.JSONB,
       },
+      drafts: {
+        type: Sequelize.JSONB,
+      },
       price_check: {
         type: Sequelize.JSONB,
       },
     },
     {
-      /*
-        indexes: [
-            {
-                fields: [{ attribute: 'status_updated', operator: 'DESC' }, 'managers', 'players', 'status_updated', 'leagueLeagueId'],
-
-
-            }
-        ]
-        */
+      indexes: [
+        {
+          fields: [{ attribute: "status_updated", operator: "DESC" }],
+        },
+      ],
     }
   );
 

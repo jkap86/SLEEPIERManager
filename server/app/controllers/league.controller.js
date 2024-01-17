@@ -33,7 +33,7 @@ exports.upsert = async (req, res) => {
     const [leagues_to_add, leagues_to_update, leagues_up_to_date] =
       await splitLeagues(
         batchLeagues,
-        new Date(new Date() - 0.001 * 60 * 60 * 1000)
+        new Date(new Date() - 6 * 60 * 60 * 1000)
       );
 
     const updated_leagues = await addLeagues(leagues_to_update);

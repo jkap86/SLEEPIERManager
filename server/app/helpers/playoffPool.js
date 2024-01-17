@@ -8,7 +8,12 @@ const League = db.leagues;
 const getLeague = async (league_id) => {
   const league = await League.findByPk(league_id, { raw: true });
 
-  if (league?.rosters?.find((r) => r?.players?.length > 0)) {
+  const cutoff = new Date(new Date() - 6 * 60 * 60 * 1000);
+
+  if (
+    league?.rosters?.find((r) => r?.players?.length > 0) &&
+    league.updatedAt > cutoff
+  ) {
     return league;
   } else {
     const leagueApi = await fetchLeague(league_id);

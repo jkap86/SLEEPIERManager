@@ -59,6 +59,58 @@ exports.leaguemate = async (req, res) => {
   let lmTrades;
 
   try {
+    const leaguemateLeagues = await League.findAll({
+      attributes: ["league_id"],
+      include: {
+        model: User,
+        through: { attributes: [] },
+        attributes: ["user_id"],
+        include: {
+          model: League,
+          through: { attributes: [] },
+          attributes: [],
+          include: {
+            model: User,
+            attributes: [],
+            through: { attributes: [] },
+            where: {
+              user_id: req.body.user_id,
+            },
+          },
+          required: true,
+        },
+        required: true,
+      },
+    });
+
+    console.log({ leaguemateLeagues: leaguemateLeagues.length });
+
+    const leaguemateTrades = await Trade.findAndCountAll({
+      order: [["status_updated", "DESC"]],
+      offset: req.body.offset,
+      limit: req.body.limit,
+      attributes: [
+        "transaction_id",
+        "status_updated",
+        "adds",
+        "drops",
+        "draft_picks",
+        "leagueLeagueId",
+      ],
+      include: {
+        model: League,
+        attributes: [],
+        where: {
+          league_id: leaguemateLeagues.map(
+            (league) => league.dataValues.league_id
+          ),
+        },
+      },
+      raw: true,
+    });
+
+    res.send(leaguemateTrades);
+    /*
     lmTrades = await Trade.findAndCountAll({
       order: [["status_updated", "DESC"]],
       offset: req.body.offset,
@@ -67,7 +119,6 @@ exports.leaguemate = async (req, res) => {
       attributes: [
         "transaction_id",
         "status_updated",
-        "rosters",
         "adds",
         "drops",
         "draft_picks",
@@ -78,10 +129,11 @@ exports.leaguemate = async (req, res) => {
 
     const trades_to_send = {
       rows: lmTrades.rows,
-      count: lmTrades?.count?.length,
+      count: lmTrades?.count,
     };
 
     res.send(trades_to_send);
+    */
   } catch (error) {
     res.send(error);
     console.log(error);
@@ -162,7 +214,6 @@ exports.pricecheck = async (req, res) => {
           "settings",
         ],
       },
-      raw: true,
     });
   } catch (error) {
     console.log(error);

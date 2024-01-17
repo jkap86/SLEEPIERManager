@@ -6,6 +6,7 @@ import { Suspense, lazy } from "react";
 import Leagues from "./components/Leagues";
 import Players from "./components/Players";
 import Leaguemates from "./components/Leaguemates";
+import Trades from "./components/Trades";
 import PickTracker from "./components/Picktracker/picktracker";
 import PlayoffPool from "./components/PlayoffPool/PlayoffPool";
 const Layout = lazy(() => import("./components/Common/Layout"));
@@ -28,6 +29,10 @@ function App() {
             <Route
               path="/leaguemates/:username"
               element={<Layout display={<Leaguemates />} />}
+            />
+            <Route
+              path="/trades/:username"
+              element={<Layout display={<Trades />} />}
             />
             <Route path="/picktracker/:league_id" element={<PickTracker />} />
             <Route path="/playoffs/:league_id" element={<PlayoffPool />} />
