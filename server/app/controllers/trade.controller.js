@@ -92,6 +92,7 @@ exports.leaguemate = async (req, res) => {
       attributes: [
         "transaction_id",
         "status_updated",
+        "rosters",
         "adds",
         "drops",
         "draft_picks",
@@ -99,7 +100,14 @@ exports.leaguemate = async (req, res) => {
       ],
       include: {
         model: League,
-        attributes: [],
+        attributes: [
+          "league_id",
+          "name",
+          "avatar",
+          "roster_positions",
+          "scoring_settings",
+          "settings",
+        ],
         where: {
           league_id: leaguemateLeagues.map(
             (league) => league.dataValues.league_id

@@ -14,6 +14,9 @@ module.exports = (sequelize, Sequelize) => {
       status_updated: {
         type: DataTypes.BIGINT,
       },
+      rosters: {
+        type: Sequelize.JSONB,
+      },
       managers: {
         type: DataTypes.ARRAY(DataTypes.STRING),
       },

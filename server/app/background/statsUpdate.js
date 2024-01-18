@@ -5,7 +5,7 @@ const { fetchStats } = require("../api/sleeperApi");
 const fs = require("fs");
 
 module.exports = async (app) => {
-  if (process.env.NODE_ENV !== "production") {
+  if (process.env.NODE_ENV === "production") {
     setTimeout(async () => {
       const getSchedule = async (boot = false) => {
         const schedule_json = fs.readFileSync("./data/schedule.json");
