@@ -97,7 +97,9 @@ export const fetchLeagues = (user_id, season) => {
           } catch (err) {
             console.log(err);
           }
-          const matches = leagues.match(/"league_id":/g);
+          const matches = leagues.match(/{"league_id":/g);
+
+          console.log({ leagues, matches });
 
           let count = 0;
 

@@ -114,6 +114,14 @@ const fetchLeagueTransactions = async (league_id, week) => {
   return transactions_week.data.filter((t) => t.status === "complete");
 };
 
+const fetchDraftPicks = async (draft_id) => {
+  const draft_picks = await axiosInstance.get(
+    `https://api.sleeper.app/v1/draft/${draft_id}/picks`
+  );
+
+  return draft_picks.data;
+};
+
 module.exports = {
   fetchState,
   fetchAllPlayers,
@@ -127,4 +135,5 @@ module.exports = {
   fetchStats,
   fetchProjections,
   fetchLeagueTransactions,
+  fetchDraftPicks,
 };

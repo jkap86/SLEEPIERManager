@@ -219,13 +219,14 @@ const addLeagues = async (leagues) => {
 
       const updated_rosters = updateLeagueRostersUsers(rosters, users);
 
+      const drafts = await fetchLeagueDrafts(league.league_id);
+
       let draft_picks;
 
       if (
         league.settings.type === 2 &&
         rosters.find((r) => r.players?.length > 0)
       ) {
-        const drafts = await fetchLeagueDrafts(league.league_id);
         const traded_picks = await fetchLeagueTradedPicks(league.league_id);
 
         draft_picks = getLeagueDraftPicks({
@@ -255,6 +256,7 @@ const addLeagues = async (leagues) => {
         scoring_settings: league.scoring_settings,
         roster_positions: league.roster_positions,
         rosters: updated_rosters_draft_picks,
+        drafts: drafts,
         updatedAt: new Date(),
       };
     })

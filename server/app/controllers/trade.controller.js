@@ -1,4 +1,5 @@
 "use strict";
+const { getLeaguemateLeagues } = require("../helpers/leaguemateLeagues");
 const db = require("../models");
 const User = db.users;
 const Trade = db.trades;
@@ -56,34 +57,12 @@ exports.leaguemate = async (req, res) => {
     });
   }
 
-  let lmTrades;
-
   try {
-    const leaguemateLeagues = await League.findAll({
-      attributes: ["league_id"],
-      include: {
-        model: User,
-        through: { attributes: [] },
-        attributes: ["user_id"],
-        include: {
-          model: League,
-          through: { attributes: [] },
-          attributes: [],
-          include: {
-            model: User,
-            attributes: [],
-            through: { attributes: [] },
-            where: {
-              user_id: req.body.user_id,
-            },
-          },
-          required: true,
-        },
-        required: true,
-      },
-    });
-
-    console.log({ leaguemateLeagues: leaguemateLeagues.length });
+    const leaguemateLeagues = await getLeaguemateLeagues(
+      req.body.user_id,
+      League,
+      User
+    );
 
     const leaguemateTrades = await Trade.findAndCountAll({
       order: [["status_updated", "DESC"]],
@@ -118,30 +97,6 @@ exports.leaguemate = async (req, res) => {
     });
 
     res.send(leaguemateTrades);
-    /*
-    lmTrades = await Trade.findAndCountAll({
-      order: [["status_updated", "DESC"]],
-      offset: req.body.offset,
-      limit: req.body.limit,
-      where: { [Op.and]: filters },
-      attributes: [
-        "transaction_id",
-        "status_updated",
-        "adds",
-        "drops",
-        "draft_picks",
-        "leagueLeagueId",
-      ],
-      raw: true,
-    });
-
-    const trades_to_send = {
-      rows: lmTrades.rows,
-      count: lmTrades?.count,
-    };
-
-    res.send(trades_to_send);
-    */
   } catch (error) {
     res.send(error);
     console.log(error);
