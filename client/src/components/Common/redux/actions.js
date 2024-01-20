@@ -200,3 +200,34 @@ export const fetchPlayerValues = (player_ids) => {
     }
   };
 };
+
+export const fetchLmLeagueIds = (user_id, type1, type2) => async (dispatch) => {
+  try {
+    const lmLeagueIds = await axios.get("/league/leaguemate", {
+      params: { user_id, type1, type2 },
+    });
+
+    dispatch({
+      type: "SET_STATE_USER",
+      payload: { lmLeagueIds: lmLeagueIds.data },
+    });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+export const fetchAdp = (league_ids) => async (dispatch) => {
+  try {
+    const adp = await axios.post("/draft/adp", {
+      league_ids: league_ids,
+    });
+
+    const adp_object = Object.fromEntries(
+      adp.data.map((x) => [x.player_id, parseFloat(x.adp)])
+    );
+
+    dispatch({ type: "SET_STATE_COMMON", payload: { adp: adp_object } });
+  } catch (err) {
+    console.log(err.message);
+  }
+};

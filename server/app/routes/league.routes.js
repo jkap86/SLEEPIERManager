@@ -12,5 +12,7 @@ module.exports = (app) => {
 
   router.post("/find", league.find);
 
+  router.get("/leaguemate", league.leaguemate);
+
   app.use("/league", router);
 };

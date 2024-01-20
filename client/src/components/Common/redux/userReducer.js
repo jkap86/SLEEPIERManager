@@ -20,6 +20,7 @@ const initialState = {
   errorSyncing: false,
   type1: "All",
   type2: "All",
+  lmLeagueIds: false,
 };
 
 const userReducer = (state = initialState, action) => {

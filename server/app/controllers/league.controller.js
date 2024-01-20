@@ -10,8 +10,13 @@ const {
   addLeagues,
   updateUserLeagueRelationships,
 } = require("../helpers/upsertLeagues");
+const { getLeaguemateLeagues } = require("../helpers/leaguemateLeagues");
 const JSONStream = require("JSONStream");
 const axios = require("axios");
+const db = require("../models");
+const User = db.users;
+const League = db.leagues;
+const Op = db.Sequelize.Op;
 
 exports.upsert = async (req, res) => {
   res.setHeader("Content-Type", "application/json");
@@ -172,4 +177,21 @@ exports.find = async (req, res) => {
     adds,
     drops,
   });
+};
+
+exports.leaguemate = async (req, res) => {
+  try {
+    const leaguemateLeagues = await getLeaguemateLeagues(
+      req.query.user_id,
+      League,
+      User,
+      Op,
+      req.query.type1,
+      req.query.type2
+    );
+
+    res.send(leaguemateLeagues.map((league) => league.dataValues.league_id));
+  } catch (err) {
+    console.log(err.message);
+  }
 };

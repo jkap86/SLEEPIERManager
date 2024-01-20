@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { resetState } from "../../redux/actions";
+import { fetchAdp, fetchLmLeagueIds, resetState } from "../../redux/actions";
 import { fetchUser, fetchLeagues } from "../../redux/actions";
 import { fetchCommon } from "../../redux/actions";
 import { checkIndexedDB } from "../helpers/indexedDb";
@@ -17,8 +17,11 @@ const useFetchUserInfo = (to_fetch_array) => {
     leagues,
     isLoadingLeagues,
     errorLeagues,
+    lmLeagueIds,
+    type1,
+    type2,
   } = useSelector((state) => state.user);
-  const { allplayers, state } = useSelector((state) => state.common);
+  const { allplayers, state, adp } = useSelector((state) => state.common);
 
   useEffect(() => {
     if (!state) {
@@ -53,12 +56,26 @@ const useFetchUserInfo = (to_fetch_array) => {
   }, [dispatch, user_id, state, leagues, isLoadingLeagues, errorLeagues]);
 
   useEffect(() => {
+    if ((user_id, leagues && !lmLeagueIds)) {
+      dispatch(fetchLmLeagueIds(user_id, type1, type2));
+    }
+  }, [dispatch, leagues, lmLeagueIds, user_id]);
+
+  useEffect(() => {
     if (leagues) {
       if (!allplayers) {
         dispatch(fetchCommon("allplayers"));
       }
     }
   }, [dispatch, allplayers, leagues]);
+
+  useEffect(() => {
+    if (lmLeagueIds && !adp) {
+      console.log("fetchihng lmleagueids");
+      dispatch(fetchAdp(lmLeagueIds));
+    }
+  }, [dispatch, lmLeagueIds, adp]);
+  console.log({ adp });
 };
 
 export default useFetchUserInfo;

@@ -1,4 +1,5 @@
 "use strict";
+
 const { getLeaguemateLeagues } = require("../helpers/leaguemateLeagues");
 const db = require("../models");
 const User = db.users;
@@ -58,12 +59,6 @@ exports.leaguemate = async (req, res) => {
   }
 
   try {
-    const leaguemateLeagues = await getLeaguemateLeagues(
-      req.body.user_id,
-      League,
-      User
-    );
-
     const leaguemateTrades = await Trade.findAndCountAll({
       order: [["status_updated", "DESC"]],
       offset: req.body.offset,
@@ -88,9 +83,7 @@ exports.leaguemate = async (req, res) => {
           "settings",
         ],
         where: {
-          league_id: leaguemateLeagues.map(
-            (league) => league.dataValues.league_id
-          ),
+          league_id: req.body.league_ids,
         },
       },
       raw: true,
