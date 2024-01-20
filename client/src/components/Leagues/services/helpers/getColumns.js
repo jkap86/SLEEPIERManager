@@ -108,7 +108,7 @@ export const getColumnValue = (header, league, state, user_id) => {
             : "",
       };
     case "Open Roster":
-      const user_active_players = league.userRoster.players.filter(
+      const user_active_players = league.userRoster.players?.filter(
         (p) =>
           !league.userRoster.taxi?.includes(p) &&
           !league.userRoster.reserve?.includes(p)

@@ -9,7 +9,7 @@ import { getPlayersColumn } from "../services/helpers/getPlayersColumn";
 
 const Records = ({ secondaryTable }) => {
   const dispatch = useDispatch();
-  const { userPlayerShares, type1, type2, username } = useSelector(
+  const { userPlayerShares, type1, type2, adpLm } = useSelector(
     (state) => state.user
   );
   const { state, allplayers } = useSelector((state) => state.common);
@@ -25,7 +25,18 @@ const Records = ({ secondaryTable }) => {
     column4,
   } = useSelector((state) => state.players);
 
-  const columnOptions = ["Owned", "Owned %", "W/L", "W %", "LM W/L", "LM W %"];
+  const columnOptions = [
+    "Owned",
+    "Owned %",
+    "W/L",
+    "W %",
+    "LM W/L",
+    "LM W %",
+    "ADP (R)",
+    "ADP (D)",
+  ];
+
+  console.log({ type1 });
 
   const playerShares_headers = [
     [
@@ -301,7 +312,9 @@ const Records = ({ secondaryTable }) => {
               record,
               winpct,
               record_lm,
-              winpct_lm
+              winpct_lm,
+              adpLm,
+              player_id
             ),
           },
           {
@@ -313,7 +326,9 @@ const Records = ({ secondaryTable }) => {
               record,
               winpct,
               record_lm,
-              winpct_lm
+              winpct_lm,
+              adpLm,
+              player_id
             ),
           },
           {
@@ -325,7 +340,9 @@ const Records = ({ secondaryTable }) => {
               record,
               winpct,
               record_lm,
-              winpct_lm
+              winpct_lm,
+              adpLm,
+              player_id
             ),
           },
           {
@@ -337,7 +354,9 @@ const Records = ({ secondaryTable }) => {
               record,
               winpct,
               record_lm,
-              winpct_lm
+              winpct_lm,
+              adpLm,
+              player_id
             ),
           },
         ],

@@ -8,7 +8,9 @@ export const getPlayersColumn = (
   record,
   winpct,
   record_lm,
-  winpct_lm
+  winpct_lm,
+  adpLm,
+  player_id
 ) => {
   switch (header) {
     case "Owned":
@@ -69,6 +71,16 @@ export const getPlayersColumn = (
             </p>
           </em>
         ),
+        colSpan: 1,
+      };
+    case "ADP (R)":
+      return {
+        text: adpLm?.["Redraft"]?.[player_id]?.adp?.toFixed(1) || "-",
+        colSpan: 1,
+      };
+    case "ADP (D)":
+      return {
+        text: adpLm?.["Dynasty"]?.[player_id]?.adp?.toFixed(1) || "-",
         colSpan: 1,
       };
     default:

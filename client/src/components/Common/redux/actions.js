@@ -222,11 +222,70 @@ export const fetchAdp = (league_ids) => async (dispatch) => {
       league_ids: league_ids,
     });
 
-    const adp_object = Object.fromEntries(
-      adp.data.map((x) => [x.player_id, parseFloat(x.adp)])
+    const adp_redraft = Object.fromEntries(
+      adp.data
+        .filter((x) => x.league_type === "R")
+        .map((x) => [
+          x.player_id,
+          {
+            adp: parseFloat(x.adp),
+            n_drafts: parseInt(x.n_drafts),
+          },
+        ])
     );
 
-    dispatch({ type: "SET_STATE_COMMON", payload: { adp: adp_object } });
+    const adp_dynasty = Object.fromEntries(
+      adp.data
+        .filter((x) => x.league_type === "D")
+        .map((x) => [
+          x.player_id,
+          {
+            adp: parseFloat(x.adp),
+            n_drafts: parseInt(x.n_drafts),
+          },
+        ])
+    );
+
+    const adp_all = Object.fromEntries(
+      Array.from(
+        new Set([...Object.keys(adp_redraft), ...Object.keys(adp_dynasty)])
+      ).map((player_id) => {
+        const redraft = adp_redraft[player_id];
+
+        const dynasty = adp_dynasty[player_id];
+
+        const total_drafts =
+          (redraft?.n_drafts || 0) + (dynasty?.n_drafts || 0);
+
+        let redraft_adj;
+        let dynasty_adj;
+
+        if (total_drafts > 0) {
+          redraft_adj =
+            redraft && (redraft.adp * (redraft.n_drafts || 0)) / total_drafts;
+
+          dynasty_adj =
+            dynasty && (dynasty.adp * (dynasty.n_drafts || 0)) / total_drafts;
+        }
+
+        return [
+          player_id,
+          {
+            adp:
+              ((redraft_adj || 0) + (dynasty_adj || 0)) /
+              [redraft_adj, dynasty_adj].filter((x) => x).length,
+            n_drafts: total_drafts,
+          },
+        ];
+      })
+    );
+
+    const adp_object = {
+      Redraft: adp_redraft,
+      Dynasty: adp_dynasty,
+      All: adp_all,
+    };
+    dispatch({ type: "SET_STATE_USER", payload: { adpLm: adp_object } });
   } catch (err) {
     console.log(err.message);
   }

@@ -4,7 +4,7 @@ const initialState = {
   schedule: false,
   projections: false,
   values: false,
-  adp: false,
+  adpAll: false,
   siteLinkIndex: 0,
 };
 

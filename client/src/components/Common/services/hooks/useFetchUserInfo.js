@@ -20,8 +20,9 @@ const useFetchUserInfo = (to_fetch_array) => {
     lmLeagueIds,
     type1,
     type2,
+    adpLm,
   } = useSelector((state) => state.user);
-  const { allplayers, state, adp } = useSelector((state) => state.common);
+  const { allplayers, state } = useSelector((state) => state.common);
 
   useEffect(() => {
     if (!state) {
@@ -70,12 +71,12 @@ const useFetchUserInfo = (to_fetch_array) => {
   }, [dispatch, allplayers, leagues]);
 
   useEffect(() => {
-    if (lmLeagueIds && !adp) {
+    if (lmLeagueIds && !adpLm) {
       console.log("fetchihng lmleagueids");
       dispatch(fetchAdp(lmLeagueIds));
     }
-  }, [dispatch, lmLeagueIds, adp]);
-  console.log({ adp });
+  }, [dispatch, lmLeagueIds, adpLm]);
+  console.log({ adpLm });
 };
 
 export default useFetchUserInfo;

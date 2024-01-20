@@ -21,6 +21,7 @@ const initialState = {
   type1: "All",
   type2: "All",
   lmLeagueIds: false,
+  adpLm: false,
 };
 
 const userReducer = (state = initialState, action) => {

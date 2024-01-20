@@ -307,14 +307,24 @@ const addLeagues = async (leagues) => {
     league.drafts.forEach((draft) => {
       const { draft_id, type, status, start_time, last_picked } = draft;
 
-      draft_data.push({
-        draft_id,
-        type,
-        status,
-        start_time,
-        last_picked,
-        leagueLeagueId: league.league_id,
-      });
+      const league_type =
+        league.settings.type === 2
+          ? "D"
+          : league.settings.type === 0
+          ? "R"
+          : false;
+
+      if (league_type) {
+        draft_data.push({
+          draft_id,
+          type,
+          status,
+          start_time,
+          last_picked,
+          league_type,
+          leagueLeagueId: league.league_id,
+        });
+      }
     });
   });
 
@@ -341,7 +351,9 @@ const addLeagues = async (leagues) => {
     .model("userLeagues")
     .bulkCreate(user_league_data, { ignoreDuplicates: true });
 
-  await Draft.bulkCreate(draft_data, { updateOnDuplicate: ["type", "status"] });
+  await Draft.bulkCreate(draft_data, {
+    updateOnDuplicate: ["type", "status", "last_picked", "league_type"],
+  });
 
   return leagues_to_add;
 };
