@@ -73,7 +73,7 @@ export const getPlayersColumn = (
         ),
         colSpan: 1,
       };
-    case "ADP (R)":
+    case "ADP SF R":
       const adp_r = adpLm?.["Redraft"]?.[player_id]?.adp;
       return {
         text:
@@ -84,7 +84,7 @@ export const getPlayersColumn = (
           "-",
         colSpan: 1,
       };
-    case "ADP (D)":
+    case "ADP SF D":
       const adp_d = adpLm?.["Dynasty"]?.[player_id]?.adp;
       return {
         text:

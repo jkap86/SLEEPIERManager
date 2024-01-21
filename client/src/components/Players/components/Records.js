@@ -32,8 +32,8 @@ const Records = ({ secondaryTable }) => {
     "W %",
     "LM W/L",
     "LM W %",
-    "ADP (R)",
-    "ADP (D)",
+    "ADP SF R",
+    "ADP SF D",
   ];
 
   console.log({ type1 });
@@ -271,6 +271,8 @@ const Records = ({ secondaryTable }) => {
         owned: leagues_owned?.length || 0,
         winpct_user: parseFloat(winpct) || 0,
         winpct_lm: parseFloat(winpct_lm) || 0,
+        adp_d: adpLm?.["Dynasty"]?.[player_id]?.adp || 9999,
+        adp_r: adpLm?.["Redraft"]?.[player_id]?.adp || 9999,
         search: {
           text:
             (allplayers?.[player.id] &&
@@ -371,9 +373,11 @@ const Records = ({ secondaryTable }) => {
 
     .sort(
       (a, b) =>
-        (sortBy === "Owned" && b.owned - a.owned) ||
-        (sortBy === "winpct_user" && b.winpct_user - a.winpct_user) ||
-        (sortBy === "winpct_lm" && b.winpct_lm - a.winpct_lm)
+        (column1 === "Owned" && b.owned - a.owned) ||
+        (column1 === "winpct_user" && b.winpct_user - a.winpct_user) ||
+        (column1 === "winpct_lm" && b.winpct_lm - a.winpct_lm) ||
+        (column1 === "ADP D SF" && a.adp_d - b.adp_d) ||
+        (column1 === "ADP R SF" && a.adp_r - b.adp_r)
     );
 
   const player_ids = (userPlayerShares || [])

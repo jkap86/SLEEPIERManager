@@ -19,11 +19,62 @@ exports.adp = async (req, res) => {
       include: {
         model: Draft,
         attributes: [],
+        where: {
+          [Op.and]: [
+            {
+              type: { [Op.not]: "auction" },
+            },
+            {
+              [Op.or]: [
+                {
+                  [Op.and]: [
+                    {
+                      settings: {
+                        slots_super_flex: 1,
+                      },
+                    },
+                    {
+                      settings: {
+                        slots_qb: 1,
+                      },
+                    },
+                  ],
+                },
+                {
+                  settings: {
+                    slots_qb: 2,
+                  },
+                },
+                {
+                  settings: {
+                    slots_super_flex: 2,
+                  },
+                },
+              ],
+            },
+            {
+              settings: {
+                slots_k: 1,
+              },
+            },
+          ],
+        },
         include: {
           model: League,
           attributes: [],
           where: {
-            league_id: req.body.league_ids,
+            [Op.and]: [
+              {
+                league_id: req.body.league_ids,
+              },
+              {
+                roster_positions: {
+                  [Op.not]: {
+                    [Op.contains]: ["K"],
+                  },
+                },
+              },
+            ],
           },
         },
         required: true,

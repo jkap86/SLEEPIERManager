@@ -33,7 +33,7 @@ const PlayoffPool = () => {
     {
       week: 20,
       name: "Divisional",
-      cutoff_start: new Date("January 17, 2024").getTime(),
+      cutoff_start: new Date("January 19, 2024").getTime(),
       cutoff_end: new Date("January 20, 2024").getTime(),
     },
     {
@@ -97,6 +97,7 @@ const PlayoffPool = () => {
 
         if (cutoff_start !== undefined) {
           weeklyResults_update[key] = getWeeklyResult(
+            league.league_id,
             league.rosters,
             league.roster_positions,
             league.scoring_settings,

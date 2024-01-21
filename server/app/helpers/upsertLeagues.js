@@ -305,7 +305,8 @@ const addLeagues = async (leagues) => {
       });
 
     league.drafts.forEach((draft) => {
-      const { draft_id, type, status, start_time, last_picked } = draft;
+      const { draft_id, type, status, start_time, last_picked, settings } =
+        draft;
 
       const league_type =
         league.settings.type === 2
@@ -322,6 +323,7 @@ const addLeagues = async (leagues) => {
           start_time,
           last_picked,
           league_type,
+          settings,
           leagueLeagueId: league.league_id,
         });
       }
@@ -352,7 +354,13 @@ const addLeagues = async (leagues) => {
     .bulkCreate(user_league_data, { ignoreDuplicates: true });
 
   await Draft.bulkCreate(draft_data, {
-    updateOnDuplicate: ["type", "status", "last_picked", "league_type"],
+    updateOnDuplicate: [
+      "type",
+      "status",
+      "last_picked",
+      "league_type",
+      "settings",
+    ],
   });
 
   return leagues_to_add;

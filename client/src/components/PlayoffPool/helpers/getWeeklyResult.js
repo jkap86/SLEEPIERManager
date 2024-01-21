@@ -41,13 +41,14 @@ export const getAdjustedRosterPlayers = (
   adds,
   drops,
   cutoff_start,
-  cutoff_end
+  cutoff_end,
+  league_id
 ) => {
   const players_to_add = (adds || [])
     .filter(
       (add) =>
         (add.timestamp > cutoff_start && add.timestamp < cutoff_end) ||
-        add.type === "commissioner"
+        (add.type === "commissioner" && league_id === "1052969257388146688")
     )
     .map((add) => add.player_id);
 
@@ -69,6 +70,7 @@ export const getAdjustedRosterPlayers = (
 };
 
 export const getWeeklyResult = (
+  league_id,
   rosters,
   roster_slots,
   scoring_settings,
@@ -88,7 +90,8 @@ export const getWeeklyResult = (
       adds[roster.roster_id],
       drops[roster.roster_id],
       cutoff_start,
-      cutoff_end
+      cutoff_end,
+      league_id
     );
     const optimal_lineup =
       roster.players?.length > 0

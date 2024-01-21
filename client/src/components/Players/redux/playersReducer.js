@@ -13,8 +13,8 @@ const initialState = {
   searchedSecondary: "",
   column1: "Owned",
   column2: "Owned %",
-  column3: "W/L",
-  column4: "W %",
+  column3: "ADP SF D",
+  column4: "ADP SF R",
   primaryContent: "Records",
 };
 
