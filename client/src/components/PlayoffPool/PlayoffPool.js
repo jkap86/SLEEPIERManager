@@ -4,7 +4,7 @@ import Avatar from "../Common/Avatar";
 import TableMain from "../Common/TableMain";
 import axios from "axios";
 import "./PlayoffPool.css";
-import { getWeeklyResult } from "./helpers/getWeeklyResult";
+import { getWeeklyResult, matchTeam } from "./helpers/getWeeklyResult";
 import Search from "../Common/Search";
 import FilterIcons from "../Common/FilterIcons";
 
@@ -288,8 +288,40 @@ const PlayoffPool = () => {
                 const fp_player = getFpPlayer(player_id);
                 const fp_player_total = getFpPlayer(player_id, true);
 
-                const className = players_left?.includes(player_id)
-                  ? ""
+                const max_active_week = Math.max(...activeWeeks);
+
+                const in_progress = schedule[max_active_week].find((m) =>
+                  m.team.find(
+                    (t) =>
+                      matchTeam(t.id) === allplayers[player_id]?.team &&
+                      parseInt(m.gameSecondsRemaining) > 0 &&
+                      (parseInt(m.gameSecondsRemaining) < 3600 ||
+                        parseInt(m.kickoff) * 1000 < new Date().getTime())
+                  )
+                )
+                  ? true
+                  : false;
+
+                const advanced = schedule[max_active_week].find((m) =>
+                  m.team.find(
+                    (t) =>
+                      matchTeam(t.id) === allplayers[player_id]?.team &&
+                      m.gameSecondsRemaining === "0" &&
+                      parseInt(t.score) >=
+                        parseInt(m.team.find((t2) => t.id !== t2.id).score)
+                  )
+                )
+                  ? true
+                  : false;
+
+                const className = players_left.includes(player_id)
+                  ? in_progress
+                    ? "yellow"
+                    : advanced ||
+                      (activeWeeks[0] === 19 &&
+                        ["SF", "BAL"].includes(allplayers[player_id]?.team))
+                    ? "green"
+                    : ""
                   : "red";
                 return {
                   id: player_id,

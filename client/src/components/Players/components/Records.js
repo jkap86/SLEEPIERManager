@@ -376,8 +376,8 @@ const Records = ({ secondaryTable }) => {
         (column1 === "Owned" && b.owned - a.owned) ||
         (column1 === "winpct_user" && b.winpct_user - a.winpct_user) ||
         (column1 === "winpct_lm" && b.winpct_lm - a.winpct_lm) ||
-        (column1 === "ADP D SF" && a.adp_d - b.adp_d) ||
-        (column1 === "ADP R SF" && a.adp_r - b.adp_r)
+        (column1 === "ADP SF D" && a.adp_d - b.adp_d) ||
+        (column1 === "ADP SF R" && a.adp_r - b.adp_r)
     );
 
   const player_ids = (userPlayerShares || [])
