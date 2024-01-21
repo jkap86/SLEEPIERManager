@@ -74,13 +74,25 @@ export const getPlayersColumn = (
         colSpan: 1,
       };
     case "ADP (R)":
+      const adp_r = adpLm?.["Redraft"]?.[player_id]?.adp;
       return {
-        text: adpLm?.["Redraft"]?.[player_id]?.adp?.toFixed(1) || "-",
+        text:
+          (adp_r &&
+            `${parseFloat(Math.ceil(adp_r / 12))}.${(
+              Math.floor(adp_r) % 12
+            ).toLocaleString("en-US", { minimumIntegerDigits: 2 })}`) ||
+          "-",
         colSpan: 1,
       };
     case "ADP (D)":
+      const adp_d = adpLm?.["Dynasty"]?.[player_id]?.adp;
       return {
-        text: adpLm?.["Dynasty"]?.[player_id]?.adp?.toFixed(1) || "-",
+        text:
+          (adp_d &&
+            `${parseFloat(Math.ceil(adp_d / 12))}.${(
+              Math.floor(adp_d) % 12
+            ).toLocaleString("en-US", { minimumIntegerDigits: 2 })}`) ||
+          "-",
         colSpan: 1,
       };
     default:

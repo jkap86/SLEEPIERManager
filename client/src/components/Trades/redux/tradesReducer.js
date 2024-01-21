@@ -2,7 +2,7 @@ const initialState = {
   isLoading: false,
   lmTrades: {
     count: "",
-    trades: [],
+    trades: false,
     itemActive: "",
     page: 1,
     searched_player: "",

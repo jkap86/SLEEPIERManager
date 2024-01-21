@@ -7,7 +7,8 @@ export const setStateTrades = (state_obj) => ({
 });
 
 export const fetchLmTrades =
-  (user_id, leagues, offset, limit, season) => async (dispatch, getState) => {
+  (user_id, leagues, offset, limit, season, league_ids) =>
+  async (dispatch, getState) => {
     dispatch({ type: "FETCH_TRADES_START" });
 
     try {
@@ -15,6 +16,7 @@ export const fetchLmTrades =
         user_id: user_id,
         offset: offset,
         limit: limit,
+        league_ids: league_ids,
       });
 
       const trade_tips = getTradeTips(trades.data.rows, leagues, season);
