@@ -290,7 +290,7 @@ const PlayoffPool = () => {
 
                 const max_active_week = Math.max(...activeWeeks);
 
-                const in_progress = schedule[max_active_week].find((m) =>
+                const in_progress = schedule[max_active_week]?.find((m) =>
                   m.team.find(
                     (t) =>
                       matchTeam(t.id) === allplayers[player_id]?.team &&
@@ -302,7 +302,7 @@ const PlayoffPool = () => {
                   ? true
                   : false;
 
-                const advanced = schedule[max_active_week].find((m) =>
+                const advanced = schedule[max_active_week]?.find((m) =>
                   m.team.find(
                     (t) =>
                       matchTeam(t.id) === allplayers[player_id]?.team &&
@@ -314,7 +314,7 @@ const PlayoffPool = () => {
                   ? true
                   : false;
 
-                const className = players_left.includes(player_id)
+                const className = players_left?.includes(player_id)
                   ? in_progress
                     ? "yellow"
                     : advanced ||
