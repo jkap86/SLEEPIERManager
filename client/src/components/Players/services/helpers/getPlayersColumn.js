@@ -79,7 +79,8 @@ export const getPlayersColumn = (
         text:
           (adp_r &&
             `${parseFloat(Math.ceil(adp_r / 12))}.${(
-              Math.floor(adp_r) % 12
+              (Math.floor(adp_r) % 12) +
+              1
             ).toLocaleString("en-US", { minimumIntegerDigits: 2 })}`) ||
           "-",
         colSpan: 1,
@@ -90,7 +91,8 @@ export const getPlayersColumn = (
         text:
           (adp_d &&
             `${parseFloat(Math.ceil(adp_d / 12))}.${(
-              Math.floor(adp_d) % 12
+              (Math.floor(adp_d) % 12) +
+              1
             ).toLocaleString("en-US", { minimumIntegerDigits: 2 })}`) ||
           "-",
         colSpan: 1,

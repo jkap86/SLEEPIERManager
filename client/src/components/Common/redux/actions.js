@@ -248,9 +248,19 @@ export const fetchAdp = (league_ids, user_id) => async (dispatch) => {
         ])
     );
 
+    const n_drafts_dynasty = Math.max(
+      ...adp.data.map((x) => parseInt(x.n_drafts))
+    );
+
     const adp_dynasty = Object.fromEntries(
       adp.data
-        .filter((x) => x.league_type === "D")
+        .filter(
+          (x) =>
+            x.league_type === "D" &&
+            ((n_drafts_dynasty &&
+              parseInt(x.n_drafts) > n_drafts_dynasty / 10) ||
+              true)
+        )
         .map((x) => [
           x.player_id,
           {
