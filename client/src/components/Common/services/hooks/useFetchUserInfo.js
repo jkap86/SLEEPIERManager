@@ -58,24 +58,50 @@ const useFetchUserInfo = (to_fetch_array) => {
 
   useEffect(() => {
     if ((user_id, leagues && !lmLeagueIds)) {
-      dispatch(fetchLmLeagueIds(user_id, type1, type2));
+      checkIndexedDB(
+        user_id,
+        "lmLeagueIds",
+        () => dispatch(fetchLmLeagueIds(user_id, type1, type2)),
+        (data) =>
+          dispatch({
+            type: "SET_STATE_USER",
+            payload: { lmLeagueIds: data },
+          })
+      );
     }
   }, [dispatch, leagues, lmLeagueIds, user_id]);
 
   useEffect(() => {
     if (leagues) {
       if (!allplayers) {
-        dispatch(fetchCommon("allplayers"));
+        checkIndexedDB(
+          "COMMON",
+          "allplayers",
+          () => dispatch(fetchCommon("allplayers")),
+          (data) =>
+            dispatch({
+              type: "FETCH_COMMON_SUCCESS",
+              payload: { item: "allplayers", data: data },
+            })
+        );
       }
     }
   }, [dispatch, allplayers, leagues]);
 
   useEffect(() => {
     if (lmLeagueIds && !adpLm) {
-      console.log("fetchihng lmleagueids");
-      dispatch(fetchAdp(lmLeagueIds));
+      checkIndexedDB(
+        user_id,
+        "lmAdp",
+        () => dispatch(fetchAdp(lmLeagueIds, user_id)),
+        (data) =>
+          dispatch({
+            type: "SET_STATE_USER",
+            payload: { adpLm: data },
+          })
+      );
     }
-  }, [dispatch, lmLeagueIds, adpLm]);
+  }, [dispatch, lmLeagueIds, adpLm, user_id]);
   console.log({ adpLm });
 };
 

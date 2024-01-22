@@ -23,7 +23,9 @@ export const fetchCommon = (item) => {
       const main = await axios.get(`/main/${item}`);
 
       const data = Array.isArray(main.data) ? main.data[0] : main.data;
+
       console.log({ data });
+
       dispatch({
         type: "FETCH_COMMON_SUCCESS",
         payload: {
@@ -31,6 +33,13 @@ export const fetchCommon = (item) => {
           data: data,
         },
       });
+
+      if (item === "allplayers") {
+        saveToDB("COMMON", item, {
+          timestamp: new Date().getTime() + 60 * 60 * 10000,
+          data: data,
+        });
+      }
     } catch (error) {
       dispatch({ type: "FETCH_COMMON_FAILURE", payload: error.message });
 
@@ -130,7 +139,7 @@ export const fetchLeagues = (user_id, season) => {
 
         if (!data.find((league) => league.error)) {
           saveToDB(user_id, "leagues", {
-            timestamp: new Date().getTime() + 15 * 60 * 10000,
+            timestamp: new Date().getTime() + 60 * 60 * 10000,
             data: data,
           });
         }
@@ -211,12 +220,17 @@ export const fetchLmLeagueIds = (user_id, type1, type2) => async (dispatch) => {
       type: "SET_STATE_USER",
       payload: { lmLeagueIds: lmLeagueIds.data },
     });
+
+    saveToDB(user_id, "lmLeagueIds", {
+      timestamp: new Date().getTime() + 60 * 60 * 10000,
+      data: lmLeagueIds.data,
+    });
   } catch (err) {
     console.log(err.message);
   }
 };
 
-export const fetchAdp = (league_ids) => async (dispatch) => {
+export const fetchAdp = (league_ids, user_id) => async (dispatch) => {
   try {
     const adp = await axios.post("/draft/adp", {
       league_ids: league_ids,
@@ -286,6 +300,11 @@ export const fetchAdp = (league_ids) => async (dispatch) => {
       All: adp_all,
     };
     dispatch({ type: "SET_STATE_USER", payload: { adpLm: adp_object } });
+
+    saveToDB(user_id, "lmAdp", {
+      timestamp: new Date().getTime() + 60 * 60 * 10000,
+      data: adp_object,
+    });
   } catch (err) {
     console.log(err.message);
   }

@@ -8,9 +8,18 @@ export const checkIndexedDB = async (field, item, fetch, setState) => {
     // Create the object store if it doesn't exist
 
     if (!db.objectStoreNames.contains(item)) {
-      db.createObjectStore(item, {
-        keyPath: "timestamp",
-        autoIncrement: false,
+      let to_create;
+      if (field === "COMMON") {
+        to_create = ["state", "allplayers"];
+      } else {
+        to_create = ["leagues", "lmLeagueIds", "lmAdp"];
+      }
+
+      to_create.forEach((x) => {
+        db.createObjectStore(x, {
+          keyPath: "timestamp",
+          autoIncrement: false,
+        });
       });
     }
   };
@@ -54,9 +63,18 @@ export const saveToDB = async (field, item, data) => {
 
     // Create the object store if it doesn't exist
     if (!db.objectStoreNames.contains(item)) {
-      db.createObjectStore(item, {
-        keyPath: "timestamp",
-        autoIncrement: false,
+      let to_create;
+      if (field === "COMMON") {
+        to_create = ["state", "allplayers"];
+      } else {
+        to_create = ["leagues", "lmLeagueIds", "lmAdp"];
+      }
+
+      to_create.forEach((x) => {
+        db.createObjectStore(x, {
+          keyPath: "timestamp",
+          autoIncrement: false,
+        });
       });
     }
   };
