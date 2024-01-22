@@ -7,17 +7,17 @@ const fs = require("fs");
 module.exports = async (app) => {
   if (process.env.NODE_ENV === "production") {
     setTimeout(async () => {
-      const getSchedule = async (boot = false) => {
+      const getSchedule = async (week_to_fetch, boot = false) => {
         const schedule_json = fs.readFileSync("./data/schedule.json");
         let updated_schedule;
         let schedule_week;
         if (boot) {
           const schedule = {};
 
-          for (let i = 1; i <= app.get("state")?.week; i++) {
+          for (let i = 1; i <= week_to_fetch; i++) {
             const schedule_prev = await fetchScheduleWeek(i + 18);
 
-            if (i === app.get("state")?.week) {
+            if (i === week_to_fetch) {
               schedule_week = schedule_prev;
             }
             schedule[i + 18] = schedule_prev.nflSchedule.matchup;
@@ -28,7 +28,7 @@ module.exports = async (app) => {
             ...schedule,
           };
         } else {
-          schedule_week = await fetchScheduleWeek(app.get("state")?.week + 18);
+          schedule_week = await fetchScheduleWeek(week_to_fetch + 18);
 
           updated_schedule = {
             ...JSON.parse(schedule_json),
@@ -85,15 +85,20 @@ module.exports = async (app) => {
 
           delay = (60 - sec) * 1000;
         } else {
-          const next_kickoff = Math.min(
-            ...schedule_week.nflSchedule.matchup
-              ?.filter((g) => parseInt(g.kickoff) * 1000 > new Date().getTime())
-              ?.map((g) => parseInt(g.kickoff) * 1000)
-          );
+          const upcoming = schedule_week.nflSchedule.matchup
+            ?.filter((g) => parseInt(g.kickoff) * 1000 > new Date().getTime())
+            ?.map((g) => parseInt(g.kickoff) * 1000);
 
-          console.log(schedule_week.nflSchedule.matchup);
+          if (upcoming?.length > 0) {
+            const next_kickoff = Math.min(...upcoming);
 
-          delay = next_kickoff - new Date().getTime();
+            console.log(schedule_week.nflSchedule.matchup);
+
+            delay = next_kickoff - new Date().getTime();
+          } else if (week_to_fetch < 22) {
+            getSchedule(week_to_fetch + 1);
+            return;
+          }
         }
 
         const days_remainder = delay % (24 * 60 * 60 * 1000);
@@ -107,11 +112,11 @@ module.exports = async (app) => {
                 `
         );
         setTimeout(() => {
-          getSchedule();
+          getSchedule(app.get("state").week);
         }, delay);
       };
 
-      getSchedule(true);
+      getSchedule(app.get("state").week, true);
     }, 5000);
   }
 };
