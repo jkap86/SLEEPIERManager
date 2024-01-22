@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAdp, fetchLmLeagueIds, resetState } from "../../redux/actions";
 import { fetchUser, fetchLeagues } from "../../redux/actions";
 import { fetchCommon } from "../../redux/actions";
-import { checkIndexedDB } from "../helpers/indexedDb";
+import { checkIndexedDB, clearIndexedDB } from "../helpers/indexedDb";
 
 const useFetchUserInfo = (to_fetch_array) => {
   const dispatch = useDispatch();
@@ -74,16 +74,22 @@ const useFetchUserInfo = (to_fetch_array) => {
   useEffect(() => {
     if (leagues) {
       if (!allplayers) {
-        checkIndexedDB(
-          "COMMON",
-          "allplayers",
-          () => dispatch(fetchCommon("allplayers")),
-          (data) =>
-            dispatch({
-              type: "FETCH_COMMON_SUCCESS",
-              payload: { item: "allplayers", data: data },
-            })
-        );
+        try {
+          checkIndexedDB(
+            "COMMON",
+            "allplayers",
+            () => dispatch(fetchCommon("allplayers")),
+            (data) =>
+              dispatch({
+                type: "FETCH_COMMON_SUCCESS",
+                payload: { item: "allplayers", data: data },
+              })
+          );
+        } catch (err) {
+          const retry = async () => {
+            await clearIndexedDB("COMMON");
+          };
+        }
       }
     }
   }, [dispatch, allplayers, leagues]);

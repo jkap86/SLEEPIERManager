@@ -81,7 +81,15 @@ export const saveToDB = async (field, item, data) => {
 
   request.onsuccess = (event) => {
     const db = event.target.result;
-    const transaction = db.transaction([item], "readwrite");
+
+    let transaction;
+    try {
+      transaction = db.transaction([item], "readwrite");
+    } catch (err) {
+      window.indexedDB.deleteDatabase(field);
+      return;
+    }
+
     const objectStore = transaction.objectStore(item);
 
     // Check if the data is an array and store it as individual records
@@ -102,4 +110,20 @@ export const saveToDB = async (field, item, data) => {
   request.onerror = (event) => {
     console.log("Error opening database: ", event.target.errorCode);
   };
+};
+
+export const clearIndexedDB = async (field) => {
+  return new Promise((resolve, reject) => {
+    const deleteRequest = window.indexedDB.deleteDatabase(field);
+
+    deleteRequest.onsuccess = () => {
+      console.log("IndexedDB cleared successfully.");
+      resolve();
+    };
+
+    deleteRequest.onerror = (event) => {
+      console.log("Error clearing IndexedDB: ", event.target.errorCode);
+      reject(event.target.errorCode);
+    };
+  });
 };
