@@ -1,3 +1,4 @@
+import { getAdpFormatted } from "../../../Common/services/helpers/getAdpFormatted";
 import { getTrendColor } from "../../../Common/services/helpers/getTrendColor";
 
 export const getPlayersColumn = (
@@ -88,13 +89,7 @@ export const getPlayersColumn = (
     case "ADP SF D":
       const adp_d = adpLm?.["Dynasty"]?.[player_id]?.adp;
       return {
-        text:
-          (adp_d &&
-            `${parseFloat(Math.ceil(adp_d / 12))}.${(
-              (Math.floor(adp_d) % 12) +
-              1
-            ).toLocaleString("en-US", { minimumIntegerDigits: 2 })}`) ||
-          "-",
+        text: (adp_d && getAdpFormatted(adp_d)) || "-",
         colSpan: 1,
       };
     default:

@@ -1,22 +1,11 @@
 import TableMain from "../TableMain";
 import { useState, useMemo } from "react";
 import { useSelector } from "react-redux";
-import useFetchPlayerValues from "../../Common/services/hooks/useFetchPlayerValues";
-import { getTrendColor } from "../../Common/services/helpers/getTrendColor";
 
 const Roster = ({ roster, league, type }) => {
   const [filter, setFilter] = useState("All");
   const [ppgType, setPpgType] = useState("Total");
-  const { state, allplayers, values, projections } = useSelector(
-    (state) => state.common
-  );
-
-  const matchup_info =
-    Object.keys(league).filter((key) => key.startsWith("matchups_")).length > 0;
-
-  const player_ids = matchup_info ? [] : roster?.players || [];
-
-  useFetchPlayerValues({ player_ids });
+  const { state, allplayers } = useSelector((state) => state.common);
 
   const headers = [
     [

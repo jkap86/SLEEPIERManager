@@ -36,7 +36,15 @@ const tradesReducer = (state = initialState, action) => {
         lmTrades: {
           ...state.lmTrades,
           count: action.payload.count,
-          trades: action.payload.trades,
+          trades: [
+            ...(state.lmTrades.trades || []),
+            ...action.payload.trades.filter(
+              (t1) =>
+                !(state.lmTrades.trades || []).find(
+                  (t2) => t1.transaction_id === t2.transaction_id
+                )
+            ),
+          ],
         },
       };
     case "FETCH_FILTERED_LMTRADES_SUCCESS":

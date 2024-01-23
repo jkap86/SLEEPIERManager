@@ -47,6 +47,7 @@ const TableMain = ({
     if (
       page &&
       page !== 1 &&
+      !partial &&
       body &&
       !body
         ?.filter((x) => x)
@@ -58,6 +59,16 @@ const TableMain = ({
       setPage(1);
     }
   }, [body, page]);
+
+  useEffect(() => {
+    if (partial) {
+      const p = Math.ceil((body.length - 125) / 25) + 1;
+
+      console.log({ p });
+
+      setPage(p);
+    }
+  }, [partial]);
 
   return (
     <>

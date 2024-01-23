@@ -111,7 +111,7 @@ const Heading = () => {
             <option>players</option>
             <option>leagues</option>
             <option>leaguemates</option>
-            <option disabled>trades</option>
+            <option>trades</option>
           </select>
         </div>
       </div>

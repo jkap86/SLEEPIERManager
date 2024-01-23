@@ -7,7 +7,7 @@ export const setStateTrades = (state_obj) => ({
 });
 
 export const fetchLmTrades =
-  (user_id, leagues, offset, limit, season, league_ids) =>
+  (user_id, leagues, offset, limit, season, league_ids, more = false) =>
   async (dispatch, getState) => {
     dispatch({ type: "FETCH_TRADES_START" });
 
@@ -26,6 +26,7 @@ export const fetchLmTrades =
         payload: {
           count: trades.data.count,
           trades: trade_tips,
+          more: more,
         },
       });
     } catch (err) {

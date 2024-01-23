@@ -1,0 +1,25 @@
+td.type {
+    font-family: var(--font2);
+    font-size: 2rem;
+    color: goldenrod;
+}
+
+td.small {
+    font-size: 2rem;
+}
+
+div.timestamp {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+table.trade_summary {
+     box-shadow:  0 0 1rem white;
+}
+
+table.trade_summary>tbody>tr:first-of-type>td>table.body {
+   box-shadow:  0 0 1rem white;
+    position: relative;
+    z-index: 1;
+}
