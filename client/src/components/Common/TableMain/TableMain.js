@@ -47,7 +47,6 @@ const TableMain = ({
     if (
       page &&
       page !== 1 &&
-      !partial &&
       body &&
       !body
         ?.filter((x) => x)
@@ -62,9 +61,7 @@ const TableMain = ({
 
   useEffect(() => {
     if (partial) {
-      const p = Math.ceil((body.length - 125) / 25) + 1;
-
-      console.log({ p });
+      const p = Math.ceil(body.length / 5);
 
       setPage(p);
     }
@@ -167,7 +164,9 @@ const TableMain = ({
               ?.filter((x) => x)
               ?.slice(
                 Math.max(((page || 1) - 1) * 25, 0),
-                Math.max(((page || 1) - 1) * 25 + 25, body.length)
+                page
+                  ? ((page || 1) - 1) * 25 + 25
+                  : body?.filter((x) => x).length
               )
               ?.map((item, index) => (
                 <tr
