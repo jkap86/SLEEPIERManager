@@ -304,38 +304,47 @@ const addLeagues = async (leagues) => {
         }
       });
 
-    league.drafts.forEach((draft) => {
-      const {
-        draft_id,
-        type,
-        status,
-        start_time,
-        last_picked,
-        settings,
-        draft_order,
-      } = draft;
-
-      const league_type =
-        league.settings.type === 2
-          ? "D"
-          : league.settings.type === 0
-          ? "R"
-          : false;
-
-      if (league_type) {
-        draft_data.push({
+    league.drafts
+      .filter(
+        (draft) =>
+          !draft.settings.slots_dl &&
+          !draft.settings.slots_lb &&
+          !draft.settings.slots_db &&
+          !draft.settings.slots_idp_flex &&
+          !draft.settings.slots_def
+      )
+      .forEach((draft) => {
+        const {
           draft_id,
           type,
           status,
           start_time,
           last_picked,
-          league_type,
           settings,
           draft_order,
-          leagueLeagueId: league.league_id,
-        });
-      }
-    });
+        } = draft;
+
+        const league_type =
+          league.settings.type === 2
+            ? "D"
+            : league.settings.type === 0
+            ? "R"
+            : false;
+
+        if (league_type) {
+          draft_data.push({
+            draft_id,
+            type,
+            status,
+            start_time,
+            last_picked,
+            league_type,
+            settings,
+            draft_order,
+            leagueLeagueId: league.league_id,
+          });
+        }
+      });
   });
 
   await User.bulkCreate(user_data, {
