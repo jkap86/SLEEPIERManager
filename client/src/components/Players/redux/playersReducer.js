@@ -4,7 +4,7 @@ const initialState = {
   itemActive2: "",
   searched: "",
   filters: {
-    position: "W/R/T/Q",
+    position: "All",
     team: "All",
     draftClass: "All",
   },

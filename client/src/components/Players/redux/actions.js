@@ -38,9 +38,11 @@ export const fetchPlayerShares = (leagues, user_id) => async (dispatch) => {
       });
 
       roster.draft_picks?.forEach((pick) => {
-        const pick_text = `${pick.season}_${
-          pick.round
-        }_${pick.order?.toLocaleString("en-US", { minimumIntegerDigits: 2 })}`;
+        const pick_text = `${pick.season}_${pick.round}_${
+          parseInt(pick.season) === parseInt(league.season)
+            ? pick.order?.toLocaleString("en-US", { minimumIntegerDigits: 2 })
+            : undefined
+        }`;
 
         let pick_leagues = players_dict[pick_text] || {
           id: pick_text,

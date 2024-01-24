@@ -123,6 +123,11 @@ span.team>label>div.position_square4>div {
     font-size: 3rem;
 }
 
+span.team>label>div.position_square1>div.picks {
+    color: var(--color2);
+    text-shadow: 0 0 .25rem black;
+}
+
 span.team>label div.qb {
     background-color: var(--qb);
 }

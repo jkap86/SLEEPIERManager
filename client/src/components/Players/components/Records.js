@@ -36,7 +36,7 @@ const Records = ({ secondaryTable }) => {
     "ADP SF D",
   ];
 
-  console.log({ type1 });
+  console.log({ userPlayerShares });
 
   const playerShares_headers = [
     [
@@ -134,11 +134,13 @@ const Records = ({ secondaryTable }) => {
         x &&
         (x.id.includes("_") || allplayers?.[x.id]) &&
         (!searched?.id || searched?.id === x.id) &&
-        (filters.position === allplayers?.[x.id]?.position ||
+        ((filters.position === "All" &&
+          !x.id.split("_").find((y) => !parseInt(y))) ||
+          filters.position === allplayers?.[x.id]?.position ||
           filters.position
             .split("/")
             .includes(allplayers?.[x.id]?.position?.slice(0, 1)) ||
-          (filters.position === "Picks" && x.id?.includes("_"))) &&
+          (filters.position.includes("Picks") && x.id?.includes("_"))) &&
         (filters.team === "All" || allplayers?.[x.id]?.team === filters.team) &&
         (filters.draftClass === "All" ||
           parseInt(filters.draftClass) ===
@@ -147,28 +149,18 @@ const Records = ({ secondaryTable }) => {
 
     .map((player) => {
       let pick_name;
-      let ktc_name;
 
       if (player.id?.includes("_")) {
         const pick_split = player.id.split("_");
 
-        pick_name =
-          pick_split[2] === "NA"
-            ? `${pick_split[0]} Round ${pick_split[1]}`
-            : `${pick_split[0]} ${pick_split[1]}.${pick_split[2].toLocaleString(
-                "en-US",
-                {
-                  minimumIntegerDigits: 2,
-                }
-              )}`;
-
-        ktc_name = `${pick_split[0]} ${
-          parseInt(pick_split[2]) <= 4
-            ? "Early"
-            : parseInt(pick_split[2]) >= 9
-            ? "Late"
-            : "Mid"
-        } ${pick_split[1]}`;
+        pick_name = ["undefined", "NA"].includes(pick_split[2])
+          ? `${pick_split[0]} Round ${pick_split[1]}`
+          : `${pick_split[0]} ${pick_split[1]}.${pick_split[2].toLocaleString(
+              "en-US",
+              {
+                minimumIntegerDigits: 2,
+              }
+            )}`;
       }
 
       const leagues_owned = filterLeagues(player.leagues_owned, type1, type2);
@@ -271,7 +263,13 @@ const Records = ({ secondaryTable }) => {
         owned: leagues_owned?.length || 0,
         winpct_user: parseFloat(winpct) || 0,
         winpct_lm: parseFloat(winpct_lm) || 0,
-        adp_d: adpLm?.["Dynasty"]?.[player_id]?.adp || 9999,
+        adp_d: player_id.includes("_")
+          ? adpLm?.["Dynasty"]?.[
+              "R" +
+                ((parseInt(player_id.split("_")[1]) - 1) * 12 +
+                  parseInt(player_id.split("_")[2]))
+            ]?.adp
+          : adpLm?.["Dynasty"]?.[player_id]?.adp || 9999,
         adp_r: adpLm?.["Redraft"]?.[player_id]?.adp || 9999,
         search: {
           text:

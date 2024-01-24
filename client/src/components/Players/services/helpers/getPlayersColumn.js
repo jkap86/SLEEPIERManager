@@ -87,7 +87,22 @@ export const getPlayersColumn = (
         colSpan: 1,
       };
     case "ADP SF D":
-      const adp_d = adpLm?.["Dynasty"]?.[player_id]?.adp;
+      let adp_d;
+
+      if (
+        player_id.includes("_") &&
+        parseInt(player_id.split("_")[1]) &&
+        parseInt(player_id.split("_")[2])
+      ) {
+        const round = parseInt(player_id.split("_")[1]);
+        const order = parseInt(player_id.split("_")[2]);
+
+        const pick = "R" + ((round - 1) * 12 + order);
+
+        adp_d = adpLm?.["Dynasty"]?.[pick]?.adp;
+      } else {
+        adp_d = adpLm?.["Dynasty"]?.[player_id]?.adp;
+      }
       return {
         text: (adp_d && getAdpFormatted(adp_d)) || "-",
         colSpan: 1,
