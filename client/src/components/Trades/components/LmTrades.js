@@ -52,13 +52,13 @@ const LmTrades = ({ secondaryTable }) => {
                 : "All";
 
             const players_slot = roster.players
-              .filter(
+              ?.filter(
                 (player_id) =>
                   position_map[slot].some((p) =>
                     allplayers[player_id]?.fantasy_positions?.includes(p)
                   ) && !starters.includes(player_id)
               )
-              .sort(
+              ?.sort(
                 (a, b) =>
                   (adpLm?.[league_type]?.[a]?.adp || 999) -
                   (adpLm?.[league_type]?.[b]?.adp || 999)
