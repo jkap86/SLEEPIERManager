@@ -114,8 +114,8 @@ const Roster = ({ roster, league, type }) => {
           };
         });
     } else {
-      return (
-        filter === "All"
+      return [
+        ...(filter === "All"
           ? [
               ...roster.starters,
               ...roster.players.filter(
@@ -123,61 +123,95 @@ const Roster = ({ roster, league, type }) => {
               ),
             ]
           : roster.players
-      )?.map((player_id, index) => {
-        if (filter === "All" || allplayers[player_id]?.position === filter) {
-          let games;
-          let points;
-          if (ppgType === "On Bench") {
-            games = player_scoring_dict[player_id]?.games_bench;
-            points = player_scoring_dict[player_id]?.points_bench;
-          } else if (ppgType === "In Lineup") {
-            games = player_scoring_dict[player_id]?.games_starter;
-            points = player_scoring_dict[player_id]?.points_starter;
-          } else {
-            games = player_scoring_dict[player_id]?.games_total;
-            points = player_scoring_dict[player_id]?.points_total;
-          }
-          const trend =
-            (player_scoring_dict[player_id]?.current || 0) -
-            (player_scoring_dict[player_id]?.trade || 0);
+        )?.map((player_id, index) => {
+          if (filter === "All" || allplayers[player_id]?.position === filter) {
+            let games;
+            let points;
+            if (ppgType === "On Bench") {
+              games = player_scoring_dict[player_id]?.games_bench;
+              points = player_scoring_dict[player_id]?.points_bench;
+            } else if (ppgType === "In Lineup") {
+              games = player_scoring_dict[player_id]?.games_starter;
+              points = player_scoring_dict[player_id]?.points_starter;
+            } else {
+              games = player_scoring_dict[player_id]?.games_total;
+              points = player_scoring_dict[player_id]?.points_total;
+            }
+            const trend =
+              (player_scoring_dict[player_id]?.current || 0) -
+              (player_scoring_dict[player_id]?.trade || 0);
 
-          return {
-            id: player_id,
-            list: [
-              {
-                text:
-                  filter === "All"
-                    ? (league.roster_positions &&
-                        position_abbrev[league.roster_positions[index]]) ||
-                      (league.roster_positions &&
-                        league.roster_positions[index]) ||
-                      "BN"
-                    : allplayers[player_id]?.position,
-                colSpan: 4,
-              },
-
-              {
-                text: allplayers[player_id]?.full_name || "-",
-                colSpan: 15,
-                className: "left",
-                image: {
-                  src: player_id,
-                  alt: "player headshot",
-                  type: "player",
+            return {
+              id: player_id,
+              list: [
+                {
+                  text:
+                    filter === "All"
+                      ? (league.roster_positions &&
+                          position_abbrev[league.roster_positions[index]]) ||
+                        (league.roster_positions &&
+                          league.roster_positions[index]) ||
+                        "BN"
+                      : allplayers[player_id]?.position,
+                  colSpan: 4,
                 },
-              },
-              {
-                text: (games > 0 && (points / games).toFixed(1)) || "-",
-                colSpan: 5,
-              },
-              {
-                text: games?.toString() || "-",
-                colSpan: 3,
-              },
-            ],
-          };
-        }
-      });
+
+                {
+                  text: allplayers[player_id]?.full_name || "-",
+                  colSpan: 15,
+                  className: "left",
+                  image: {
+                    src: player_id,
+                    alt: "player headshot",
+                    type: "player",
+                  },
+                },
+                {
+                  text: (games > 0 && (points / games).toFixed(1)) || "-",
+                  colSpan: 5,
+                },
+                {
+                  text: games?.toString() || "-",
+                  colSpan: 3,
+                },
+              ],
+            };
+          }
+        }),
+        ...roster.draft_picks
+          ?.sort(
+            (a, b) =>
+              a.season - b.season || a.round - b.round || a.order - b.order
+          )
+          ?.map((pick) => {
+            return {
+              id: `${pick.season}_${pick.round}_${pick.original_user.user_id}`,
+              list: [
+                {
+                  text: (
+                    <p>
+                      <span>
+                        &nbsp;&nbsp;
+                        {`${pick.season} Round ${pick.round}${
+                          parseInt(pick.order) &&
+                          pick.season === parseInt(state.league_season)
+                            ? `.${pick.order.toLocaleString("en-US", {
+                                minimumIntegerDigits: 2,
+                              })}`
+                            : pick.original_user.user_id === roster?.user_id
+                            ? ""
+                            : ` (${pick.original_user?.username || "Orphan"})`
+                        }`.toString()}
+                      </span>
+                    </p>
+                  ),
+                  colSpan: 27,
+                  className: "left",
+                },
+              ],
+            };
+          }),
+      ];
     }
   };
 

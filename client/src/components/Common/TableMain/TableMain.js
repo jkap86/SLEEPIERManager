@@ -167,7 +167,7 @@ const TableMain = ({
               ?.filter((x) => x)
               ?.slice(
                 Math.max(((page || 1) - 1) * 25, 0),
-                ((page || 1) - 1) * 25 + 25
+                Math.max(((page || 1) - 1) * 25 + 25, body.length)
               )
               ?.map((item, index) => (
                 <tr

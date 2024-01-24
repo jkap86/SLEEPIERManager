@@ -305,8 +305,15 @@ const addLeagues = async (leagues) => {
       });
 
     league.drafts.forEach((draft) => {
-      const { draft_id, type, status, start_time, last_picked, settings } =
-        draft;
+      const {
+        draft_id,
+        type,
+        status,
+        start_time,
+        last_picked,
+        settings,
+        draft_order,
+      } = draft;
 
       const league_type =
         league.settings.type === 2
@@ -324,6 +331,7 @@ const addLeagues = async (leagues) => {
           last_picked,
           league_type,
           settings,
+          draft_order,
           leagueLeagueId: league.league_id,
         });
       }
@@ -360,6 +368,7 @@ const addLeagues = async (leagues) => {
       "last_picked",
       "league_type",
       "settings",
+      "draft_order",
     ],
   });
 
