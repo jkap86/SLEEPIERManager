@@ -1,24 +1,33 @@
 import useFetchLmTrades from "../services/hooks/useFetchLmTrades";
+import useFetchFilteredLmTrades from "../services/hooks/useFetchFilteredLmTrades";
 import { useSelector, useDispatch } from "react-redux";
 import LoadingIcon from "../../Common/LoadingIcon";
 import TableMain from "../../Common/TableMain";
 import Trade from "./Trade";
+import Search from "../../Common/Search";
 import { setStateTrades, fetchLmTrades } from "../redux/actions";
 import { position_map } from "../../PlayoffPool/helpers/getWeeklyResult";
 
-const LmTrades = ({ secondaryTable }) => {
+const LmTrades = ({ trades_headers, players_list, secondaryTable }) => {
   const dispatch = useDispatch();
   const { allplayers, state } = useSelector((state) => state.common);
   const { adpLm, lmLeagueIds, user_id, leagues } = useSelector(
     (state) => state.user
   );
   const { lmTrades, isLoading } = useSelector((state) => state.trades);
-  const { trades, count, itemActive, page, searched_player, searched_manager } =
-    lmTrades;
+  const {
+    trades,
+    count,
+    itemActive,
+    page,
+    searched_player,
+    searched_manager,
+    searches,
+  } = lmTrades;
 
   useFetchLmTrades();
 
-  const tradeCount = !(searched_player?.id || searched_manager?.id) ? count : 0;
+  useFetchFilteredLmTrades();
 
   const header = [
     [
@@ -33,7 +42,20 @@ const LmTrades = ({ secondaryTable }) => {
     ],
   ];
 
-  const trades_display = trades || [];
+  const searched = searches.find(
+    (search) =>
+      search.player === searched_player?.id &&
+      search.manager === searched_manager?.id
+  );
+
+  const tradeCount =
+    searched_player?.id || searched_manager?.id ? searched?.count : count;
+
+  const trades_display =
+    ((searched_player?.id || searched_manager?.id) &&
+      (searched?.trades || [])) ||
+    trades ||
+    [];
 
   const body = trades_display
     ?.sort((a, b) => parseInt(b.status_updated) - parseInt(a.status_updated))
@@ -112,11 +134,61 @@ const LmTrades = ({ secondaryTable }) => {
     }
   };
 
+  const managers_list = [];
+
+  leagues.forEach((league) => {
+    league.rosters
+      .filter((r) => parseInt(r.user_id) > 0)
+      .forEach((roster) => {
+        if (!managers_list.find((m) => m.id === roster.user_id)) {
+          managers_list.push({
+            id: roster.user_id,
+            text: roster.username,
+            image: {
+              src: roster.avatar,
+              alt: "user avatar",
+              type: "user",
+            },
+          });
+        }
+      });
+  });
+
   return isLoading ? (
     <LoadingIcon />
   ) : (
     <>
-      <h1>{count}</h1>
+      <h1>{tradeCount?.toLocaleString("en-US")} Trades</h1>
+      <div className="trade_search_wrapper">
+        <Search
+          id={"By Player"}
+          placeholder={`Player`}
+          list={players_list}
+          searched={lmTrades.searched_player}
+          setSearched={(searched) =>
+            dispatch(
+              setStateTrades(
+                { lmTrades: { ...lmTrades, searched_player: searched } },
+                "TRADES"
+              )
+            )
+          }
+        />
+        <Search
+          id={"By Manager"}
+          placeholder={`Manager`}
+          list={managers_list}
+          searched={lmTrades.searched_manager}
+          setSearched={(searched) =>
+            dispatch(
+              setStateTrades(
+                { lmTrades: { ...lmTrades, searched_manager: searched } },
+                "TRADES"
+              )
+            )
+          }
+        />
+      </div>
       <TableMain
         type={"primary"}
         headers={header}

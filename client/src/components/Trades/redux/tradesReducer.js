@@ -52,9 +52,7 @@ const tradesReducer = (state = initialState, action) => {
         state.lmTrades.searches.find(
           (s) =>
             s.player === action.payload.player &&
-            s.manager === action.payload.manager &&
-            s.hash === action.payload.hash &&
-            s.trade_date === action.payload.trade_date
+            s.manager === action.payload.manager
         )?.trades || [];
 
       new_trades = action.payload.trades.filter(
@@ -69,8 +67,6 @@ const tradesReducer = (state = initialState, action) => {
         manager: action.payload.manager,
         count: action.payload.count,
         trades: [...existing_trades, ...new_trades],
-        hash: action.payload.hash,
-        trade_date: action.payload.trade_date,
       };
 
       return {
@@ -83,9 +79,7 @@ const tradesReducer = (state = initialState, action) => {
               (s) =>
                 !(
                   s.player === action.payload.player &&
-                  s.manager === action.payload.manager &&
-                  s.hash === action.payload.hash &&
-                  s.trade_date === action.payload.trade_date
+                  s.manager === action.payload.manager
                 )
             ),
             updated_search,

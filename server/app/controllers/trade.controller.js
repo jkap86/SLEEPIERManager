@@ -43,26 +43,12 @@ exports.leaguemate = async (req, res) => {
     }
   }
 
-  if (req.body.trade_date) {
-    filters.push({
-      status_updated: {
-        [Op.and]: [
-          { [Op.lt]: new Date(req.body.trade_date).getTime() },
-          {
-            [Op.gt]: new Date(
-              new Date(req.body.trade_date) - 7 * 24 * 60 * 60 * 1000
-            ).getTime(),
-          },
-        ],
-      },
-    });
-  }
-
   try {
     const leaguemateTrades = await Trade.findAndCountAll({
       order: [["status_updated", "DESC"]],
       offset: req.body.offset,
       limit: req.body.limit,
+      where: { [Op.and]: filters },
       attributes: [
         "transaction_id",
         "status_updated",
@@ -170,6 +156,7 @@ exports.pricecheck = async (req, res) => {
           "settings",
         ],
       },
+      raw: true,
     });
   } catch (error) {
     console.log(error);
