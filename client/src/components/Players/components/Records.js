@@ -268,7 +268,7 @@ const Records = ({ secondaryTable }) => {
               "R" +
                 ((parseInt(player_id.split("_")[1]) - 1) * 12 +
                   parseInt(player_id.split("_")[2]))
-            ]?.adp
+            ]?.adp || 9999
           : adpLm?.["Dynasty"]?.[player_id]?.adp || 9999,
         adp_r: adpLm?.["Redraft"]?.[player_id]?.adp || 9999,
         search: {
