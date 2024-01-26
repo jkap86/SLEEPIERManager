@@ -1,5 +1,6 @@
 import TableMain from "../../Common/TableMain";
 import Search from "../../Common/Search";
+import LoadingIcon from "../../Common/LoadingIcon";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -11,10 +12,12 @@ const PlayersComparison = () => {
   const [player1, setPlayer1] = useState("");
   const [player2, setPlayer2] = useState("");
   const [playerLeague, setPlayerLeague] = useState("");
+  const [lm, setLm] = useState("");
   const [player1Obj, setPlayer1Obj] = useState([]);
   const [player2Obj, setPlayer2Obj] = useState([]);
   const [pagePlayer1, setPagePlayer1] = useState(1);
   const [pagePlayer2, setPagePlayer2] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
   const players_list =
     (leagues &&
@@ -39,6 +42,8 @@ const PlayersComparison = () => {
 
   useEffect(() => {
     const fetchComp = async () => {
+      setIsLoading(true);
+
       const lm_list =
         leagues &&
         Object.fromEntries(
@@ -95,24 +100,45 @@ const PlayersComparison = () => {
 
       setPlayer1Obj(Object.values(obj1));
       setPlayer2Obj(Object.values(obj2));
+
+      setIsLoading(false);
     };
+
     if (player1?.id && player2?.id) {
       fetchComp();
     }
   }, [player1, player2]);
 
-  const headers = [
-    [
-      {
-        text: "Leaguemate",
-        colSpan: 3,
-      },
-      {
-        text: "#",
-        colSpan: 1,
-      },
-    ],
-  ];
+  useEffect(() => {
+    if (!player1?.id || !player2?.id) {
+      setPlayerLeague("");
+      setLm("");
+    }
+  }, [player1, player2]);
+
+  const getHeaders = (player_id) => {
+    return [
+      [
+        {
+          text: allplayers[player_id]?.full_name,
+          colSpan: 4,
+          className: "half",
+        },
+      ],
+      [
+        {
+          text: "Leaguemate",
+          colSpan: 3,
+          className: "half",
+        },
+        {
+          text: "#",
+          colSpan: 1,
+          className: "half",
+        },
+      ],
+    ];
+  };
 
   const getBody = (list) => {
     return list
@@ -167,11 +193,39 @@ const PlayersComparison = () => {
       };
     });
 
+  const lm_list = Object.values(
+    Object.fromEntries(
+      [...player1Obj, ...player2Obj]
+        .filter(
+          (lm) =>
+            !playerLeague?.id ||
+            leagues
+              .find((l) => l.league_id === playerLeague?.id)
+              .rosters.find((r) => r.user_id === lm.user_id)
+        )
+        .map((lm) => [
+          lm.user_id,
+          {
+            id: lm.user_id,
+            text: lm.username,
+            image: {
+              src: lm.avatar,
+              alt: "lm avatar",
+              type: "user",
+            },
+          },
+        ])
+    )
+  );
+
+  console.log({ lm_list });
+
   return (
     <>
+      <h2>Which player is drafted first when both available</h2>
       <Search
         id={"By Player"}
-        placeholder={`Player`}
+        placeholder={`Player 1`}
         list={players_list}
         searched={player1}
         setSearched={setPlayer1}
@@ -179,13 +233,15 @@ const PlayersComparison = () => {
 
       <Search
         id={"By Player"}
-        placeholder={`Player`}
+        placeholder={`Player 2`}
         list={players_list.filter((p) => p.id !== player1.id)}
         searched={player2}
         setSearched={setPlayer2}
       />
 
-      {player1.id && player2.id ? (
+      {isLoading ? (
+        <LoadingIcon />
+      ) : player1.id && player2.id ? (
         <>
           <Search
             id={"By League"}
@@ -194,16 +250,23 @@ const PlayersComparison = () => {
             searched={playerLeague}
             setSearched={setPlayerLeague}
           />
+          <Search
+            id={"By Leaguemate"}
+            placeholder={`Leaguemate`}
+            list={lm_list}
+            searched={lm}
+            setSearched={setLm}
+          />
           <TableMain
             type={"primary half"}
-            headers={headers}
+            headers={getHeaders(player1.id)}
             body={getBody(player1Obj)}
             page={pagePlayer1}
             setPage={setPagePlayer1}
           />
           <TableMain
             type={"primary half"}
-            headers={headers}
+            headers={getHeaders(player2.id)}
             body={getBody(player2Obj)}
             pagePlayer2={pagePlayer2}
             setPagePlayer2={setPagePlayer2}
