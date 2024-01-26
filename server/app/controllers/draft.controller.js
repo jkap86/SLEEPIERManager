@@ -36,3 +36,69 @@ exports.adp = async (req, res) => {
     console.log(err.message);
   }
 };
+
+exports.playercomp = async (req, res) => {
+  try {
+    const list1 = await Draftpick.findAll({
+      attributes: ["picked_by"],
+      where: {
+        [Op.and]: [
+          {
+            player_id: req.body.player1,
+          },
+          {
+            picked_by: req.body.lm_user_ids,
+          },
+        ],
+      },
+      include: {
+        model: Draft,
+        attributes: [],
+        include: {
+          attributes: [],
+          model: Draftpick,
+          where: {
+            player_id: req.body.player2,
+            pick_no: {
+              [Op.gt]: sequelize.col("draftpick.pick_no"),
+            },
+          },
+        },
+        required: true,
+      },
+    });
+
+    const list2 = await Draftpick.findAll({
+      attributes: ["picked_by"],
+      where: {
+        [Op.and]: [
+          {
+            player_id: req.body.player2,
+          },
+          {
+            picked_by: req.body.lm_user_ids,
+          },
+        ],
+      },
+      include: {
+        model: Draft,
+        attributes: [],
+        include: {
+          attributes: [],
+          model: Draftpick,
+          where: {
+            player_id: req.body.player1,
+            pick_no: {
+              [Op.gt]: sequelize.col("draftpick.pick_no"),
+            },
+          },
+        },
+        required: true,
+      },
+    });
+
+    res.send({ list1, list2 });
+  } catch (err) {
+    console.log(err.message);
+  }
+};

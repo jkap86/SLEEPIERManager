@@ -6,5 +6,7 @@ module.exports = (app) => {
 
   router.post("/adp", draft.adp);
 
+  router.post("/playercomp", draft.playercomp);
+
   app.use("/draft", router);
 };

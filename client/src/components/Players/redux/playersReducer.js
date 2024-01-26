@@ -15,7 +15,7 @@ const initialState = {
   column2: "Owned %",
   column3: "ADP SF D",
   column4: "ADP SF R",
-  primaryContent: "Records",
+  primaryContent: "All",
 };
 
 const playersReducer = (state = initialState, action) => {
