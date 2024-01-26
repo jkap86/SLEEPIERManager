@@ -52,7 +52,7 @@ const PcTrades = ({ trades_headers, players_list, secondaryTable }) => {
                   (adpLm?.[league_type]?.[b]?.adp || 999)
               );
 
-            starters.push(players_slot[0] || "0");
+            starters.push(players_slot?.[0] || "0");
           });
 
         return {
