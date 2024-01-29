@@ -3,10 +3,10 @@ const initialState = {
   itemActive: "",
   searched: "",
   tabSecondary: "Standings",
-  column1: "Auction Budget% D",
-  column2: "Auction Budget% D Players",
-  column3: "Auction Budget% D Picks",
-  column4: "Open Roster",
+  column1: "Players Value (Auction Budget %)",
+  column2: "Picks Value (Auction Budget %)",
+  column3: "Total Value (Auction Budget %)",
+  column4: "Total Value Rank (Auction Budget %)",
   primaryContent: "Records",
 };
 

@@ -50,11 +50,34 @@ const Standings = ({ league, trade_value_date, current_value_date, type }) => {
             "." +
             roster.settings.fpts_against_decimal
         ),
-        players: roster.players,
-        draft_picks: roster.draft_picks,
+        budget_percent_players:
+          roster.players?.reduce(
+            (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
+            0
+          ) || 0,
+        budget_percent_picks:
+          roster.draft_picks?.reduce(
+            (acc, cur) =>
+              acc +
+              (adpLm?.["Dynasty_auction"]?.[
+                "R" +
+                  +(
+                    (cur.round - 1) * 12 +
+                    (parseInt(
+                      cur.season === parseInt(league.season) && cur.order
+                    ) || 7)
+                  )
+              ]?.adp || 0),
+            0
+          ) || 0,
       };
     })
-    ?.sort((a, b) => b.wins - a.wins || b.fpts - a.fpts);
+    ?.sort(
+      (a, b) =>
+        b.budget_percent_players +
+        b.budget_percent_picks -
+        (a.budget_percent_players + a.budget_percent_picks)
+    );
 
   const standings_headers = [
     [
@@ -85,7 +108,7 @@ const Standings = ({ league, trade_value_date, current_value_date, type }) => {
             {links[siteLinkIndex]?.label}
           </a>
         ),
-        colSpan: 7,
+        colSpan: 9,
         className: "half",
       },
       {
@@ -122,33 +145,15 @@ const Standings = ({ league, trade_value_date, current_value_date, type }) => {
         colSpan: 2,
         className: "half",
       },
+      {
+        text: "Total",
+        colSpan: 2,
+        className: "half",
+      },
     ],
   ];
 
   const standings_body = standings?.map((team, index) => {
-    const record = standings.find((s) => s.roster_id === team.roster_id);
-
-    const budget_percent_players =
-      team.players?.reduce(
-        (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
-        0
-      ) || 0;
-
-    const budget_percent_picks =
-      team.draft_picks?.reduce(
-        (acc, cur) =>
-          acc +
-          (adpLm?.["Dynasty_auction"]?.[
-            "R" +
-              +(
-                (cur.round - 1) * 12 +
-                (parseInt(
-                  cur.season === parseInt(league.season) && cur.order
-                ) || 7)
-              )
-          ]?.adp || 0),
-        0
-      ) || 0;
     return {
       id: team.roster_id,
       list: [
@@ -163,11 +168,18 @@ const Standings = ({ league, trade_value_date, current_value_date, type }) => {
           },
         },
         {
-          text: budget_percent_players?.toFixed(0) + "%" || "-",
+          text: team.budget_percent_players?.toFixed(0) + "%" || "-",
           colSpan: 2,
         },
         {
-          text: budget_percent_picks?.toFixed(0) + "%" || "-",
+          text: team.budget_percent_picks?.toFixed(0) + "%" || "-",
+          colSpan: 2,
+        },
+        {
+          text:
+            (team.budget_percent_players + team.budget_percent_picks)?.toFixed(
+              0
+            ) + "%" || "-",
           colSpan: 2,
         },
       ],

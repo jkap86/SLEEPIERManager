@@ -31,6 +31,99 @@ export const getColumnValue = (header, league, state, adpLm) => {
     0
   );
 
+  const value_rank =
+    league.rosters
+      .sort(
+        (a, b) =>
+          (b.players?.reduce(
+            (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
+            0
+          ) || 0) +
+          (b.draft_picks?.reduce(
+            (acc, cur) =>
+              acc +
+              (adpLm?.["Dynasty_auction"]?.[
+                "R" +
+                  +(
+                    (cur.round - 1) * 12 +
+                    (parseInt(
+                      cur.season === parseInt(league.season) && cur.order
+                    ) || 7)
+                  )
+              ]?.adp || 0),
+            0
+          ) || 0) -
+          ((a.players?.reduce(
+            (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
+            0
+          ) || 0) +
+            (a.draft_picks?.reduce(
+              (acc, cur) =>
+                acc +
+                (adpLm?.["Dynasty_auction"]?.[
+                  "R" +
+                    +(
+                      (cur.round - 1) * 12 +
+                      (parseInt(
+                        cur.season === parseInt(league.season) && cur.order
+                      ) || 7)
+                    )
+                ]?.adp || 0),
+              0
+            ) || 0))
+      )
+      .findIndex((obj) => obj.roster_id === league.userRoster.roster_id) + 1;
+
+  const value_rank_players =
+    league.rosters
+      .sort(
+        (a, b) =>
+          (b.players?.reduce(
+            (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
+            0
+          ) || 0) -
+          (a.players?.reduce(
+            (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
+            0
+          ) || 0)
+      )
+      .findIndex((obj) => obj.roster_id === league.userRoster.roster_id) + 1;
+
+  const value_rank_picks =
+    league.rosters
+      .sort(
+        (a, b) =>
+          (b.draft_picks?.reduce(
+            (acc, cur) =>
+              acc +
+              (adpLm?.["Dynasty_auction"]?.[
+                "R" +
+                  +(
+                    (cur.round - 1) * 12 +
+                    (parseInt(
+                      cur.season === parseInt(league.season) && cur.order
+                    ) || 7)
+                  )
+              ]?.adp || 0),
+            0
+          ) || 0) -
+          (a.draft_picks?.reduce(
+            (acc, cur) =>
+              acc +
+              (adpLm?.["Dynasty_auction"]?.[
+                "R" +
+                  +(
+                    (cur.round - 1) * 12 +
+                    (parseInt(
+                      cur.season === parseInt(league.season) && cur.order
+                    ) || 7)
+                  )
+              ]?.adp || 0),
+            0
+          ) || 0)
+      )
+      .findIndex((obj) => obj.roster_id === league.userRoster.roster_id) + 1;
+
   const budget_percent_picks = league.userRoster.draft_picks.reduce(
     (acc, cur) =>
       acc +
@@ -196,16 +289,61 @@ export const getColumnValue = (header, league, state, adpLm) => {
         ),
         colSpan: 3,
       };
-    case "Auction Budget% D":
+    case "Total Value (Auction Budget %)":
       const budget_percent = budget_percent_players + budget_percent_picks;
       return {
         text: budget_percent?.toFixed(0) + "%",
         colSpan: 3,
       };
-    case "Auction Budget% D Players":
+    case "Players Value (Auction Budget %)":
       return { text: budget_percent_players?.toFixed(0) + "%", colSpan: 3 };
-    case "Auction Budget% D Picks":
+    case "Picks Value (Auction Budget %)":
       return { text: budget_percent_picks?.toFixed(0) + "%", colSpan: 3 };
+    case "Total Value Rank (Auction Budget %)":
+      return {
+        text: (
+          <p
+            className="stat"
+            style={getTrendColor(
+              -(value_rank / league.rosters.length - 0.5),
+              0.0025
+            )}
+          >
+            {value_rank.toFixed()}
+          </p>
+        ),
+        colSpan: 3,
+      };
+    case "Players Value Rank (Auction Budget %)":
+      return {
+        text: (
+          <p
+            className="stat"
+            style={getTrendColor(
+              -(value_rank_players / league.rosters.length - 0.5),
+              0.0025
+            )}
+          >
+            {value_rank_players.toFixed()}
+          </p>
+        ),
+        colSpan: 3,
+      };
+    case "Picks Value Rank (Auction Budget %)":
+      return {
+        text: (
+          <p
+            className="stat"
+            style={getTrendColor(
+              -(value_rank_picks / league.rosters.length - 0.5),
+              0.0025
+            )}
+          >
+            {value_rank_picks.toFixed()}
+          </p>
+        ),
+        colSpan: 3,
+      };
     default:
       return {
         text: "-",

@@ -5,7 +5,7 @@ import { getAdpFormatted } from "../services/helpers/getAdpFormatted";
 
 const Roster = ({ roster, league, type }) => {
   const [filter, setFilter] = useState("All");
-  const [ppgType, setPpgType] = useState("Total");
+  const [ppgType, setPpgType] = useState("ADP");
   const { state, allplayers } = useSelector((state) => state.common);
   const { adpLm } = useSelector((state) => state.user);
 
@@ -33,10 +33,10 @@ const Roster = ({ roster, league, type }) => {
       {
         text: (
           <select onChange={(e) => setPpgType(e.target.value)}>
+            <option>ADP</option>
             <option>Total</option>
             <option>In Lineup</option>
             <option>On Bench</option>
-            <option>ADP</option>
           </select>
         ),
         colSpan: 8,
