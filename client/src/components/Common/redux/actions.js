@@ -326,7 +326,7 @@ export const fetchAdp = (league_ids, user_id) => async (dispatch) => {
           (x) =>
             x.league_type === "D" &&
             ((n_drafts_dynasty_auction &&
-              parseInt(x.n_drafts) > n_drafts_dynasty_auction / 10) ||
+              parseInt(x.n_drafts) > n_drafts_dynasty_auction / 5) ||
               true)
         )
         .map((x) => [
