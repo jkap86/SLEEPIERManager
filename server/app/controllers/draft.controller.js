@@ -4,6 +4,7 @@ const db = require("../models");
 const League = db.leagues;
 const Draft = db.drafts;
 const Draftpick = db.draftpicks;
+const Auctionpick = db.auctionpicks;
 const sequelize = db.sequelize;
 const Op = db.Sequelize.Op;
 
@@ -30,8 +31,30 @@ exports.adp = async (req, res) => {
       },
       group: ["player_id", "draftpick.league_type"],
     });
-    console.log({ length: draft_picks.length });
-    res.send(draft_picks);
+
+    const auction_picks = await Auctionpick.findAll({
+      attributes: [
+        "player_id",
+        "league_type",
+        [sequelize.fn("AVG", sequelize.col("budget_percent")), "adp"],
+        [sequelize.fn("COUNT", sequelize.col("draft.draft_id")), "n_drafts"],
+      ],
+      include: {
+        model: Draft,
+        attributes: [],
+        include: {
+          model: League,
+          attributes: [],
+          where: {
+            league_id: req.body.league_ids,
+          },
+        },
+        required: true,
+      },
+      group: ["player_id", "auctionpick.league_type"],
+    });
+
+    res.send({ draft_picks, auction_picks });
   } catch (err) {
     console.log(err.message);
   }

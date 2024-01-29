@@ -46,26 +46,29 @@ exports.upsert = async (req, res) => {
 
     await updateUserLeagueRelationships([...updated_leagues, ...added_leagues]);
 
-    const data = [
-      ...leagues_up_to_date,
-      ...updated_leagues,
-      ...added_leagues,
-    ].map((league) => {
-      const userRoster = league.rosters?.find((roster) => {
-        return (
-          (roster.user_id === req.query.user_id ||
-            roster.co_owners?.find(
-              (co) => co?.user_id === req.query.user_id
-            )) &&
-          (roster.players?.length > 0 || league.settings.status === "drafting")
-        );
-      });
+    const data = [...leagues_up_to_date, ...updated_leagues, ...added_leagues]
+      .sort(
+        (a, b) =>
+          leagues.findIndex((l) => l.league_id === a.league_id) -
+          leagues.findIndex((l) => l.league_id === b.league_id)
+      )
+      .map((league) => {
+        const userRoster = league.rosters?.find((roster) => {
+          return (
+            (roster.user_id === req.query.user_id ||
+              roster.co_owners?.find(
+                (co) => co?.user_id === req.query.user_id
+              )) &&
+            (roster.players?.length > 0 ||
+              league.settings.status === "drafting")
+          );
+        });
 
-      return {
-        ...league,
-        userRoster: userRoster,
-      };
-    });
+        return {
+          ...league,
+          userRoster: userRoster,
+        };
+      });
 
     stream.write(data);
   }
