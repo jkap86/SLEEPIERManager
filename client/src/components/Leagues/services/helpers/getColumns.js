@@ -1,6 +1,6 @@
 import { getTrendColor } from "../../../Common/services/helpers/getTrendColor";
 
-export const getColumnValue = (header, league, state, user_id) => {
+export const getColumnValue = (header, league, state, adpLm) => {
   const record = {
     wins: league.userRoster.settings.wins,
     losses: league.userRoster.settings.losses,
@@ -25,6 +25,24 @@ export const getColumnValue = (header, league, state, user_id) => {
 
   const percent_fp_of_avg =
     (record.fpts / (league_total_fp / league.rosters.length)) * 100;
+
+  const budget_percent_players = league.userRoster.players.reduce(
+    (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
+    0
+  );
+
+  const budget_percent_picks = league.userRoster.draft_picks.reduce(
+    (acc, cur) =>
+      acc +
+      (adpLm?.["Dynasty_auction"]?.[
+        "R" +
+          +(
+            (cur.round - 1) * 12 +
+            (parseInt(cur.season === parseInt(league.season) && cur.order) || 7)
+          )
+      ]?.adp || 0),
+    0
+  );
 
   switch (header) {
     case "Waivers Open":
@@ -178,6 +196,16 @@ export const getColumnValue = (header, league, state, user_id) => {
         ),
         colSpan: 3,
       };
+    case "Auction Budget% D":
+      const budget_percent = budget_percent_players + budget_percent_picks;
+      return {
+        text: budget_percent?.toFixed(0) + "%",
+        colSpan: 3,
+      };
+    case "Auction Budget% D Players":
+      return { text: budget_percent_players?.toFixed(0) + "%", colSpan: 3 };
+    case "Auction Budget% D Picks":
+      return { text: budget_percent_picks?.toFixed(0) + "%", colSpan: 3 };
     default:
       return {
         text: "-",

@@ -107,6 +107,27 @@ export const getPlayersColumn = (
         text: (adp_d && getAdpFormatted(adp_d)) || "-",
         colSpan: 1,
       };
+    case "Auction Budget% D":
+      let adp_auction;
+
+      if (
+        player_id.includes("_") &&
+        parseInt(player_id.split("_")[1]) &&
+        parseInt(player_id.split("_")[2])
+      ) {
+        const round = parseInt(player_id.split("_")[1]);
+        const order = parseInt(player_id.split("_")[2]);
+
+        const pick = "R" + ((round - 1) * 12 + order);
+
+        adp_auction = adpLm?.["Dynasty_auction"]?.[pick]?.adp;
+      } else {
+        adp_auction = adpLm?.["Dynasty_auction"]?.[player_id]?.adp;
+      }
+      return {
+        text: adp_auction?.toFixed(0) + "%" || "-",
+        colSpan: 1,
+      };
     default:
       return {
         text: "-",

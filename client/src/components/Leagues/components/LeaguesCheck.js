@@ -8,7 +8,7 @@ import { useEffect } from "react";
 const LeaguesCheck = ({ secondaryTable }) => {
   const dispatch = useDispatch();
   const { state } = useSelector((state) => state.common);
-  const { user_id, leagues, type1, type2 } = useSelector((state) => state.user);
+  const { leagues, type1, type2, adpLm } = useSelector((state) => state.user);
   const {
     column1,
     column2,
@@ -20,6 +20,7 @@ const LeaguesCheck = ({ secondaryTable }) => {
     primaryContent,
   } = useSelector((state) => state.leagues);
 
+  /*
   useEffect(() => {
     if (primaryContent === "Records") {
       dispatch(setState({ column1: "W/L" }));
@@ -33,12 +34,16 @@ const LeaguesCheck = ({ secondaryTable }) => {
       dispatch(setState({ column4: "% FP of Avg" }));
     }
   }, [primaryContent, dispatch]);
+  */
 
   const columnOptions = [
     "Open Roster",
     "Open Taxi",
     "Waivers Open",
     "Rank",
+    "Auction Budget% D",
+    "Auction Budget% D Players",
+    "Auction Budget% D Picks",
     "Trade Deadline",
     "W/L",
     "W %",
@@ -153,16 +158,16 @@ const LeaguesCheck = ({ secondaryTable }) => {
           },
         },
         {
-          ...getColumnValue(column1, league, state),
+          ...getColumnValue(column1, league, state, adpLm),
         },
         {
-          ...getColumnValue(column2, league, state),
+          ...getColumnValue(column2, league, state, adpLm),
         },
         {
-          ...getColumnValue(column3, league, state),
+          ...getColumnValue(column3, league, state, adpLm),
         },
         {
-          ...getColumnValue(column4, league, state),
+          ...getColumnValue(column4, league, state, adpLm),
         },
       ],
       secondary_table: secondaryTable({ league }),

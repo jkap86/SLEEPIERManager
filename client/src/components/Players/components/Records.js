@@ -34,6 +34,7 @@ const Records = ({ secondaryTable }) => {
     "LM W %",
     "ADP SF R",
     "ADP SF D",
+    "Auction Budget% D",
   ];
 
   console.log({ userPlayerShares });
@@ -271,6 +272,13 @@ const Records = ({ secondaryTable }) => {
             ]?.adp || 9999
           : adpLm?.["Dynasty"]?.[player_id]?.adp || 9999,
         adp_r: adpLm?.["Redraft"]?.[player_id]?.adp || 9999,
+        adp_d_auction: player_id.includes("_")
+          ? adpLm?.["Dynasty_auction"]?.[
+              "R" +
+                ((parseInt(player_id.split("_")[1]) - 1) * 12 +
+                  parseInt(player_id.split("_")[2]))
+            ]?.adp || 0
+          : adpLm?.["Dynasty_auction"]?.[player_id]?.adp || 0,
         search: {
           text:
             (allplayers?.[player.id] &&
@@ -375,7 +383,8 @@ const Records = ({ secondaryTable }) => {
         (column1 === "winpct_user" && b.winpct_user - a.winpct_user) ||
         (column1 === "winpct_lm" && b.winpct_lm - a.winpct_lm) ||
         (column1 === "ADP SF D" && a.adp_d - b.adp_d) ||
-        (column1 === "ADP SF R" && a.adp_r - b.adp_r)
+        (column1 === "ADP SF R" && a.adp_r - b.adp_r) ||
+        (column1 === "Auction Budget% D" && b.adp_d_auction - a.adp_d_auction)
     );
 
   const player_ids = (userPlayerShares || [])

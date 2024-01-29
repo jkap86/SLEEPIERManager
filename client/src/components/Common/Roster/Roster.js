@@ -1,11 +1,13 @@
 import TableMain from "../TableMain";
 import { useState, useMemo } from "react";
 import { useSelector } from "react-redux";
+import { getAdpFormatted } from "../services/helpers/getAdpFormatted";
 
 const Roster = ({ roster, league, type }) => {
   const [filter, setFilter] = useState("All");
   const [ppgType, setPpgType] = useState("Total");
   const { state, allplayers } = useSelector((state) => state.common);
+  const { adpLm } = useSelector((state) => state.user);
 
   const headers = [
     [
@@ -34,6 +36,7 @@ const Roster = ({ roster, league, type }) => {
             <option>Total</option>
             <option>In Lineup</option>
             <option>On Bench</option>
+            <option>ADP</option>
           </select>
         ),
         colSpan: 8,
@@ -52,13 +55,13 @@ const Roster = ({ roster, league, type }) => {
         className: "half",
       },
       {
-        text: "PPG",
-        colSpan: 5,
+        text: ppgType === "ADP" ? "Auction" : "PPG",
+        colSpan: ppgType === "ADP" ? 4 : 5,
         className: "half",
       },
       {
-        text: "#",
-        colSpan: 3,
+        text: ppgType === "ADP" ? "Draft" : "#",
+        colSpan: ppgType === "ADP" ? 4 : 3,
         className: "half end",
       },
     ],
@@ -117,8 +120,8 @@ const Roster = ({ roster, league, type }) => {
       return [
         ...(filter === "All"
           ? [
-              ...roster.starters,
-              ...roster.players.filter(
+              ...(roster.starters || []),
+              ...(roster.players || []).filter(
                 (player_id) => !roster.starters.includes(player_id)
               ),
             ]
@@ -167,12 +170,24 @@ const Roster = ({ roster, league, type }) => {
                   },
                 },
                 {
-                  text: (games > 0 && (points / games).toFixed(1)) || "-",
-                  colSpan: 5,
+                  text:
+                    ppgType === "ADP"
+                      ? (adpLm?.["Dynasty_auction"]?.[player_id]?.adp?.toFixed(
+                          0
+                        ) || "0") + "%"
+                      : (games > 0 && (points / games).toFixed(1)) || "-",
+                  colSpan: ppgType === "ADP" ? 4 : 5,
                 },
                 {
-                  text: games?.toString() || "-",
-                  colSpan: 3,
+                  text:
+                    ppgType === "ADP"
+                      ? (adpLm?.["Dynasty"]?.[player_id]?.adp &&
+                          getAdpFormatted(
+                            adpLm?.["Dynasty"]?.[player_id]?.adp
+                          )) ||
+                        "-"
+                      : games?.toString() || "-",
+                  colSpan: ppgType === "ADP" ? 4 : 3,
                 },
               ],
             };

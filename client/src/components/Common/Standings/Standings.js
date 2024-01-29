@@ -7,6 +7,7 @@ import { setStateCommon } from "../redux/actions";
 const Standings = ({ league, trade_value_date, current_value_date, type }) => {
   const dispatch = useDispatch();
   const { siteLinkIndex } = useSelector((state) => state.common);
+  const { adpLm } = useSelector((state) => state.user);
   const [itemActive2, setItemActive2] = useState("");
 
   const links = [
@@ -49,6 +50,8 @@ const Standings = ({ league, trade_value_date, current_value_date, type }) => {
             "." +
             roster.settings.fpts_against_decimal
         ),
+        players: roster.players,
+        draft_picks: roster.draft_picks,
       };
     })
     ?.sort((a, b) => b.wins - a.wins || b.fpts - a.fpts);
@@ -82,7 +85,7 @@ const Standings = ({ league, trade_value_date, current_value_date, type }) => {
             {links[siteLinkIndex]?.label}
           </a>
         ),
-        colSpan: 8,
+        colSpan: 7,
         className: "half",
       },
       {
@@ -110,13 +113,13 @@ const Standings = ({ league, trade_value_date, current_value_date, type }) => {
         className: "half",
       },
       {
-        text: "Record",
+        text: "Players",
         colSpan: 2,
         className: "half",
       },
       {
-        text: "FP",
-        colSpan: 3,
+        text: "Picks",
+        colSpan: 2,
         className: "half",
       },
     ],
@@ -124,6 +127,28 @@ const Standings = ({ league, trade_value_date, current_value_date, type }) => {
 
   const standings_body = standings?.map((team, index) => {
     const record = standings.find((s) => s.roster_id === team.roster_id);
+
+    const budget_percent_players =
+      team.players?.reduce(
+        (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
+        0
+      ) || 0;
+
+    const budget_percent_picks =
+      team.draft_picks?.reduce(
+        (acc, cur) =>
+          acc +
+          (adpLm?.["Dynasty_auction"]?.[
+            "R" +
+              +(
+                (cur.round - 1) * 12 +
+                (parseInt(
+                  cur.season === parseInt(league.season) && cur.order
+                ) || 7)
+              )
+          ]?.adp || 0),
+        0
+      ) || 0;
     return {
       id: team.roster_id,
       list: [
@@ -138,17 +163,12 @@ const Standings = ({ league, trade_value_date, current_value_date, type }) => {
           },
         },
         {
-          text: `${record.wins}-${record.losses}${
-            record.ties > 0 ? `-${record.ties}` : ""
-          }`,
+          text: budget_percent_players?.toFixed(0) + "%" || "-",
           colSpan: 2,
         },
         {
-          text: record.fpts.toLocaleString("en-US", {
-            maximumFractionDigits: 2,
-            minimumFractionDigits: 2,
-          }),
-          colSpan: 3,
+          text: budget_percent_picks?.toFixed(0) + "%" || "-",
+          colSpan: 2,
         },
       ],
     };

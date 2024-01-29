@@ -237,7 +237,7 @@ export const fetchAdp = (league_ids, user_id) => async (dispatch) => {
     });
 
     const adp_redraft = Object.fromEntries(
-      adp.data
+      adp.data.draft_picks
         .filter((x) => x.league_type === "R")
         .map((x) => [
           x.player_id,
@@ -249,11 +249,11 @@ export const fetchAdp = (league_ids, user_id) => async (dispatch) => {
     );
 
     const n_drafts_dynasty = Math.max(
-      ...adp.data.map((x) => parseInt(x.n_drafts))
+      ...adp.data.draft_picks.map((x) => parseInt(x.n_drafts))
     );
 
     const adp_dynasty = Object.fromEntries(
-      adp.data
+      adp.data.draft_picks
         .filter(
           (x) =>
             x.league_type === "D" &&
@@ -304,10 +304,46 @@ export const fetchAdp = (league_ids, user_id) => async (dispatch) => {
       })
     );
 
+    const adp_redraft_auction = Object.fromEntries(
+      adp.data.auction_picks
+        .filter((x) => x.league_type === "R")
+        .map((x) => [
+          x.player_id,
+          {
+            adp: parseFloat(x.adp),
+            n_drafts: parseInt(x.n_drafts),
+          },
+        ])
+    );
+
+    const n_drafts_dynasty_auction = Math.max(
+      ...adp.data.auction_picks.map((x) => parseInt(x.n_drafts))
+    );
+
+    const adp_dynasty_auction = Object.fromEntries(
+      adp.data.auction_picks
+        .filter(
+          (x) =>
+            x.league_type === "D" &&
+            ((n_drafts_dynasty_auction &&
+              parseInt(x.n_drafts) > n_drafts_dynasty_auction / 10) ||
+              true)
+        )
+        .map((x) => [
+          x.player_id,
+          {
+            adp: parseFloat(x.adp),
+            n_drafts: parseInt(x.n_drafts),
+          },
+        ])
+    );
+
     const adp_object = {
       Redraft: adp_redraft,
       Dynasty: adp_dynasty,
       All: adp_all,
+      Redraft_auction: adp_redraft_auction,
+      Dynasty_auction: adp_dynasty_auction,
     };
     dispatch({ type: "SET_STATE_USER", payload: { adpLm: adp_object } });
 
