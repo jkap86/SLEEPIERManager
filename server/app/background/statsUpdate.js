@@ -41,12 +41,21 @@ module.exports = async (app) => {
           JSON.stringify(updated_schedule)
         );
 
-        const games_in_progress = schedule_week.nflSchedule.matchup.find(
-          (game) =>
-            parseInt(game.gameSecondsRemaining) > 0 &&
-            (parseInt(game.gameSecondsRemaining) < 3600 ||
-              parseInt(game.kickoff) * 1000 < new Date().getTime())
-        );
+        const games_in_progress =
+          (Array.isArray(schedule_week.nflSchedule.matchup) &&
+            schedule_week.nflSchedule.matchup.find(
+              (game) =>
+                parseInt(game.gameSecondsRemaining) > 0 &&
+                (parseInt(game.gameSecondsRemaining) < 3600 ||
+                  parseInt(game.kickoff) * 1000 < new Date().getTime())
+            )) ||
+          (parseInt(schedule_week.nflSchedule.matchup.gameSecondsRemaining) >
+            0 &&
+            parseInt(
+              schedule_week.nflSchedule.matchup.gameSecondsRemaining < 3600 ||
+                parseInt(schedule_week.nflSchedule.matchup.kickoff) * 1000 <
+                  new Date().getTime()
+            ));
 
         console.log({ games_in_progress });
 
@@ -85,10 +94,16 @@ module.exports = async (app) => {
 
           delay = (60 - sec) * 1000;
         } else {
-          const upcoming = schedule_week.nflSchedule.matchup
-            ?.filter((g) => parseInt(g.kickoff) * 1000 > new Date().getTime())
-            ?.map((g) => parseInt(g.kickoff) * 1000);
-
+          const upcoming = Array.isArray(schedule_week.nflSchedule.matchup)
+            ? schedule_week.nflSchedule.matchup
+                ?.filter(
+                  (g) => parseInt(g.kickoff) * 1000 > new Date().getTime()
+                )
+                ?.map((g) => parseInt(g.kickoff) * 1000)
+            : parseInt(schedule_week.nflSchedule.matchup.kickoff) * 1000 >
+              new Date().getTime()
+            ? [parseInt(schedule_week.nflSchedule.matchup.kickoff) * 1000]
+            : [];
           if (upcoming?.length > 0) {
             const next_kickoff = Math.min(...upcoming);
 
