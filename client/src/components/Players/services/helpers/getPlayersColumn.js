@@ -120,12 +120,12 @@ export const getPlayersColumn = (
 
         const pick = "R" + ((round - 1) * 12 + order);
 
-        adp_auction = adpLm?.["Dynasty_auction"]?.[pick]?.adp;
+        adp_auction = adpLm?.["Dynasty_auction"]?.[pick]?.adp || 0;
       } else {
-        adp_auction = adpLm?.["Dynasty_auction"]?.[player_id]?.adp;
+        adp_auction = adpLm?.["Dynasty_auction"]?.[player_id]?.adp || 0;
       }
       return {
-        text: adp_auction?.toFixed(0) + "%" || "-",
+        text: adp_auction?.toFixed(0) + "%",
         colSpan: 1,
       };
     default:

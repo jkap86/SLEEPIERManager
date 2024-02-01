@@ -66,11 +66,13 @@ export const getTradeTips = (trades, leagues, season) => {
             );
 
             const pickname =
-              parseInt(pick.season) === parseInt(season) && pick.order
-                ? `${pick.season} ${pick.round}.${pick.order.toLocaleString(
-                    "en-US",
-                    { minimumIntegerDigits: 2 }
-                  )} `
+              parseInt(pick.season) === parseInt(season) && parseInt(pick.order)
+                ? `${pick.season} ${pick.round}.${
+                    parseInt(pick.season) === parseInt(season) &&
+                    pick.order?.toLocaleString("en-US", {
+                      minimumIntegerDigits: 2,
+                    })
+                  }`
                 : `${pick.season} Round ${pick.round}`;
 
             trade_away.push({
@@ -166,7 +168,7 @@ export const getTradeTips = (trades, leagues, season) => {
                 ? `${pick.season} ${pick.round}.${pick.order.toLocaleString(
                     "en-US",
                     { minimumIntegerDigits: 2 }
-                  )} `
+                  )}`
                 : `${pick.season} Round ${pick.round}`;
 
             acquire.push({

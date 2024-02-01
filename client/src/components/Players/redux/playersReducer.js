@@ -11,10 +11,10 @@ const initialState = {
   sortBy: "Owned",
   tabSecondary: "Owned",
   searchedSecondary: "",
-  column1: "Owned",
-  column2: "Owned %",
-  column3: "ADP SF D",
-  column4: "ADP SF R",
+  column1: "ADP SF D",
+  column2: "Auction Budget% D",
+  column3: "Owned",
+  column4: "Owned %",
   primaryContent: "All",
 };
 

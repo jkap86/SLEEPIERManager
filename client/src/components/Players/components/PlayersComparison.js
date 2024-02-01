@@ -4,11 +4,12 @@ import LoadingIcon from "../../Common/LoadingIcon";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { getAdpFormatted } from "../../Common/services/helpers/getAdpFormatted";
 
 const PlayersComparison = () => {
   const dispatch = useDispatch();
   const { allplayers } = useSelector((state) => state.common);
-  const { user_id, leagues } = useSelector((state) => state.user);
+  const { user_id, leagues, adpLm } = useSelector((state) => state.user);
   const [player1, setPlayer1] = useState("");
   const [player2, setPlayer2] = useState("");
   const [playerLeague, setPlayerLeague] = useState("");
@@ -120,7 +121,13 @@ const PlayersComparison = () => {
     return [
       [
         {
-          text: allplayers[player_id]?.full_name,
+          text:
+            allplayers[player_id]?.full_name +
+            ` (${
+              (adpLm?.["Dynasty"]?.[player_id]?.adp &&
+                getAdpFormatted(adpLm?.["Dynasty"]?.[player_id]?.adp)) ||
+              999
+            })`,
           colSpan: 4,
           className: "half",
         },

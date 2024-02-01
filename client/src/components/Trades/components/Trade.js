@@ -147,6 +147,9 @@ const Trade = ({ trade }) => {
                           const adp =
                             adpLm?.[league_type]?.[player_id]?.adp || 999;
 
+                          const auction_value =
+                            adpLm?.[`${league_type}_auction`]?.[player_id]
+                              ?.adp || 0;
                           return (
                             <tr>
                               <td
@@ -156,7 +159,7 @@ const Trade = ({ trade }) => {
                                   trade.tips?.trade_away?.find(
                                     (p) => p.player_id === player_id
                                   )
-                                    ? "red left"
+                                    ? "redb left"
                                     : "left"
                                 }`}
                               >
@@ -167,15 +170,25 @@ const Trade = ({ trade }) => {
                                 </p>
                               </td>
                               <td className="value" colSpan={4}>
-                                {getAdpFormatted(adp)}
+                                <div className="relative">
+                                  <p
+                                    className={"stat value"}
+                                    style={getTrendColor(100 - adp, 0.5)}
+                                  >
+                                    {getAdpFormatted(adp)}
+                                  </p>
+                                </div>
                               </td>
                               <td colSpan={4}>
                                 <div className="relative">
                                   <p
                                     className={"stat value"}
-                                    //  style={getTrendColor(adp, 1)}
+                                    style={getTrendColor(
+                                      auction_value * 3 - 15,
+                                      0.05
+                                    )}
                                   >
-                                    -
+                                    {auction_value.toFixed(1)}%
                                   </p>
                                 </div>
                               </td>
@@ -188,11 +201,16 @@ const Trade = ({ trade }) => {
                           (a, b) => a.season - b.season || a.round - b.round
                         )
                         .map((pick) => {
-                          const value = 0;
+                          const pick_name =
+                            "R" + ((pick.round - 1) * 12 + (pick.order || 7));
 
-                          const trade_value = 0;
+                          const adp =
+                            adpLm?.[league_type]?.[pick_name]?.adp || 999;
 
-                          const trend = (value || 0) - (trade_value || 0);
+                          const auction_value =
+                            adpLm?.[`${league_type}_auction`]?.[pick_name]
+                              ?.adp || 0;
+
                           return (
                             <tr>
                               <td
@@ -202,9 +220,13 @@ const Trade = ({ trade }) => {
                                   trade.tips?.trade_away?.find(
                                     (p) =>
                                       p.player_id ===
-                                      pick.season + "Round " + pick.round
+                                      `${pick.season} ${
+                                        pick.round
+                                      }.${pick.order?.toLocaleString("en-US", {
+                                        minimumIntegerDigits: 2,
+                                      })}`
                                   )
-                                    ? "red left"
+                                    ? "redb left"
                                     : "left"
                                 }`}
                               >
@@ -228,15 +250,22 @@ const Trade = ({ trade }) => {
                                 }
                               </td>
                               <td className="value" colSpan={4}>
-                                {trade_value.toString()}
+                                <p
+                                  className={"stat value"}
+                                  style={getTrendColor(100 - adp, 0.5)}
+                                >
+                                  {getAdpFormatted(adp)}
+                                </p>
                               </td>
                               <td colSpan={4} className="relative">
                                 <p
                                   className={"stat value"}
-                                  style={getTrendColor(trend, 1)}
+                                  style={getTrendColor(
+                                    auction_value * 3 - 15,
+                                    0.05
+                                  )}
                                 >
-                                  {trend > 0 ? "+" : ""}
-                                  {trend}
+                                  {auction_value?.toFixed(1)}%
                                 </p>
                               </td>
                             </tr>
@@ -265,7 +294,7 @@ const Trade = ({ trade }) => {
                                   trade.tips?.acquire?.find(
                                     (p) => p.player_id === player_id
                                   )
-                                    ? " green"
+                                    ? " greenb"
                                     : ""
                                 }`
                               }
@@ -293,16 +322,27 @@ const Trade = ({ trade }) => {
                                 `${
                                   trade.tips?.acquire &&
                                   trade.tips?.acquire?.find(
-                                    (p) => p.player_id === ""
-                                  )?.manager?.user_id === rid
-                                    ? "green left"
-                                    : "left"
+                                    (p) =>
+                                      p.player_id ===
+                                      `${pick.season} ${
+                                        pick.round
+                                      }.${pick.order?.toLocaleString("en-US", {
+                                        minimumIntegerDigits: 2,
+                                      })}`
+                                  )
+                                    ? "greenb"
+                                    : ""
                                 }`
                               }
                             >
                               <p>
                                 <span className="end">
-                                  {`- ${pick.season} Round ${pick.round}${
+                                  {`- ${pick.season} ${
+                                    pick.order &&
+                                    pick.season === stateState.league_season
+                                      ? ""
+                                      : "Round"
+                                  } ${pick.round}${
                                     pick.order &&
                                     pick.season === stateState.league_season
                                       ? `.${pick.order.toLocaleString("en-US", {

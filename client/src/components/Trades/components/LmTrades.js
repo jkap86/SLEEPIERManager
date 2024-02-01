@@ -57,6 +57,11 @@ const LmTrades = ({ trades_headers, players_list, secondaryTable }) => {
     trades ||
     [];
 
+  console.log({
+    trades: (trades || [])?.filter((trade) =>
+      trade.tips.acquire.find((a) => a.player_id.includes("."))
+    ),
+  });
   const body = trades_display
     ?.sort((a, b) => parseInt(b.status_updated) - parseInt(a.status_updated))
     ?.map((trade) => {
