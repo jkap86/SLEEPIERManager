@@ -86,7 +86,16 @@ p {
 li {
   list-style: none;
 }
-
+i.fa-circle-info {
+  font-size: 4rem;
+  position: absolute;
+  right: 10rem;
+  color: navy;
+  background-color: red;
+  border-radius: 50%;
+  border: .25rem solid red;
+  box-shadow: 0 0 .5rem gold;
+}
 .red {
   color: rgb(255, 0, 0);
 }

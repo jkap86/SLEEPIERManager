@@ -92,7 +92,7 @@ exports.picktracker = async (req, res) => {
         d.settings.rounds > league.data.settings.draft_rounds
     );
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
   }
 
   if (active_draft) {

@@ -1,6 +1,7 @@
 import { getTrendColor } from "../../../Common/services/helpers/getTrendColor";
+import { getOptimalLineupADP } from "./getOptimalLineupADP";
 
-export const getColumnValue = (header, league, state, adpLm) => {
+export const getColumnValue = (header, league, state, adpLm, allplayers) => {
   const record = {
     wins: league.userRoster.settings.wins,
     losses: league.userRoster.settings.losses,
@@ -28,6 +29,18 @@ export const getColumnValue = (header, league, state, adpLm) => {
 
   const budget_percent_players = league.userRoster.players.reduce(
     (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
+    0
+  );
+
+  const optimal_lineup = getOptimalLineupADP({
+    roster: league.userRoster,
+    roster_positions: league.roster_positions,
+    adpLm,
+    allplayers,
+  });
+
+  const budget_percent_starters = optimal_lineup.reduce(
+    (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur.player]?.adp || 0),
     0
   );
 
@@ -84,6 +97,33 @@ export const getColumnValue = (header, league, state, adpLm) => {
           ) || 0) -
           (a.players?.reduce(
             (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
+            0
+          ) || 0)
+      )
+      .findIndex((obj) => obj.roster_id === league.userRoster.roster_id) + 1;
+
+  const value_rank_starters =
+    league.rosters
+      .sort(
+        (a, b) =>
+          (getOptimalLineupADP({
+            roster: b,
+            roster_positions: league.roster_positions,
+            adpLm,
+            allplayers,
+          })?.reduce(
+            (acc, cur) =>
+              acc + (adpLm?.["Dynasty_auction"]?.[cur.player]?.adp || 0),
+            0
+          ) || 0) -
+          (getOptimalLineupADP({
+            roster: a,
+            roster_positions: league.roster_positions,
+            adpLm,
+            allplayers,
+          })?.reduce(
+            (acc, cur) =>
+              acc + (adpLm?.["Dynasty_auction"]?.[cur.player]?.adp || 0),
             0
           ) || 0)
       )
@@ -297,6 +337,8 @@ export const getColumnValue = (header, league, state, adpLm) => {
       };
     case "Players Value (Auction Budget %)":
       return { text: budget_percent_players?.toFixed(0) + "%", colSpan: 3 };
+    case "Starters Value (Auction Budget %)":
+      return { text: budget_percent_starters?.toFixed(0) + "%", colSpan: 3 };
     case "Picks Value (Auction Budget %)":
       return { text: budget_percent_picks?.toFixed(0) + "%", colSpan: 3 };
     case "Total Value Rank (Auction Budget %)":
@@ -325,6 +367,21 @@ export const getColumnValue = (header, league, state, adpLm) => {
             )}
           >
             {value_rank_players.toFixed()}
+          </p>
+        ),
+        colSpan: 3,
+      };
+    case "Starters Value Rank (Auction Budget %)":
+      return {
+        text: (
+          <p
+            className="stat"
+            style={getTrendColor(
+              -(value_rank_starters / league.rosters.length - 0.5),
+              0.0025
+            )}
+          >
+            {value_rank_starters.toFixed()}
           </p>
         ),
         colSpan: 3,

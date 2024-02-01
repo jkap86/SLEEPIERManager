@@ -6,7 +6,7 @@ import { setStateCommon } from "../redux/actions";
 
 const Standings = ({ league, trade_value_date, current_value_date, type }) => {
   const dispatch = useDispatch();
-  const { siteLinkIndex } = useSelector((state) => state.common);
+  const { siteLinkIndex, allplayers } = useSelector((state) => state.common);
   const { adpLm } = useSelector((state) => state.user);
   const [itemActive2, setItemActive2] = useState("");
 
@@ -68,6 +68,11 @@ const Standings = ({ league, trade_value_date, current_value_date, type }) => {
                     ) || 7)
                   )
               ]?.adp || 0),
+            0
+          ) || 0,
+        budget_percent_starters:
+          roster.starters?.reduce(
+            (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
             0
           ) || 0,
       };
@@ -146,7 +151,7 @@ const Standings = ({ league, trade_value_date, current_value_date, type }) => {
         className: "half",
       },
       {
-        text: "Total",
+        text: "Starters",
         colSpan: 2,
         className: "half",
       },
@@ -176,10 +181,7 @@ const Standings = ({ league, trade_value_date, current_value_date, type }) => {
           colSpan: 2,
         },
         {
-          text:
-            (team.budget_percent_players + team.budget_percent_picks)?.toFixed(
-              0
-            ) + "%" || "-",
+          text: team.budget_percent_starters?.toFixed(0) + "%" || "-",
           colSpan: 2,
         },
       ],

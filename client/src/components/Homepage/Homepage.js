@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import sleeperLogo from "../../images/sleeper_icon.png";
+import thelablogo from "../../images/thelab.png";
 import { useDispatch, useSelector } from "react-redux";
 import { setStateHome } from "./redux/actions";
 import { resetState } from "../Common/redux/actions";
@@ -48,32 +49,34 @@ const Homepage = () => {
       </div>
 
       <div className="home_wrapper">
-        <img alt="sleeper_logo" className="home" src={sleeperLogo} />
+        <img alt="sleeper_logo" className="home" src={thelablogo} />
         <div className="home_title">
-          <strong className="home">Sleepier</strong>
-          <div className="user_input">
-            <input
-              className="home"
-              type="text"
-              placeholder="Username"
-              onChange={(e) =>
-                dispatch(setStateHome({ username_searched: e.target.value }))
+          <strong className="home">The Lab</strong>
+          <div>
+            <div className="user_input">
+              <input
+                className="home"
+                type="text"
+                placeholder="Username"
+                onChange={(e) =>
+                  dispatch(setStateHome({ username_searched: e.target.value }))
+                }
+              />
+            </div>
+            <a
+              className="link click"
+              onClick={(e) =>
+                (window.location.href = `${window.location.protocol}//${
+                  window.location.hostname +
+                  (window.location.port && `:${window.location.port}`)
+                }/${
+                  localStorage.getItem("navTab") || "players"
+                }/${username_searched}`)
               }
-            />
+            >
+              Submit
+            </a>
           </div>
-          <a
-            className="link click"
-            onClick={(e) =>
-              (window.location.href = `${window.location.protocol}//${
-                window.location.hostname +
-                (window.location.port && `:${window.location.port}`)
-              }/${
-                localStorage.getItem("navTab") || "players"
-              }/${username_searched}`)
-            }
-          >
-            Submit
-          </a>
         </div>
       </div>
     </div>

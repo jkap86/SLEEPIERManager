@@ -3,11 +3,13 @@ import { setState } from "../redux/actions";
 import TableMain from "../../Common/TableMain/TableMain";
 import { filterLeagues } from "../../Common/services/helpers/filterLeagues";
 import { getColumnValue } from "../services/helpers/getColumns";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
+import { getOptimalLineupADP } from "../services/helpers/getOptimalLineupADP";
+import Modal from "../../Common/Modal/Modal";
 
 const LeaguesCheck = ({ secondaryTable }) => {
   const dispatch = useDispatch();
-  const { state } = useSelector((state) => state.common);
+  const { state, allplayers } = useSelector((state) => state.common);
   const { leagues, type1, type2, adpLm } = useSelector((state) => state.user);
   const {
     column1,
@@ -35,6 +37,36 @@ const LeaguesCheck = ({ secondaryTable }) => {
     }
   }, [primaryContent, dispatch]);
   */
+
+  const rosters_updated = useMemo(() => {
+    return (
+      (leagues &&
+        Object.fromEntries(
+          leagues.map((league) => {
+            const rosters_updated_league = league.rosters.map((roster) => {
+              return {
+                ...roster,
+                starters: getOptimalLineupADP({
+                  roster,
+                  roster_positions: league.roster_positions,
+                  adpLm,
+                  allplayers,
+                })
+                  .sort(
+                    (a, b) =>
+                      league.roster_positions.indexOf(a.slot_raw) -
+                      league.roster_positions.indexOf(b.slot_raw)
+                  )
+                  .map((ol) => ol.player),
+              };
+            });
+
+            return [league.league_id, rosters_updated_league];
+          })
+        )) ||
+      {}
+    );
+  }, [leagues, adpLm, allplayers]);
 
   const columnOptions = [
     "Open Roster",
@@ -141,6 +173,7 @@ const LeaguesCheck = ({ secondaryTable }) => {
   ];
 
   const body = filterLeagues(leagues, type1, type2).map((league) => {
+    const rosters_updated_league = rosters_updated[league.league_id];
     return {
       id: league.league_id,
       search: {
@@ -163,24 +196,30 @@ const LeaguesCheck = ({ secondaryTable }) => {
           },
         },
         {
-          ...getColumnValue(column1, league, state, adpLm),
+          ...getColumnValue(column1, league, state, adpLm, allplayers),
         },
         {
-          ...getColumnValue(column2, league, state, adpLm),
+          ...getColumnValue(column2, league, state, adpLm, allplayers),
         },
         {
-          ...getColumnValue(column3, league, state, adpLm),
+          ...getColumnValue(column3, league, state, adpLm, allplayers),
         },
         {
-          ...getColumnValue(column4, league, state, adpLm),
+          ...getColumnValue(column4, league, state, adpLm, allplayers),
         },
       ],
-      secondary_table: secondaryTable({ league }),
+      secondary_table: secondaryTable({
+        league: {
+          ...league,
+          rosters: rosters_updated_league,
+        },
+      }),
     };
   });
 
   return (
     <>
+      {/* <Modal icon={<i className="fa-solid fa-circle-info click"></i>} />*/}
       <TableMain
         type={"primary"}
         headers={headers}

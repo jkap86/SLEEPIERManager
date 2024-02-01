@@ -56,12 +56,12 @@ const Roster = ({ roster, league, type }) => {
       },
       {
         text: ppgType === "ADP" ? "Auction" : "PPG",
-        colSpan: ppgType === "ADP" ? 4 : 5,
+        colSpan: 5,
         className: "half",
       },
       {
         text: ppgType === "ADP" ? "Draft" : "#",
-        colSpan: ppgType === "ADP" ? 4 : 3,
+        colSpan: 3,
         className: "half end",
       },
     ],
@@ -172,22 +172,22 @@ const Roster = ({ roster, league, type }) => {
                 {
                   text:
                     ppgType === "ADP"
-                      ? (adpLm?.["Dynasty_auction"]?.[player_id]?.adp?.toFixed(
-                          0
-                        ) || "0") + "%"
-                      : (games > 0 && (points / games).toFixed(1)) || "-",
-                  colSpan: ppgType === "ADP" ? 4 : 5,
-                },
-                {
-                  text:
-                    ppgType === "ADP"
                       ? (adpLm?.["Dynasty"]?.[player_id]?.adp &&
                           getAdpFormatted(
                             adpLm?.["Dynasty"]?.[player_id]?.adp
                           )) ||
                         "-"
+                      : (games > 0 && (points / games).toFixed(1)) || "-",
+                  colSpan: 5,
+                },
+                {
+                  text:
+                    ppgType === "ADP"
+                      ? (adpLm?.["Dynasty_auction"]?.[player_id]?.adp?.toFixed(
+                          0
+                        ) || "0") + "%"
                       : games?.toString() || "-",
-                  colSpan: ppgType === "ADP" ? 4 : 3,
+                  colSpan: 3,
                 },
               ],
             };
