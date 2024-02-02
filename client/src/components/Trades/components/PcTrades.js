@@ -143,7 +143,7 @@ const PcTrades = ({ trades_headers, players_list, secondaryTable }) => {
       ) : (
         <TableMain
           id={"trades"}
-          type={"primary"}
+          type={"primary trades"}
           headers={trades_headers}
           body={trades_body}
           itemActive={pricecheckTrades.itemActive}

@@ -209,7 +209,7 @@ const LmTrades = ({ trades_headers, players_list, secondaryTable }) => {
       </div>
 
       <TableMain
-        type={"primary"}
+        type={"primary trades"}
         headers={header}
         body={body}
         itemActive={itemActive}

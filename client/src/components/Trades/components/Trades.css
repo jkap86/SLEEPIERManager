@@ -30,3 +30,26 @@ tr.active table.trade_summary td {
           var(--color2) 300%
         ) !important;;
 }
+
+table.primary.trades div.secondary.nav {
+    position: sticky;
+    top: 14rem;
+    z-index: 10;
+}
+
+table.primary.trades table.half.secondary {
+    z-index: 9;
+}
+
+
+table.primary.trades table.half.secondary>tbody>tr {
+    position: sticky;
+    top: 14rem;
+    z-index: 6;
+}
+
+table.trade_summary>tbody>tr:first-of-type {
+    position: sticky;
+    top:  7rem;
+    z-index: 9;
+}
