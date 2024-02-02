@@ -102,10 +102,12 @@ const Trades1 = ({ secondaryTable }) => {
           className="active click"
         >
           <option>Price Check</option>
+          <option>Leaguemate League Trades</option>
           <option>Leaguemate Trades</option>
+          <option>Trade Tips</option>
         </select>
       </h2>
-      {tabPrimary === "Leaguemate Trades" ? (
+      {tabPrimary !== "Price Check" ? (
         <LmTrades {...props} secondaryTable={secondaryTable} />
       ) : (
         <PcTrades {...props} secondaryTable={secondaryTable} />

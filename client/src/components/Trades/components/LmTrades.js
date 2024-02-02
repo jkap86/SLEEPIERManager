@@ -11,10 +11,12 @@ import { position_map } from "../../PlayoffPool/helpers/getWeeklyResult";
 const LmTrades = ({ trades_headers, players_list, secondaryTable }) => {
   const dispatch = useDispatch();
   const { allplayers, state } = useSelector((state) => state.common);
-  const { adpLm, lmLeagueIds, user_id, leagues } = useSelector(
+  const { adpLm, lmLeagueIds, user_id, leagues, leaguemates } = useSelector(
     (state) => state.user
   );
-  const { lmTrades, isLoading } = useSelector((state) => state.trades);
+  const { lmTrades, isLoading, tabPrimary } = useSelector(
+    (state) => state.trades
+  );
   const {
     trades,
     count,
@@ -63,6 +65,17 @@ const LmTrades = ({ trades_headers, players_list, secondaryTable }) => {
     ),
   });
   const body = trades_display
+    ?.filter(
+      (trade) =>
+        (tabPrimary !== "Leaguemate Trades" ||
+          Object.values(trade.rosters).find((r) =>
+            leaguemates.includes(r.user_id)
+          )) &&
+        (tabPrimary !== "Trade Tips" ||
+          (trade.tips.acquire?.length || 0) +
+            (trade.tips.trade_away?.length || 0) >
+            0)
+    )
     ?.sort((a, b) => parseInt(b.status_updated) - parseInt(a.status_updated))
     ?.map((trade) => {
       const rosters = Object.values(trade.rosters).map((roster) => {
@@ -141,7 +154,7 @@ const LmTrades = ({ trades_headers, players_list, secondaryTable }) => {
 
   const managers_list = [];
 
-  leagues.forEach((league) => {
+  (leagues || []).forEach((league) => {
     league.rosters
       .filter((r) => parseInt(r.user_id) > 0)
       .forEach((roster) => {
@@ -194,6 +207,7 @@ const LmTrades = ({ trades_headers, players_list, secondaryTable }) => {
           }
         />
       </div>
+
       <TableMain
         type={"primary"}
         headers={header}

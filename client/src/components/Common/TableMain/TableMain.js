@@ -59,14 +59,6 @@ const TableMain = ({
     }
   }, [body, page]);
 
-  useEffect(() => {
-    if (partial) {
-      const p = Math.ceil(body.length / 5);
-
-      setPage(p);
-    }
-  }, [partial]);
-
   return (
     <>
       {setSearched ? (

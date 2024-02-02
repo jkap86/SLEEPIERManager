@@ -52,10 +52,23 @@ const userReducer = (state = initialState, action) => {
         errorLeagues: null,
       };
     case "FETCH_LEAGUES_SUCCESS":
+      const leaguemate_ids = [];
+
+      const leagues = action.payload.filter((l) => l.userRoster);
+
+      leagues.forEach((league) => {
+        league.rosters
+          .filter((roster) => parseInt(roster.user_id))
+          .forEach((roster) => {
+            leaguemate_ids.push(roster.user_id);
+          });
+      });
+
       return {
         ...state,
         isLoadingLeagues: false,
-        leagues: action.payload.filter((l) => l.userRoster),
+        leagues: leagues,
+        leaguemates: Array.from(new Set(leaguemate_ids)),
       };
 
     case "FETCH_LEAGUES_FAILURE":

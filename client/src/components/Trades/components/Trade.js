@@ -219,12 +219,19 @@ const Trade = ({ trade }) => {
                                   trade.tips?.trade_away &&
                                   trade.tips?.trade_away?.find(
                                     (p) =>
-                                      p.player_id ===
-                                      `${pick.season} ${
-                                        pick.round
-                                      }.${pick.order?.toLocaleString("en-US", {
-                                        minimumIntegerDigits: 2,
-                                      })}`
+                                      (pick.season ===
+                                        stateState.league_season &&
+                                        pick.order &&
+                                        p.player_id ===
+                                          `${pick.season} ${
+                                            pick.round
+                                          }.${pick.order?.toLocaleString(
+                                            "en-US",
+                                            {
+                                              minimumIntegerDigits: 2,
+                                            }
+                                          )}`) ||
+                                      `${pick.season} Round ${pick.round}`
                                   )
                                     ? "redb left"
                                     : "left"
@@ -232,9 +239,11 @@ const Trade = ({ trade }) => {
                               >
                                 {
                                   <p>
-                                    <span>{`+ ${pick.season} Round ${
-                                      pick.round
-                                    }${
+                                    <span>{`+ ${pick.season} ${
+                                      pick.season === stateState.league_season
+                                        ? ""
+                                        : "Round "
+                                    }${pick.round}${
                                       pick.order &&
                                       pick.season === stateState.league_season
                                         ? `.${pick.order.toLocaleString(
@@ -323,12 +332,19 @@ const Trade = ({ trade }) => {
                                   trade.tips?.acquire &&
                                   trade.tips?.acquire?.find(
                                     (p) =>
-                                      p.player_id ===
-                                      `${pick.season} ${
-                                        pick.round
-                                      }.${pick.order?.toLocaleString("en-US", {
-                                        minimumIntegerDigits: 2,
-                                      })}`
+                                      (pick.season ===
+                                        stateState.league_season &&
+                                        pick.order &&
+                                        p.player_id ===
+                                          `${pick.season} ${
+                                            pick.round
+                                          }.${pick.order?.toLocaleString(
+                                            "en-US",
+                                            {
+                                              minimumIntegerDigits: 2,
+                                            }
+                                          )}`) ||
+                                      `${pick.season} Round ${pick.round}`
                                   )
                                     ? "greenb"
                                     : ""

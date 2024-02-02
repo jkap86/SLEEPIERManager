@@ -21,8 +21,11 @@ const useFetchUserInfo = (to_fetch_array) => {
     type1,
     type2,
     adpLm,
+    leaguemates,
   } = useSelector((state) => state.user);
   const { allplayers, state } = useSelector((state) => state.common);
+
+  console.log({ leaguemates });
 
   useEffect(() => {
     if (!state) {

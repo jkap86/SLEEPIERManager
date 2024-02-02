@@ -17,7 +17,7 @@ const initialState = {
     pricecheck_player2: "",
   },
   error: null,
-  tabPrimary: "Price Check",
+  tabPrimary: "Leaguemate League Trades",
   tabSecondary: "Rosters",
   trade_date: new Date(),
 };
