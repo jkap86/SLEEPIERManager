@@ -217,21 +217,19 @@ const Trade = ({ trade }) => {
                                 colSpan={11}
                                 className={`${
                                   trade.tips?.trade_away &&
-                                  trade.tips?.trade_away?.find(
-                                    (p) =>
-                                      (pick.season ===
-                                        stateState.league_season &&
-                                        pick.order &&
-                                        p.player_id ===
-                                          `${pick.season} ${
-                                            pick.round
-                                          }.${pick.order?.toLocaleString(
-                                            "en-US",
-                                            {
-                                              minimumIntegerDigits: 2,
-                                            }
-                                          )}`) ||
-                                      `${pick.season} Round ${pick.round}`
+                                  trade.tips?.trade_away?.find((p) =>
+                                    pick.season === stateState.league_season &&
+                                    pick.order
+                                      ? p.player_id ===
+                                        `${pick.season} ${
+                                          pick.round
+                                        }.${pick.order?.toLocaleString(
+                                          "en-US",
+                                          {
+                                            minimumIntegerDigits: 2,
+                                          }
+                                        )}`
+                                      : `${pick.season} Round ${pick.round}`
                                   )
                                     ? "redb left"
                                     : "left"
@@ -330,21 +328,19 @@ const Trade = ({ trade }) => {
                                 "left end " +
                                 `${
                                   trade.tips?.acquire &&
-                                  trade.tips?.acquire?.find(
-                                    (p) =>
-                                      (pick.season ===
-                                        stateState.league_season &&
-                                        pick.order &&
-                                        p.player_id ===
-                                          `${pick.season} ${
-                                            pick.round
-                                          }.${pick.order?.toLocaleString(
-                                            "en-US",
-                                            {
-                                              minimumIntegerDigits: 2,
-                                            }
-                                          )}`) ||
-                                      `${pick.season} Round ${pick.round}`
+                                  trade.tips?.acquire?.find((p) =>
+                                    pick.season === stateState.league_season &&
+                                    pick.order
+                                      ? p.player_id ===
+                                        `${pick.season} ${
+                                          pick.round
+                                        }.${pick.order?.toLocaleString(
+                                          "en-US",
+                                          {
+                                            minimumIntegerDigits: 2,
+                                          }
+                                        )}`
+                                      : `${pick.season} Round ${pick.round}`
                                   )
                                     ? "greenb"
                                     : ""

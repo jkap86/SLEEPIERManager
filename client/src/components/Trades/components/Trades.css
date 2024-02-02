@@ -23,3 +23,10 @@ table.trade_summary>tbody>tr:first-of-type>td>table.body {
     position: relative;
     z-index: 1;
 }
+
+tr.active table.trade_summary td {
+    background-image: radial-gradient(
+          var(--color4) -150%,
+          var(--color2) 300%
+        ) !important;;
+}
