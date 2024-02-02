@@ -4,6 +4,7 @@ const initialState = {
   avatar: null,
   leagues: false,
   leaguemates: false,
+  leaguemate_ids: false,
   userPlayerShares: false,
   isLoadingUserPS: false,
   lmplayershares: false,
@@ -68,7 +69,7 @@ const userReducer = (state = initialState, action) => {
         ...state,
         isLoadingLeagues: false,
         leagues: leagues,
-        leaguemates: Array.from(new Set(leaguemate_ids)),
+        leaguemate_ids: Array.from(new Set(leaguemate_ids)),
       };
 
     case "FETCH_LEAGUES_FAILURE":

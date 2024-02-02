@@ -11,7 +11,7 @@ import { position_map } from "../../PlayoffPool/helpers/getWeeklyResult";
 const LmTrades = ({ trades_headers, players_list, secondaryTable }) => {
   const dispatch = useDispatch();
   const { allplayers, state } = useSelector((state) => state.common);
-  const { adpLm, lmLeagueIds, user_id, leagues, leaguemates } = useSelector(
+  const { adpLm, lmLeagueIds, user_id, leagues, leaguemate_ids } = useSelector(
     (state) => state.user
   );
   const { lmTrades, isLoading, tabPrimary } = useSelector(
@@ -69,7 +69,7 @@ const LmTrades = ({ trades_headers, players_list, secondaryTable }) => {
       (trade) =>
         (tabPrimary !== "Leaguemate Trades" ||
           Object.values(trade.rosters).find((r) =>
-            leaguemates.includes(r.user_id)
+            leaguemate_ids.includes(r.user_id)
           )) &&
         (tabPrimary !== "Trade Tips" ||
           (trade.tips.acquire?.length || 0) +

@@ -37,12 +37,16 @@ table.primary.trades div.secondary.nav {
     z-index: 10;
 }
 
-table.primary.trades table.half.secondary {
+table.primary.trades table.secondary thead {
+    z-index: 10;
+}
+
+table.primary.trades table.secondary td{
     z-index: 9;
 }
 
-
-table.primary.trades table.half.secondary>tbody>tr {
+table.primary.trades table.secondary,
+table.primary.trades table.secondary>tbody>tr {
     position: sticky;
     top: 14rem;
     z-index: 9;
