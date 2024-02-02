@@ -45,11 +45,6 @@ table.primary.trades table.half.secondary {
 table.primary.trades table.half.secondary>tbody>tr {
     position: sticky;
     top: 14rem;
-    z-index: 6;
-}
-
-table.trade_summary>tbody>tr:first-of-type {
-    position: sticky;
-    top:  7rem;
     z-index: 9;
 }
+
