@@ -172,50 +172,52 @@ const LeaguesCheck = ({ secondaryTable }) => {
     ],
   ];
 
-  const body = filterLeagues(leagues, type1, type2).map((league) => {
-    const rosters_updated_league = rosters_updated[league.league_id];
-    return {
-      id: league.league_id,
-      search: {
-        text: league.name,
-        image: {
-          src: league.avatar,
-          alt: "league avatar",
-          type: "league",
-        },
-      },
-      list: [
-        {
+  const body = filterLeagues(leagues, type1, type2)
+    .filter((league) => !searched?.id || searched?.id === league.league_id)
+    .map((league) => {
+      const rosters_updated_league = rosters_updated[league.league_id];
+      return {
+        id: league.league_id,
+        search: {
           text: league.name,
-          colSpan: 6,
-          className: "left",
           image: {
             src: league.avatar,
-            alt: league.name,
+            alt: "league avatar",
             type: "league",
           },
         },
-        {
-          ...getColumnValue(column1, league, state, adpLm, allplayers),
-        },
-        {
-          ...getColumnValue(column2, league, state, adpLm, allplayers),
-        },
-        {
-          ...getColumnValue(column3, league, state, adpLm, allplayers),
-        },
-        {
-          ...getColumnValue(column4, league, state, adpLm, allplayers),
-        },
-      ],
-      secondary_table: secondaryTable({
-        league: {
-          ...league,
-          rosters: rosters_updated_league,
-        },
-      }),
-    };
-  });
+        list: [
+          {
+            text: league.name,
+            colSpan: 6,
+            className: "left",
+            image: {
+              src: league.avatar,
+              alt: league.name,
+              type: "league",
+            },
+          },
+          {
+            ...getColumnValue(column1, league, state, adpLm, allplayers),
+          },
+          {
+            ...getColumnValue(column2, league, state, adpLm, allplayers),
+          },
+          {
+            ...getColumnValue(column3, league, state, adpLm, allplayers),
+          },
+          {
+            ...getColumnValue(column4, league, state, adpLm, allplayers),
+          },
+        ],
+        secondary_table: secondaryTable({
+          league: {
+            ...league,
+            rosters: rosters_updated_league,
+          },
+        }),
+      };
+    });
 
   return (
     <>
