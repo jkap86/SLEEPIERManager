@@ -66,7 +66,7 @@ const TableMain = ({
           <div>{options1?.map((option) => option)}</div>
           <Search
             id={id}
-            placeholder={`Search ${id}`}
+            placeholder={`${(id && id) || ""}`}
             list={body
               ?.filter(
                 (b, index) =>

@@ -173,7 +173,12 @@ const LeaguesCheck = ({ secondaryTable }) => {
   ];
 
   const body = filterLeagues(leagues, type1, type2)
-    .filter((league) => !searched?.id || searched?.id === league.league_id)
+    .filter(
+      (league) =>
+        (!searched?.id && !parseInt(searched)) ||
+        league.league_id.startsWith(searched.toString()) ||
+        searched?.id === league.league_id
+    )
     .map((league) => {
       const rosters_updated_league = rosters_updated[league.league_id];
       return {
