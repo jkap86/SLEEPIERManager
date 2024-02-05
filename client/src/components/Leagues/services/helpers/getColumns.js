@@ -345,7 +345,7 @@ export const getColumnValue = (header, league, state, adpLm, allplayers) => {
       return {
         text: (
           <p
-            className="stat"
+            className="stat check"
             style={getTrendColor(
               -(value_rank / league.rosters.length - 0.5),
               0.0025
@@ -360,7 +360,7 @@ export const getColumnValue = (header, league, state, adpLm, allplayers) => {
       return {
         text: (
           <p
-            className="stat"
+            className="stat check"
             style={getTrendColor(
               -(value_rank_players / league.rosters.length - 0.5),
               0.0025
@@ -375,7 +375,7 @@ export const getColumnValue = (header, league, state, adpLm, allplayers) => {
       return {
         text: (
           <p
-            className="stat"
+            className="stat check"
             style={getTrendColor(
               -(value_rank_starters / league.rosters.length - 0.5),
               0.0025
@@ -390,7 +390,7 @@ export const getColumnValue = (header, league, state, adpLm, allplayers) => {
       return {
         text: (
           <p
-            className="stat"
+            className="stat check"
             style={getTrendColor(
               -(value_rank_picks / league.rosters.length - 0.5),
               0.0025

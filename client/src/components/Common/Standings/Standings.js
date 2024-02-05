@@ -3,8 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 import Roster from "../Roster";
 import { useEffect, useState } from "react";
 import { setStateCommon } from "../redux/actions";
+import "./Standings.css";
 
-const Standings = ({ league, trade_value_date, current_value_date, type }) => {
+const Standings = ({
+  league,
+  trade_value_date,
+  current_value_date,
+  type,
+  expandRoster,
+}) => {
   const dispatch = useDispatch();
   const { siteLinkIndex, allplayers } = useSelector((state) => state.common);
   const { adpLm } = useSelector((state) => state.user);
@@ -151,7 +158,7 @@ const Standings = ({ league, trade_value_date, current_value_date, type }) => {
         className: "half",
       },
       {
-        text: "Starters",
+        text: "Total",
         colSpan: 2,
         className: "half",
       },
@@ -181,7 +188,10 @@ const Standings = ({ league, trade_value_date, current_value_date, type }) => {
           colSpan: 2,
         },
         {
-          text: team.budget_percent_starters?.toFixed(0) + "%" || "-",
+          text:
+            (team.budget_percent_picks + team.budget_percent_players)?.toFixed(
+              0
+            ) + "%" || "-",
           colSpan: 2,
         },
       ],
@@ -193,16 +203,20 @@ const Standings = ({ league, trade_value_date, current_value_date, type }) => {
   const leagueInfo_body = [];
   return (
     <>
-      <TableMain
-        type={type + " half"}
-        headers={standings_headers}
-        body={standings_body}
-        itemActive={itemActive2}
-        setItemActive={(value) => setItemActive2(value)}
-      />
+      {expandRoster ? (
+        ""
+      ) : (
+        <TableMain
+          type={type + " half"}
+          headers={standings_headers}
+          body={standings_body}
+          itemActive={itemActive2}
+          setItemActive={(value) => setItemActive2(value)}
+        />
+      )}
       {active_roster ? (
         <Roster
-          type={type + " half"}
+          type={type + (expandRoster ? "" : " half")}
           league={league}
           roster={active_roster}
           module={"Leagues"}

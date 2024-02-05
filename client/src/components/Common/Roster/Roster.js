@@ -55,12 +55,12 @@ const Roster = ({ roster, league, type }) => {
         className: "half",
       },
       {
-        text: ppgType === "ADP" ? "Auction" : "PPG",
+        text: ppgType === "ADP" ? "Draft" : "PPG",
         colSpan: 5,
         className: "half",
       },
       {
-        text: ppgType === "ADP" ? "Draft" : "#",
+        text: ppgType === "ADP" ? "Auction" : "#",
         colSpan: 3,
         className: "half end",
       },
