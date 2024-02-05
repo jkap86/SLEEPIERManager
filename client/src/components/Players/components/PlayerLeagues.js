@@ -14,7 +14,7 @@ const PlayerLeagues = ({
   secondaryTable,
 }) => {
   const dispatch = useDispatch();
-  const { type1, type2, lmplayershares, isLoadingPS } = useSelector(
+  const { type1, type2, lmplayershares, isLoadingPS, adpLm } = useSelector(
     (state) => state.user
   );
   const { tabSecondary, searchedSecondary } = useSelector(
@@ -143,10 +143,25 @@ const PlayerLeagues = ({
         ).length;
 
         const { wins, losses, ties } = lo.userRoster.settings;
-        const winpct =
+
+        const rankings = lo.rosters?.sort(
+          (a, b) =>
+            b.players.reduce(
+              (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
+              0
+            ) -
+            a.players.reduce(
+              (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
+              0
+            )
+        );
+
+        const rank =
           wins + losses + ties > 0
-            ? (wins / (wins + losses + ties)).toFixed(4)
-            : "-";
+            ? lo.userRoster.rank
+            : rankings.findIndex(
+                (obj) => obj.roster_id === lo.userRoster.roster_id
+              );
 
         return {
           id: lo.league_id,
@@ -178,7 +193,7 @@ const PlayerLeagues = ({
                     0.0025
                   )}
                 >
-                  {lo.userRoster?.rank || "-"}
+                  {rank}
                 </p>
               ),
               colSpan: 1,
@@ -234,10 +249,60 @@ const PlayerLeagues = ({
       })
     : filterLeagues(leagues_display, type1, type2).map((lo) => {
         const { wins, losses, ties } = lo.userRoster.settings;
-        const winpct =
+
+        const rankings = lo.rosters?.sort(
+          (a, b) =>
+            (b.players?.reduce(
+              (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
+              0
+            ) || 0) +
+            (b.draft_picks?.reduce(
+              (acc, cur) =>
+                acc +
+                (adpLm?.["Dynasty_auction"]?.[
+                  "R" +
+                    +(
+                      (cur.round - 1) * 12 +
+                      (parseInt(
+                        cur.season === parseInt(lo.season) && cur.order
+                      ) || 7)
+                    )
+                ]?.adp || 0),
+              0
+            ) || 0) -
+            ((a.players?.reduce(
+              (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
+              0
+            ) || 0) +
+              (a.draft_picks?.reduce(
+                (acc, cur) =>
+                  acc +
+                  (adpLm?.["Dynasty_auction"]?.[
+                    "R" +
+                      +(
+                        (cur.round - 1) * 12 +
+                        (parseInt(
+                          cur.season === parseInt(lo.season) && cur.order
+                        ) || 7)
+                      )
+                  ]?.adp || 0),
+                0
+              ) || 0))
+        );
+
+        const rank =
           wins + losses + ties > 0
-            ? (wins / (wins + losses + ties)).toFixed(4)
-            : "-";
+            ? lo.userRoster.rank
+            : rankings.findIndex(
+                (obj) => obj.roster_id === lo.userRoster.roster_id
+              ) + 1;
+
+        const lm_rank =
+          wins + losses + ties > 0
+            ? lo.lmRoster.rank
+            : rankings.findIndex(
+                (obj) => obj.roster_id === lo.lmRoster?.roster_id
+              ) + 1;
 
         return {
           id: lo.league_id,
@@ -265,11 +330,11 @@ const PlayerLeagues = ({
                 <p
                   className={"stat check"}
                   style={getTrendColor(
-                    -(lo.userRoster.rank / lo.rosters.length - 0.5),
+                    -(rank / lo.rosters.length - 0.5),
                     0.0025
                   )}
                 >
-                  {lo.userRoster?.rank || "-"}
+                  {rank}
                 </p>
               ),
               colSpan: 1,
@@ -299,11 +364,11 @@ const PlayerLeagues = ({
                     <p
                       className={"stat check"}
                       style={getTrendColor(
-                        -(lo.lmRoster.rank / lo.rosters.length - 0.5),
+                        -(lm_rank / lo.rosters.length - 0.5),
                         0.0025
                       )}
                     >
-                      {lo.lmRoster?.rank}
+                      {lm_rank}
                     </p>
                   ),
                   colSpan: 1,
