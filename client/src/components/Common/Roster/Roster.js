@@ -121,9 +121,34 @@ const Roster = ({ roster, league, type }) => {
         ...(filter === "All"
           ? [
               ...(roster.starters || []),
-              ...(roster.players || []).filter(
-                (player_id) => !roster.starters.includes(player_id)
-              ),
+              ...(roster.players || [])
+                .filter((player_id) => !roster.starters.includes(player_id))
+                .sort((a, b) => {
+                  const getPositionValue = (player_id) => {
+                    const position = allplayers[player_id]?.position;
+
+                    switch (position) {
+                      case "QB":
+                        return 1;
+                      case "RB":
+                        return 2;
+                      case "FB":
+                        return 2;
+                      case "WR":
+                        return 3;
+                      case "TE":
+                        return 4;
+                      default:
+                        return 5;
+                    }
+                  };
+
+                  return (
+                    getPositionValue(a) - getPositionValue(b) ||
+                    (adpLm?.["Dynasty"]?.[a]?.adp || 999) -
+                      (adpLm?.["Dynasty"]?.[b]?.adp || 999)
+                  );
+                }),
             ]
           : roster.players
         )?.map((player_id, index) => {
