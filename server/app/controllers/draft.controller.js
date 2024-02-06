@@ -74,21 +74,23 @@ exports.playercomp = async (req, res) => {
           },
         ],
       },
-      include: {
-        model: Draft,
-        attributes: [],
-        include: {
+      include: [
+        {
+          model: Draft,
           attributes: [],
-          model: Draftpick,
-          where: {
-            player_id: req.body.player2,
-            pick_no: {
-              [Op.gt]: sequelize.col("draftpick.pick_no"),
+          include: {
+            attributes: [],
+            model: Draftpick,
+            where: {
+              player_id: req.body.player2,
+              pick_no: {
+                [Op.gt]: sequelize.col("draftpick.pick_no"),
+              },
             },
           },
+          required: true,
         },
-        required: true,
-      },
+      ],
     });
 
     const list2 = await Draftpick.findAll({
@@ -124,4 +126,90 @@ exports.playercomp = async (req, res) => {
   } catch (err) {
     console.log(err.message);
   }
+};
+
+exports.higher = async (req, res) => {
+  const draftpicks = await Draftpick.findAll({
+    attributes: ["player_id"],
+    where: {
+      [Op.and]: [
+        {
+          player_id: req.body.higher,
+        },
+      ],
+    },
+    include: {
+      model: Draft,
+
+      include: [
+        {
+          attributes: ["picked_by"],
+          model: Draftpick,
+          where: {
+            [Op.and]: [
+              { player_id: req.body.player },
+              {
+                pick_no: {
+                  [Op.lt]: sequelize.col("draftpick.pick_no"),
+                },
+              },
+              {
+                picked_by: req.body.leaguemate_ids,
+              },
+            ],
+          },
+        },
+        {
+          model: League,
+          attributes: ["name"],
+        },
+      ],
+      required: true,
+    },
+  });
+
+  res.send(draftpicks);
+};
+
+exports.lower = async (req, res) => {
+  const draftpicks = await Draftpick.findAll({
+    attributes: ["player_id", "picked_by"],
+    where: {
+      [Op.and]: [
+        {
+          player_id: req.body.lower,
+        },
+        {
+          picked_by: req.body.leaguemate_ids,
+        },
+      ],
+    },
+    include: {
+      model: Draft,
+
+      include: [
+        {
+          attributes: [],
+          model: Draftpick,
+          where: {
+            [Op.and]: [
+              { player_id: req.body.player },
+              {
+                pick_no: {
+                  [Op.lt]: sequelize.col("draftpick.pick_no"),
+                },
+              },
+            ],
+          },
+        },
+        {
+          model: League,
+          attributes: ["name"],
+        },
+      ],
+      required: true,
+    },
+  });
+
+  res.send(draftpicks);
 };

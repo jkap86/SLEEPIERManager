@@ -8,5 +8,9 @@ module.exports = (app) => {
 
   router.post("/playercomp", draft.playercomp);
 
+  router.post("/higher", draft.higher);
+
+  router.post("/lower", draft.lower);
+
   app.use("/draft", router);
 };
