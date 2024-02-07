@@ -18,6 +18,7 @@ const RecTrades = () => {
   const [itemActive, setItemActive] = useState("");
   const [itemActive2, setItemActive2] = useState("");
   const [findTab, setFindTab] = useState("Lower");
+  const [secondaryTab, setSecondaryTab] = useState("Tips");
 
   const fetchHigher = async () => {
     setFindTab("Higher");
@@ -173,87 +174,118 @@ const RecTrades = () => {
             },
           ],
           secondary_table: (
-            <TableMain
-              type={"secondary"}
-              headers={[
-                [
-                  {
-                    text: "Leaguemate",
-                    colSpan: 3,
-                  },
-                  {
-                    text: "#",
-                    colSpan: 1,
-                  },
-                ],
-              ]}
-              body={Object.keys(po[player_id])
-                .sort(
-                  (a, b) => po[player_id][b].length - po[player_id][a].length
-                )
-                .map((lm_user_id) => {
-                  const user = leagues
-                    .flatMap((league) => league.rosters)
-                    .find((roster) => roster.user_id === lm_user_id);
+            <>
+              <div className="secondary nav"></div>
+              <TableMain
+                type={"secondary"}
+                headers={[
+                  [
+                    {
+                      text: "Leaguemate",
+                      colSpan: 3,
+                    },
+                    {
+                      text: "#",
+                      colSpan: 1,
+                    },
+                  ],
+                ]}
+                body={Object.keys(po[player_id])
+                  .sort(
+                    (a, b) => po[player_id][b].length - po[player_id][a].length
+                  )
+                  .map((lm_user_id) => {
+                    const user = leagues
+                      .flatMap((league) => league.rosters)
+                      .find((roster) => roster.user_id === lm_user_id);
 
-                  const count = Object.keys(po[player_id]).filter(
-                    (x) => x === lm_user_id
-                  ).length;
+                    const count = Object.keys(po[player_id]).filter(
+                      (x) => x === lm_user_id
+                    ).length;
 
-                  const target_leagues_lm = leagues.filter((league) =>
-                    league.rosters.find(
-                      (roster) =>
-                        lm_user_id === roster.user_id &&
-                        roster.players?.includes(
-                          findTab === "Higher" ? player_id : player1.id
-                        ) &&
-                        league.userRoster.players?.includes(
-                          findTab === "Higher" ? player1.id : player_id
-                        )
-                    )
-                  );
-                  const className = target_leagues_lm.length > 0 ? "redb" : "";
-                  return {
-                    id: lm_user_id,
-                    list: [
-                      {
-                        text: user?.username,
-                        colSpan: 3,
-                        image: {
-                          src: user?.avatar,
-                          alt: "avatar",
-                          type: "user",
+                    const target_leagues_lm = leagues.filter((league) =>
+                      league.rosters.find(
+                        (roster) =>
+                          lm_user_id === roster.user_id &&
+                          roster.players?.includes(
+                            findTab === "Higher" ? player_id : player1.id
+                          ) &&
+                          league.userRoster.players?.includes(
+                            findTab === "Higher" ? player1.id : player_id
+                          )
+                      )
+                    );
+                    const className =
+                      target_leagues_lm.length > 0 ? "redb" : "";
+                    return {
+                      id: lm_user_id,
+                      list: [
+                        {
+                          text: user?.username,
+                          colSpan: 3,
+                          image: {
+                            src: user?.avatar,
+                            alt: "avatar",
+                            type: "user",
+                          },
+                          className: "left " + className,
                         },
-                        className: "left " + className,
-                      },
-                      {
-                        text: count,
-                        colSpan: 1,
-                        className: className,
-                      },
-                    ],
-                    secondary_table: (
-                      <TableMain
-                        type={"tertiary"}
-                        headers={[[{ text: "League", colSpan: 3 }]]}
-                        body={target_leagues_lm.map((league) => {
-                          return {
-                            id: league.league_id,
-                            list: [
-                              {
-                                text: league.name,
-                                colSpan: 3,
-                              },
-                            ],
-                          };
-                        })}
-                      />
-                    ),
-                  };
-                })}
-              itemActive={itemActive2}
-              setItemActive={setItemActive2}
-            />
+                        {
+                          text: count,
+                          colSpan: 1,
+                          className: className,
+                        },
+                      ],
+                      secondary_table: (
+                        <>
+                          <div className="tertiary nav">
+                            <button
+                              className={
+                                secondaryTab === "Tips"
+                                  ? "active click"
+                                  : "click"
+                              }
+                              onClick={() => setSecondaryTab("Tips")}
+                            >
+                              Tips
+                            </button>
+                            <button
+                              className={
+                                secondaryTab === "Leagues Drafted"
+                                  ? "active click"
+                                  : "click"
+                              }
+                              onClick={() => setSecondaryTab("Leagues Drafted")}
+                            >
+                              Leagues Drafted
+                            </button>
+                          </div>
+                          <TableMain
+                            type={"tertiary"}
+                            headers={[[{ text: "League", colSpan: 3 }]]}
+                            body={(secondaryTab === "Tips"
+                              ? target_leagues_lm
+                              : po[player_id][lm_user_id]
+                            ).map((league) => {
+                              return {
+                                id: league.league_id || league,
+                                list: [
+                                  {
+                                    text: league.name || league,
+                                    colSpan: 3,
+                                  },
+                                ],
+                              };
+                            })}
+                          />
+                        </>
+                      ),
+                    };
+                  })}
+                itemActive={itemActive2}
+                setItemActive={setItemActive2}
+              />
+            </>
           ),
         };
       });
