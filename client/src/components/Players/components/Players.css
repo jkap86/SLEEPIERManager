@@ -1,0 +1,10 @@
+div.nav>button {
+    background-color: transparent;
+    border: none;
+    color: silver;
+    margin: 3rem  
+}
+
+div.nav>button.active {
+    color: var(--color2);
+}

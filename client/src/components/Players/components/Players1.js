@@ -4,6 +4,7 @@ import useFetchLmPlayerShares from "../../Common/services/hooks/useFetchLmPlayer
 import { useSelector } from "react-redux";
 import PlayersComparison from "./PlayersComparison";
 import RecTrades from "./RecTrades";
+import "./Players.css";
 
 const Players1 = ({ secondaryTable }) => {
   const { tabSecondary, primaryContent } = useSelector(

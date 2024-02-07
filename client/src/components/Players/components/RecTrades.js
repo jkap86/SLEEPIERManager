@@ -302,22 +302,61 @@ const RecTrades = () => {
               getAdpFormatted(adpLm?.["Dynasty"]?.[player1.id]?.adp)) ||
               999}
           </h1>
-          <div>
-            <button onClick={fetchHigher}>Higher</button>
-            <button onClick={fetchLower}>Lower</button>
+          <div className="nav">
+            <button
+              className={
+                findTab === "Higher" && poHigher?.player_id === player1?.id
+                  ? "active"
+                  : ""
+              }
+              onClick={fetchHigher}
+            >
+              Higher
+            </button>
+            <button
+              className={
+                findTab === "Lower" && poLower?.player_id === player1?.id
+                  ? "active"
+                  : ""
+              }
+              onClick={fetchLower}
+            >
+              Lower
+            </button>
           </div>
         </>
       )}
-      {player1.id ===
-        (findTab === "Higher" ? poHigher.player_id : poLower.player_id) && (
-        <TableMain
-          type={"primary"}
-          headers={header}
-          body={body}
-          itemActive={itemActive}
-          setItemActive={setItemActive}
-        />
-      )}
+      {(player1.id &&
+        player1.id ===
+          (findTab === "Higher" ? poHigher.player_id : poLower.player_id) && (
+          <TableMain
+            type={"primary"}
+            headers={header}
+            body={body}
+            itemActive={itemActive}
+            setItemActive={setItemActive}
+          />
+        )) ||
+        (player1?.id ? (
+          findTab === "Higher" ? (
+            <h2>{`Players with higher ADP than ${
+              allplayers[player1.id]?.full_name
+            } but not drafted earlier than ${
+              allplayers[player1.id]?.full_name
+            }`}</h2>
+          ) : (
+            <h2>{`Players with lower ADP than ${
+              allplayers[player1.id]?.full_name
+            } but drafted earlier than ${
+              allplayers[player1.id]?.full_name
+            }`}</h2>
+          )
+        ) : (
+          <h2>
+            Search Player to find other players that leaguemates are
+            higher/lower on than adp
+          </h2>
+        ))}
     </>
   );
 };

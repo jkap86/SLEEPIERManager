@@ -196,7 +196,7 @@ exports.lower = async (req, res) => {
               { player_id: req.body.player },
               {
                 pick_no: {
-                  [Op.lt]: sequelize.col("draftpick.pick_no"),
+                  [Op.gt]: sequelize.col("draftpick.pick_no"),
                 },
               },
             ],
