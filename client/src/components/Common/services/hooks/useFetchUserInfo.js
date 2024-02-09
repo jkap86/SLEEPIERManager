@@ -98,11 +98,11 @@ const useFetchUserInfo = (to_fetch_array) => {
   }, [dispatch, allplayers, leagues]);
 
   useEffect(() => {
-    if (lmLeagueIds && !adpLm) {
+    if (lmLeagueIds && allplayers && !adpLm) {
       checkIndexedDB(
         user_id,
         "lmAdp",
-        () => dispatch(fetchAdp(lmLeagueIds, user_id)),
+        () => dispatch(fetchAdp(lmLeagueIds, user_id, allplayers)),
         (data) =>
           dispatch({
             type: "SET_STATE_USER",
@@ -110,7 +110,7 @@ const useFetchUserInfo = (to_fetch_array) => {
           })
       );
     }
-  }, [dispatch, lmLeagueIds, adpLm, user_id]);
+  }, [dispatch, lmLeagueIds, adpLm, user_id, allplayers]);
   console.log({ adpLm });
 };
 

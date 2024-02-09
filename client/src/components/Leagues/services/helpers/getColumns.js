@@ -27,7 +27,7 @@ export const getColumnValue = (header, league, state, adpLm, allplayers) => {
   const percent_fp_of_avg =
     (record.fpts / (league_total_fp / league.rosters.length)) * 100;
 
-  const budget_percent_players = league.userRoster.players.reduce(
+  const budget_percent_players = league.userRoster.players?.reduce(
     (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
     0
   );
@@ -400,6 +400,12 @@ export const getColumnValue = (header, league, state, adpLm, allplayers) => {
           </p>
         ),
         colSpan: 3,
+      };
+    case "League ID":
+      return {
+        text: <p>{league.league_id}</p>,
+        colSpan: 3,
+        className: "left",
       };
     default:
       return {

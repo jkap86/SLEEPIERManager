@@ -87,6 +87,7 @@ const LeaguesCheck = ({ secondaryTable }) => {
     "FP",
     "FPA",
     "% FP of Avg",
+    "League ID",
   ];
 
   const headers = [

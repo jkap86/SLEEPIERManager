@@ -1,8 +1,7 @@
 div.nav>button {
     background-color: transparent;
     border: none;
-    color: silver;
-    margin: 3rem  
+    color: silver; 
 }
 
 div.nav>button.active {
