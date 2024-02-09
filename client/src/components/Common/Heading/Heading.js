@@ -25,12 +25,63 @@ const Heading = () => {
     ? progress
     : filterLeagues(leagues || [], type1, type2)?.length;
 
+  const nav_items = [
+    {
+      text: "South Harmon Home",
+      link: "https://www.southharmonff.com/",
+    },
+    {
+      text: "ADP",
+      link: "https://www.southharmonff.com/adp",
+    },
+    {
+      text: "WoRP",
+      link: "https://www.southharmonff.com/worp",
+    },
+    {
+      text: "Patreon",
+      link: "https://www.patreon.com/SouthHarmon",
+    },
+    {
+      text: "Articles",
+      link: "https://www.southharmonff.com/articles",
+    },
+    {
+      text: "Dynasty MindWoRPed",
+      link: "https://www.southharmonff.com/mindworped",
+    },
+    {
+      text: "Store",
+      link: "https://www.southharmonff.com/store",
+    },
+    {
+      text: "Team Reviews",
+      link: "https://www.southharmonff.com/team-reviews",
+    },
+  ];
+
   return !user_id ? (
     ""
   ) : (
     <>
+      <div className="sh_nav">
+        {nav_items.map((nav_item) => {
+          return (
+            <a
+              href={nav_item.link}
+              target={
+                !nav_item.link.includes("southharmonff.com")
+                  ? "_blank"
+                  : "_self"
+              }
+            >
+              {nav_item.text}
+            </a>
+          );
+        })}
+      </div>
       <Link to="/" className="home">
-        Home
+        The Lab Home
       </Link>
       <div className="heading">
         <h1>{state?.league_season}</h1>

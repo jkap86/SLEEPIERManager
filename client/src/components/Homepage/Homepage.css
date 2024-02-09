@@ -3,7 +3,7 @@ div#homepage {
     width: 100vw;
 }
 
-div#homepage a {
+div#homepage div.home_title>div a {
     background-color: var(--color3);
     border: .75rem double silver;
     filter: drop-shadow(0 0 .5rem white)
@@ -232,14 +232,16 @@ div#homepage div.picktracker {
     position: absolute;
     z-index: 2;
     filter: contrast(2);
-
+    background-color: black;
+    border-radius: 2.5rem;
+    padding: 2rem;
+    box-shadow: 0 0 2rem var(--te);
 
 }
 
 div#homepage p.home {
-    color: var(--color2);
+   
     text-align: center;
-    margin-bottom: 2rem;
 }
 
 div#homepage input.picktracker {
@@ -247,7 +249,7 @@ div#homepage input.picktracker {
     float: left;
     border-width: 1rem;
     font-size: 3rem;
-
+    margin-top: 2rem;
 }
 
 div#homepage button {
@@ -261,3 +263,4 @@ div#homepage button {
 
     width: 100%;
 }
+

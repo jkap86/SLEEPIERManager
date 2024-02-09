@@ -41,9 +41,13 @@ const Homepage = () => {
               className="picktracker"
               placeholder="League ID"
             />
-            <Link className="home" to={`/picktracker/${leagueId}`}>
+            <a
+              className="home"
+              href={`/picktracker/${leagueId}`}
+              target="_blank"
+            >
               Submit
-            </Link>
+            </a>
           </>
         ) : null}
       </div>
