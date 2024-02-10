@@ -196,7 +196,7 @@ exports.lower = async (req, res) => {
               { player_id: req.body.player },
               {
                 pick_no: {
-                  [Op.gt]: sequelize.col("draftpick.pick_no"),
+                  [Op.gt]: sequelize.col("pick_no"),
                 },
               },
             ],
@@ -205,6 +205,59 @@ exports.lower = async (req, res) => {
         {
           model: League,
           attributes: ["name"],
+        },
+      ],
+      required: true,
+    },
+  });
+
+  res.send(draftpicks);
+};
+
+exports.all = async (req, res) => {
+  const filters = [];
+
+  Object.keys(req.body.obj).forEach((player_id1) => {
+    Object.keys(req.body.obj[player_id1]).forEach((player_id2) => {
+      filters.push({
+        [Op.and]: [
+          {
+            player_id: player_id1,
+          },
+          {
+            picked_by: req.body.obj[player_id1][player_id2],
+          },
+          {
+            "draft.draftpicks": {
+              [Op.contains]: [
+                {
+                  pick_no: {
+                    [Op.gt]: sequelize.col("draftpick.pick_no"),
+                  },
+                },
+                {
+                  player_id: player_id2,
+                },
+              ],
+            },
+          },
+        ],
+      });
+    });
+  });
+
+  const draftpicks = await Draftpick.findAll({
+    attributes: ["player_id", "draft.picked_by", "draftpick.pick_no"],
+    where: {
+      [Op.or]: filters,
+    },
+    include: {
+      model: Draft,
+
+      include: [
+        {
+          model: Draftpick,
+          required: true,
         },
       ],
       required: true,

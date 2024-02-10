@@ -26,7 +26,7 @@ const RecTrades = () => {
       player: player1.id,
       higher: Object.keys(adpLm?.Dynasty || {}).filter(
         (player_id) =>
-          adpLm?.Dynasty?.[player_id]?.adp <
+          (adpLm?.Dynasty?.[player_id]?.adp || 999) <
           (adpLm?.Dynasty?.[player1.id]?.adp || 999)
       ),
       leaguemate_ids: leaguemate_ids,
@@ -334,23 +334,15 @@ const RecTrades = () => {
               getAdpFormatted(adpLm?.["Dynasty"]?.[player1.id]?.adp)) ||
               999}
           </h1>
-          <div className="nav">
+          <div className="flex">
             <button
-              className={
-                findTab === "Higher" && poHigher?.player_id === player1?.id
-                  ? "active"
-                  : ""
-              }
+              className={findTab === "Higher" ? "active" : ""}
               onClick={fetchHigher}
             >
               Higher
             </button>
             <button
-              className={
-                findTab === "Lower" && poLower?.player_id === player1?.id
-                  ? "active"
-                  : ""
-              }
+              className={findTab === "Lower" ? "active" : ""}
               onClick={fetchLower}
             >
               Lower
@@ -358,18 +350,8 @@ const RecTrades = () => {
           </div>
         </>
       )}
-      {(player1.id &&
-        player1.id ===
-          (findTab === "Higher" ? poHigher.player_id : poLower.player_id) && (
-          <TableMain
-            type={"primary"}
-            headers={header}
-            body={body}
-            itemActive={itemActive}
-            setItemActive={setItemActive}
-          />
-        )) ||
-        (player1?.id ? (
+      <h2>
+        {player1?.id ? (
           findTab === "Higher" ? (
             <h2>{`Players with higher ADP than ${
               allplayers[player1.id]?.full_name
@@ -388,7 +370,19 @@ const RecTrades = () => {
             Search Player to find other players that leaguemates are
             higher/lower on than adp
           </h2>
-        ))}
+        )}
+      </h2>
+      {player1.id &&
+        player1.id ===
+          (findTab === "Higher" ? poHigher.player_id : poLower.player_id) && (
+          <TableMain
+            type={"primary"}
+            headers={header}
+            body={body}
+            itemActive={itemActive}
+            setItemActive={setItemActive}
+          />
+        )}
     </>
   );
 };
