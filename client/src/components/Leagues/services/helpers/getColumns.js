@@ -57,12 +57,15 @@ export const getColumnValue = (header, league, state, adpLm, allplayers) => {
               acc +
               (adpLm?.["Dynasty_auction"]?.[
                 "R" +
-                  +(
-                    (cur.round - 1) * 12 +
+                  ((cur.round - 1) * 12 +
                     (parseInt(
                       cur.season === parseInt(league.season) && cur.order
-                    ) || 7)
-                  )
+                    ) ||
+                      Math.min(
+                        6 +
+                          (parseInt(cur.season) - parseInt(league.season)) * 3,
+                        12
+                      )))
               ]?.adp || 0),
             0
           ) || 0) -
@@ -79,7 +82,13 @@ export const getColumnValue = (header, league, state, adpLm, allplayers) => {
                       (cur.round - 1) * 12 +
                       (parseInt(
                         cur.season === parseInt(league.season) && cur.order
-                      ) || 7)
+                      ) ||
+                        Math.min(
+                          6 +
+                            (parseInt(cur.season) - parseInt(league.season)) *
+                              3,
+                          12
+                        ))
                     )
                 ]?.adp || 0),
               0

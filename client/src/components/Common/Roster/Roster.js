@@ -39,7 +39,7 @@ const Roster = ({ roster, league, type }) => {
             <option>On Bench</option>
           </select>
         ),
-        colSpan: 8,
+        colSpan: 9,
         className: "half",
       },
     ],
@@ -61,7 +61,7 @@ const Roster = ({ roster, league, type }) => {
       },
       {
         text: ppgType === "ADP" ? "Auction" : "#",
-        colSpan: 3,
+        colSpan: 4,
         className: "half end",
       },
     ],
@@ -212,7 +212,7 @@ const Roster = ({ roster, league, type }) => {
                           0
                         ) || "0") + "%"
                       : games?.toString() || "-",
-                  colSpan: 3,
+                  colSpan: 4,
                 },
               ],
             };
@@ -224,6 +224,34 @@ const Roster = ({ roster, league, type }) => {
               a.season - b.season || a.round - b.round || a.order - b.order
           )
           ?.map((pick) => {
+            const adp =
+              adpLm["Dynasty"]?.[
+                "R" +
+                  ((pick.round - 1) * 12 +
+                    (parseInt(
+                      pick.season === parseInt(league.season) && pick.order
+                    ) ||
+                      Math.min(
+                        6 +
+                          (parseInt(pick.season) - parseInt(league.season)) * 3,
+                        12
+                      )))
+              ]?.adp;
+
+            const auction_value =
+              adpLm["Dynasty_auction"]?.[
+                "R" +
+                  ((pick.round - 1) * 12 +
+                    (parseInt(
+                      pick.season === parseInt(league.season) && pick.order
+                    ) ||
+                      Math.min(
+                        6 +
+                          (parseInt(pick.season) - parseInt(league.season)) * 3,
+                        12
+                      )))
+              ]?.adp;
+
             return {
               id: `${pick.season}_${pick.round}_${pick.original_user.user_id}`,
               list: [
@@ -245,8 +273,16 @@ const Roster = ({ roster, league, type }) => {
                       </span>
                     </p>
                   ),
-                  colSpan: 27,
+                  colSpan: 19,
                   className: "left",
+                },
+                {
+                  text: (adp && getAdpFormatted(adp)) || 999,
+                  colSpan: 5,
+                },
+                {
+                  text: auction_value?.toFixed() + "%",
+                  colSpan: 4,
                 },
               ],
             };
