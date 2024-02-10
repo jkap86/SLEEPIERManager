@@ -47,7 +47,25 @@ const RecTrades = () => {
                     (r.picked_by || r.draft.draftpicks[0]?.picked_by) ===
                       (r2.picked_by || r2.draft.draftpicks[0]?.picked_by)
                 )
-                .map((r2) => r2.draft.league.name),
+                .map((r2) => {
+                  return {
+                    league_id: r2.draft.league.league_id,
+                    name: r2.draft.league.name,
+                    dates: `${new Date(
+                      parseInt(r2.draft.start_time)
+                    ).toLocaleDateString("en-US", {
+                      month: "numeric",
+                      day: "numeric",
+                      year: "2-digit",
+                    })} - ${new Date(
+                      parseInt(r2.draft.last_picked)
+                    ).toLocaleDateString("en-US", {
+                      month: "numeric",
+                      day: "numeric",
+                      year: "2-digit",
+                    })}`,
+                  };
+                }),
             ])
         ),
       ])
@@ -97,7 +115,25 @@ const RecTrades = () => {
                     (r.picked_by || r.draft.draftpicks[0]?.picked_by) ===
                       (r2.picked_by || r2.draft.draftpicks[0]?.picked_by)
                 )
-                .map((r2) => r2.draft.league.name),
+                .map((r2) => {
+                  return {
+                    league_id: r2.draft.league.league_id,
+                    name: r2.draft.league.name,
+                    dates: `${new Date(
+                      parseInt(r2.draft.start_time)
+                    ).toLocaleDateString("en-US", {
+                      month: "numeric",
+                      day: "numeric",
+                      year: "2-digit",
+                    })} - ${new Date(
+                      parseInt(r2.draft.last_picked)
+                    ).toLocaleDateString("en-US", {
+                      month: "numeric",
+                      day: "numeric",
+                      year: "2-digit",
+                    })}`,
+                  };
+                }),
             ])
         ),
       ])
@@ -268,10 +304,17 @@ const RecTrades = () => {
                               : po[player_id][lm_user_id]
                             ).map((league) => {
                               return {
-                                id: league.league_id || league,
+                                id: league.league_id,
                                 list: [
                                   {
-                                    text: league.name || league,
+                                    text: (
+                                      <>
+                                        {league.name}{" "}
+                                        <em>
+                                          {league.dates && `(${league.dates})`}
+                                        </em>
+                                      </>
+                                    ),
                                     colSpan: 3,
                                   },
                                 ],
@@ -353,15 +396,13 @@ const RecTrades = () => {
       <h2>
         {player1?.id ? (
           findTab === "Higher" ? (
-            <h2>{`Players with higher ADP than ${
+            <h2>{`Players with HIGHER adp than ${
               allplayers[player1.id]?.full_name
-            } but not drafted earlier than ${
-              allplayers[player1.id]?.full_name
-            }`}</h2>
+            } but drafted LOWER than ${allplayers[player1.id]?.full_name}`}</h2>
           ) : (
-            <h2>{`Players with lower ADP than ${
+            <h2>{`Players with LOWER adp than ${
               allplayers[player1.id]?.full_name
-            } but drafted earlier than ${
+            } but drafted HIGHER than ${
               allplayers[player1.id]?.full_name
             }`}</h2>
           )

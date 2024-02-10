@@ -130,7 +130,7 @@ exports.playercomp = async (req, res) => {
 
 exports.higher = async (req, res) => {
   const draftpicks = await Draftpick.findAll({
-    attributes: ["player_id"],
+    attributes: ["player_id", "pick_no"],
     where: {
       [Op.and]: [
         {
@@ -161,7 +161,7 @@ exports.higher = async (req, res) => {
         },
         {
           model: League,
-          attributes: ["name"],
+          attributes: ["league_id", "name"],
         },
       ],
       required: true,
@@ -196,7 +196,7 @@ exports.lower = async (req, res) => {
               { player_id: req.body.player },
               {
                 pick_no: {
-                  [Op.gt]: sequelize.col("pick_no"),
+                  [Op.gt]: sequelize.col("draftpick.pick_no"),
                 },
               },
             ],
@@ -204,7 +204,7 @@ exports.lower = async (req, res) => {
         },
         {
           model: League,
-          attributes: ["name"],
+          attributes: ["league_id", "name"],
         },
       ],
       required: true,
