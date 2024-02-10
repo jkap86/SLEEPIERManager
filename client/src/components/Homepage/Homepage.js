@@ -17,8 +17,60 @@ const Homepage = () => {
     dispatch(resetState());
   }, []);
 
+  const nav_items = [
+    {
+      text: "South Harmon Home",
+      link: "https://www.southharmonff.com/",
+    },
+    {
+      text: "ADP",
+      link: "https://www.southharmonff.com/adp",
+    },
+    {
+      text: "WoRP",
+      link: "https://www.southharmonff.com/worp",
+    },
+    {
+      text: "Patreon",
+      link: "https://www.patreon.com/SouthHarmon",
+    },
+    {
+      text: "Articles",
+      link: "https://www.southharmonff.com/articles",
+    },
+    {
+      text: "Dynasty MindWoRPed",
+      link: "https://www.southharmonff.com/mindworped",
+    },
+    {
+      text: "Store",
+      link: "https://www.southharmonff.com/store",
+    },
+    {
+      text: "Team Reviews",
+      link: "https://www.southharmonff.com/team-reviews",
+    },
+  ];
+
   return (
     <div id="homepage">
+      <div className="sh_nav">
+        {nav_items.map((nav_item) => {
+          return (
+            <a
+              key={nav_item.text}
+              href={nav_item.link}
+              target={
+                !nav_item.link.includes("southharmonff.com")
+                  ? "_blank"
+                  : "_self"
+              }
+            >
+              {nav_item.text}
+            </a>
+          );
+        })}
+      </div>
       <div className="picktracker">
         <p
           className="home click"
@@ -41,13 +93,9 @@ const Homepage = () => {
               className="picktracker"
               placeholder="League ID"
             />
-            <a
-              className="home"
-              href={`/picktracker/${leagueId}`}
-              target="_blank"
-            >
+            <Link className="home" to={`/picktracker/${leagueId.trim()}`}>
               Submit
-            </a>
+            </Link>
           </>
         ) : null}
       </div>
