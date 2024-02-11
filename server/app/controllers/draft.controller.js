@@ -254,7 +254,7 @@ exports.lm = async (req, res) => {
     return lm_player_picks;
   };
 
-  const batchSize = 5;
+  const batchSize = 15;
 
   const results = [];
 

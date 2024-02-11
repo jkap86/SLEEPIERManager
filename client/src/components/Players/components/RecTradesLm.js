@@ -240,6 +240,13 @@ const RecTradesLm = () => {
                                 allplayers,
                               })
                                 .filter((o) => o.slot_raw !== "BN")
+                                .sort(
+                                  (a, b) =>
+                                    league.roster_positions.indexOf(
+                                      a.slot_raw
+                                    ) -
+                                    league.roster_positions.indexOf(b.slot_raw)
+                                )
                                 .map((o) => o.player),
                             }}
                             league={league}
@@ -255,6 +262,13 @@ const RecTradesLm = () => {
                                 allplayers,
                               })
                                 .filter((o) => o.slot_raw !== "BN")
+                                .sort(
+                                  (a, b) =>
+                                    league.roster_positions.indexOf(
+                                      a.slot_raw
+                                    ) -
+                                    league.roster_positions.indexOf(b.slot_raw)
+                                )
                                 .map((o) => o.player),
                             }}
                             league={league}
