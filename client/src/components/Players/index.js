@@ -21,6 +21,7 @@ const Players = () => {
           <option>All</option>
           <option>Comparison</option>
           <option>Find</option>
+          <option>Find Lm</option>
         </select>
       </h2>
       <Players1

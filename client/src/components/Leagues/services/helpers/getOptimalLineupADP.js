@@ -28,7 +28,7 @@ export const getOptimalLineupADP = ({
 }) => {
   const optimal_lineup = [];
 
-  let players = (roster.players || []).map((player_id) => {
+  let players = (roster?.players || []).map((player_id) => {
     return {
       player_id: player_id,
       adp: adpLm?.["Dynasty"]?.[player_id]?.adp || 999,

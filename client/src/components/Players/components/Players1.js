@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import PlayersComparison from "./PlayersComparison";
 import RecTrades from "./RecTrades";
 import "./Players.css";
+import RecTradesLm from "./RecTradesLm";
 
 const Players1 = ({ secondaryTable }) => {
   const { tabSecondary, primaryContent } = useSelector(
@@ -20,6 +21,8 @@ const Players1 = ({ secondaryTable }) => {
     <>
       {primaryContent === "Find" ? (
         <RecTrades />
+      ) : primaryContent === "Find Lm" ? (
+        <RecTradesLm />
       ) : primaryContent === "Comparison" ? (
         <PlayersComparison />
       ) : (

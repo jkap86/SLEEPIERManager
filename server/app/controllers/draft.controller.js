@@ -214,55 +214,56 @@ exports.lower = async (req, res) => {
   res.send(draftpicks);
 };
 
-exports.all = async (req, res) => {
-  const filters = [];
+exports.lm = async (req, res) => {
+  const getLmPlayerPicks = async (player_id, higher) => {
+    const lm_player_picks = await Draftpick.findAll({
+      attributes: ["player_id", "pick_no"],
+      where: {
+        player_id: higher,
+      },
+      include: {
+        model: Draft,
 
-  Object.keys(req.body.obj).forEach((player_id1) => {
-    Object.keys(req.body.obj[player_id1]).forEach((player_id2) => {
-      filters.push({
-        [Op.and]: [
+        include: [
           {
-            player_id: player_id1,
-          },
-          {
-            picked_by: req.body.obj[player_id1][player_id2],
-          },
-          {
-            "draft.draftpicks": {
-              [Op.contains]: [
+            attributes: ["picked_by", "player_id", "pick_no"],
+            model: Draftpick,
+            where: {
+              [Op.and]: [
+                { player_id: player_id },
                 {
                   pick_no: {
-                    [Op.gt]: sequelize.col("draftpick.pick_no"),
+                    [Op.lt]: sequelize.col("draftpick.pick_no"),
                   },
                 },
                 {
-                  player_id: player_id2,
+                  picked_by: req.body.lm_user_id,
                 },
               ],
             },
           },
+          {
+            model: League,
+            attributes: ["league_id", "name"],
+          },
         ],
-      });
+        required: true,
+      },
     });
-  });
 
-  const draftpicks = await Draftpick.findAll({
-    attributes: ["player_id", "draft.picked_by", "draftpick.pick_no"],
-    where: {
-      [Op.or]: filters,
-    },
-    include: {
-      model: Draft,
+    return lm_player_picks;
+  };
 
-      include: [
-        {
-          model: Draftpick,
-          required: true,
-        },
-      ],
-      required: true,
-    },
-  });
+  const results = await Promise.all(
+    req.body.higher.map(async (player_obj) => {
+      const picks = await getLmPlayerPicks(
+        player_obj.player_id,
+        player_obj.higher
+      );
 
-  res.send(draftpicks);
+      return picks;
+    })
+  );
+
+  res.send(results.flat(2));
 };

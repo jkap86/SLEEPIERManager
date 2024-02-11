@@ -12,5 +12,7 @@ module.exports = (app) => {
 
   router.post("/lower", draft.lower);
 
+  router.post("/lm", draft.lm);
+
   app.use("/draft", router);
 };

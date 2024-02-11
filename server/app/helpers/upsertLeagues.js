@@ -374,6 +374,7 @@ const addLeagues = async (leagues) => {
     updateOnDuplicate: [
       "type",
       "status",
+      "start_time",
       "last_picked",
       "league_type",
       "settings",
