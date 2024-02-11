@@ -254,16 +254,27 @@ exports.lm = async (req, res) => {
     return lm_player_picks;
   };
 
-  const results = await Promise.all(
-    req.body.higher.map(async (player_obj) => {
-      const picks = await getLmPlayerPicks(
-        player_obj.player_id,
-        player_obj.higher
-      );
+  const batchSize = 10;
 
-      return picks;
-    })
-  );
+  const results = [];
+
+  console.log({ COUNT: req.body.higher.length });
+
+  for (let i = 0; i < req.body.higher.length; i += batchSize) {
+    console.log({ COUNTER: i });
+    const results_batch = await Promise.all(
+      req.body.higher.slice(i, i + batchSize).map(async (player_obj) => {
+        const picks = await getLmPlayerPicks(
+          player_obj.player_id,
+          player_obj.higher
+        );
+
+        return picks;
+      })
+    );
+
+    results.push(results_batch.flat());
+  }
 
   res.send(results.flat(2));
 };
