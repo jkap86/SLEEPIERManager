@@ -5,7 +5,7 @@ const { fetchStats } = require("../api/sleeperApi");
 const fs = require("fs");
 
 module.exports = async (app) => {
-  if (process.env.NODE_ENV === "production") {
+  if (process.env.NODE_ENV !== "production") {
     setTimeout(async () => {
       const getSchedule = async (week_to_fetch, boot = false) => {
         const schedule_json = fs.readFileSync("./data/schedule.json");
@@ -32,7 +32,11 @@ module.exports = async (app) => {
 
           updated_schedule = {
             ...JSON.parse(schedule_json),
-            [schedule_week.nflSchedule.week]: schedule_week.nflSchedule.matchup,
+            [schedule_week.nflSchedule.week]: Array.isArray(
+              schedule_week.nflSchedule.matchup
+            )
+              ? schedule_week.nflSchedule.matchup
+              : [schedule_week.nflSchedule.matchup],
           };
         }
 
