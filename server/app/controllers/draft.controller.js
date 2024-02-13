@@ -34,6 +34,7 @@ exports.adp = async (req, res) => {
 
     if (draft_picks.length < 250) {
       draft_picks = await Draftpick.findAll({
+        order: [["draftDraftId", "DESC"]],
         offset: 0,
         limit: 2000,
         attributes: [
