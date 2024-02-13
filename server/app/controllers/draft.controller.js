@@ -10,7 +10,7 @@ const Op = db.Sequelize.Op;
 
 exports.adp = async (req, res) => {
   try {
-    const draft_picks = await Draftpick.findAll({
+    let draft_picks = await Draftpick.findAll({
       attributes: [
         "player_id",
         "league_type",
@@ -31,6 +31,27 @@ exports.adp = async (req, res) => {
       },
       group: ["player_id", "draftpick.league_type"],
     });
+
+    if (draft_picks.length < 250) {
+      draft_picks = await Draftpick.findAll({
+        attributes: [
+          "player_id",
+          "league_type",
+          [sequelize.fn("AVG", sequelize.col("pick_no")), "adp"],
+          [sequelize.fn("COUNT", sequelize.col("draft.draft_id")), "n_drafts"],
+        ],
+        include: {
+          model: Draft,
+          attributes: [],
+          include: {
+            model: League,
+            attributes: [],
+          },
+          required: true,
+        },
+        group: ["player_id", "draftpick.league_type"],
+      });
+    }
 
     const auction_picks = await Auctionpick.findAll({
       attributes: [

@@ -64,6 +64,6 @@ function start() {
     console.log(`Server is running on port ${PORT}.`);
 
     require("./app/background/dailyUpdate")(app);
-    require("./app/background/statsUpdate")(app);
+    //require("./app/background/statsUpdate")(app);
   });
 }
