@@ -34,6 +34,8 @@ exports.adp = async (req, res) => {
 
     if (draft_picks.length < 250) {
       draft_picks = await Draftpick.findAll({
+        offset: 0,
+        limit: 5000,
         attributes: [
           "player_id",
           "league_type",
