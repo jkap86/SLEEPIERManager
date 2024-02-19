@@ -60,7 +60,7 @@ const TableMain = ({
   }, [body, page]);
 
   return (
-    <>
+    <div className={type}>
       {setSearched ? (
         <div className="search_filter_wrapper">
           <div>{options1?.map((option) => option)}</div>
@@ -288,7 +288,7 @@ const TableMain = ({
           </tbody>
         ) : null}
       </table>
-    </>
+    </div>
   );
 };
 

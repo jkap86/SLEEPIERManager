@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Roster from "../Roster";
 import { useEffect, useState } from "react";
 import { setStateCommon } from "../redux/actions";
+import { getAdpFormatted } from "../services/helpers/getAdpFormatted";
 import "./Standings.css";
 
 const Standings = ({
@@ -16,6 +17,9 @@ const Standings = ({
   const { siteLinkIndex, allplayers } = useSelector((state) => state.common);
   const { adpLm } = useSelector((state) => state.user);
   const [itemActive2, setItemActive2] = useState("");
+  const [filter, setFilter] = useState("All");
+  const [ppgType, setPpgType] = useState("ADP");
+  const [pageAvailable, setPageAvailable] = useState(1);
 
   const links = [
     {
@@ -37,6 +41,12 @@ const Standings = ({
       setItemActive2(league.userRoster.roster_id);
     }
   }, [league]);
+
+  useEffect(() => {
+    if (itemActive2?.id && filter === "Picks") {
+      setFilter("All");
+    }
+  });
 
   const active_roster = league.rosters.find((x) => x.roster_id === itemActive2);
 
@@ -198,9 +208,113 @@ const Standings = ({
     };
   });
 
-  const leagueInfo_headers = [[]];
+  const leagueInfo_headers = [
+    [
+      {
+        text: (
+          <select onChange={(e) => setFilter(e.target.value)}>
+            <option>All</option>
+            <option>QB</option>
+            <option>RB</option>
+            <option>WR</option>
+            <option>TE</option>
+          </select>
+        ),
+        colSpan: 4,
+        className: "half",
+      },
+      {
+        text: <p className="">Available</p>,
+        colSpan: 15,
+        className: "half",
+      },
+      {
+        text: (
+          <select onChange={(e) => setPpgType(e.target.value)}>
+            <option>ADP</option>
+            <option>Total</option>
+            <option>In Lineup</option>
+            <option>On Bench</option>
+          </select>
+        ),
+        colSpan: 9,
+        className: "half",
+      },
+    ],
+    [
+      {
+        text: "Slot",
+        colSpan: 4,
+        className: "half",
+      },
+      {
+        text: "Player",
+        colSpan: 15,
+        className: "half",
+      },
+      {
+        text: ppgType === "ADP" ? "Draft" : "PPG",
+        colSpan: 5,
+        className: "half",
+      },
+      {
+        text: ppgType === "ADP" ? "Auction" : "#",
+        colSpan: 4,
+        className: "half end",
+      },
+    ],
+  ];
 
-  const leagueInfo_body = [];
+  const leagueInfo_body = Object.keys(allplayers)
+    .filter(
+      (player_id) =>
+        !league.rosters?.find((roster) =>
+          roster.players?.includes(player_id)
+        ) &&
+        (league.settings.status === "in_season" ||
+          allplayers[player_id]?.years_exp > 0) &&
+        (filter === "All" || filter === allplayers[player_id]?.position)
+    )
+    .sort(
+      (a, b) =>
+        (adpLm?.Dynasty?.[a]?.adp || 999) - (adpLm?.Dynasty?.[b]?.adp || 999)
+    )
+    .map((player_id) => {
+      return {
+        id: player_id,
+        list: [
+          {
+            text: allplayers[player_id]?.position,
+            colSpan: 4,
+          },
+
+          {
+            text: allplayers[player_id]?.full_name || "-",
+            colSpan: 15,
+            className: "left",
+            image: {
+              src: player_id,
+              alt: "player headshot",
+              type: "player",
+            },
+          },
+          {
+            text:
+              (adpLm?.["Dynasty"]?.[player_id]?.adp &&
+                getAdpFormatted(adpLm?.["Dynasty"]?.[player_id]?.adp)) ||
+              "-",
+            colSpan: 5,
+          },
+          {
+            text:
+              (adpLm?.["Dynasty_auction"]?.[player_id]?.adp?.toFixed(0) ||
+                "0") + "%",
+            colSpan: 4,
+          },
+        ],
+      };
+    });
+
   return (
     <>
       {expandRoster ? (
@@ -228,6 +342,8 @@ const Standings = ({
           type={type + " half"}
           headers={leagueInfo_headers}
           body={leagueInfo_body}
+          page={pageAvailable}
+          setPage={setPageAvailable}
         />
       )}
     </>

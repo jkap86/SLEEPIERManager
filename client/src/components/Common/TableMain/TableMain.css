@@ -49,7 +49,6 @@ table.summary tr th {
 table.half {
   display: inline-table;
   vertical-align: top;
-  width: 50%;
 }
 table.half.secondary {
   position: sticky;
@@ -75,12 +74,6 @@ table.half p.username {
   color: var(--te);
   font-family: var(--font2);
   letter-spacing: 0.25rem;
-}
-table.half td {
-  background-image: radial-gradient(black -50%, orchid 250%) !important;
-}
-table.half:last-child td {
-  background-image: radial-gradient(green -250%, black 250%) !important;
 }
 table.primary > thead {
   position: sticky;
@@ -234,6 +227,18 @@ table div.nav button.active {
   color: var(--color2);
   box-shadow: inset 0 0 3rem var(--color2);
   opacity: 1;
+}
+
+div.secondary.half {
+  position: sticky;
+  top: 21rem;
+  z-index: 6;
+}
+div.secondary.half td {
+  background-image: radial-gradient(black -50%, orchid 250%);
+}
+div.secondary.half:last-child td {
+  background-image: radial-gradient(green -250%, black 250%);
 }
 
 /*# sourceMappingURL=TableMain.css.map */

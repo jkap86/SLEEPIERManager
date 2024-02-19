@@ -213,6 +213,14 @@ a.home:hover {
     color: var(--color2)
 }
 
+div.half {
+  display: inline-block;
+  width: 50%;
+}
+div.half ol.page_numbers {
+  width: 50%;
+}
+
 @keyframes rotate {
   0% {
     transform: rotate(0deg);
