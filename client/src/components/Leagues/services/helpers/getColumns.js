@@ -38,6 +38,11 @@ export const getColumnValue = (header, league, state, adpLm, allplayers) => {
     0
   );
 
+  const budget_percent_redraft = league.userRoster.players?.reduce(
+    (acc, cur) => acc + (adpLm?.["Redraft_auction"]?.[cur]?.adp || 0),
+    0
+  );
+
   const optimal_lineup = getOptimalLineupADP({
     roster: league.userRoster,
     roster_positions: league.roster_positions,
@@ -47,6 +52,11 @@ export const getColumnValue = (header, league, state, adpLm, allplayers) => {
 
   const budget_percent_starters = optimal_lineup.reduce(
     (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur.player]?.adp || 0),
+    0
+  );
+
+  const budget_percent_redraft_starters = optimal_lineup.reduce(
+    (acc, cur) => acc + (adpLm?.["Redraft_auction"]?.[cur.player]?.adp || 0),
     0
   );
 
@@ -62,6 +72,21 @@ export const getColumnValue = (header, league, state, adpLm, allplayers) => {
     league.userRoster.roster_id,
     "Dynasty_auction",
     adpLm
+  );
+
+  const redraft_rank = getRosterValueRankPlayers(
+    league,
+    league.userRoster.roster_id,
+    "Redraft_auction",
+    adpLm
+  );
+
+  const redraft_rank_starters = getRosterValueRankStarters(
+    league,
+    league.userRoster.roster_id,
+    "Redraft_auction",
+    adpLm,
+    allplayers
   );
 
   const value_rank_starters = getRosterValueRankStarters(
@@ -244,19 +269,19 @@ export const getColumnValue = (header, league, state, adpLm, allplayers) => {
         ),
         colSpan: 3,
       };
-    case "Total Value (Auction Budget %)":
+    case "Dynasty Value":
       const budget_percent = budget_percent_players + budget_percent_picks;
       return {
         text: budget_percent?.toFixed(0) + "%",
         colSpan: 3,
       };
-    case "Players Value (Auction Budget %)":
+    case "Dynasty Players Value":
       return { text: budget_percent_players?.toFixed(0) + "%", colSpan: 3 };
-    case "Starters Value (Auction Budget %)":
+    case "Dynasty Starters Value":
       return { text: budget_percent_starters?.toFixed(0) + "%", colSpan: 3 };
-    case "Picks Value (Auction Budget %)":
+    case "Dynasty Picks Value":
       return { text: budget_percent_picks?.toFixed(0) + "%", colSpan: 3 };
-    case "Total Value Rank (Auction Budget %)":
+    case "Dynasty Rank":
       return {
         text: (
           <p
@@ -271,7 +296,7 @@ export const getColumnValue = (header, league, state, adpLm, allplayers) => {
         ),
         colSpan: 3,
       };
-    case "Players Value Rank (Auction Budget %)":
+    case "Dynasty Players Rank":
       return {
         text: (
           <p
@@ -286,7 +311,7 @@ export const getColumnValue = (header, league, state, adpLm, allplayers) => {
         ),
         colSpan: 3,
       };
-    case "Starters Value Rank (Auction Budget %)":
+    case "Dynasty Starters Rank":
       return {
         text: (
           <p
@@ -301,7 +326,7 @@ export const getColumnValue = (header, league, state, adpLm, allplayers) => {
         ),
         colSpan: 3,
       };
-    case "Picks Value Rank (Auction Budget %)":
+    case "Dynasty Picks Rank":
       return {
         text: (
           <p
@@ -312,6 +337,46 @@ export const getColumnValue = (header, league, state, adpLm, allplayers) => {
             )}
           >
             {value_rank_picks.toFixed()}
+          </p>
+        ),
+        colSpan: 3,
+      };
+    case "Redraft Value":
+      return {
+        text: budget_percent_redraft?.toFixed(0) + "%",
+        colSpan: 3,
+      };
+    case "Redraft Starters Value":
+      return {
+        text: budget_percent_redraft?.toFixed(0) + "%",
+        colSpan: 3,
+      };
+    case "Redraft Rank":
+      return {
+        text: (
+          <p
+            className="stat check"
+            style={getTrendColor(
+              -(redraft_rank / league.rosters.length - 0.5),
+              0.0025
+            )}
+          >
+            {redraft_rank.toFixed()}
+          </p>
+        ),
+        colSpan: 3,
+      };
+    case "Redraft Starters Rank":
+      return {
+        text: (
+          <p
+            className="stat check"
+            style={getTrendColor(
+              -(redraft_rank_starters / league.rosters.length - 0.5),
+              0.0025
+            )}
+          >
+            {redraft_rank_starters.toFixed()}
           </p>
         ),
         colSpan: 3,

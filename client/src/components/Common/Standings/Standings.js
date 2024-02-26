@@ -19,6 +19,7 @@ const Standings = ({
   const [itemActive2, setItemActive2] = useState("");
   const [filter, setFilter] = useState("All");
   const [ppgType, setPpgType] = useState("ADP");
+  const [standingsType, setStandingsType] = useState("Dynasty");
   const [pageAvailable, setPageAvailable] = useState(1);
 
   const links = [
@@ -67,12 +68,31 @@ const Standings = ({
             "." +
             roster.settings.fpts_against_decimal
         ),
-        budget_percent_players:
+        Dynasty:
+          (roster.players?.reduce(
+            (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
+            0
+          ) || 0) +
+          (roster.draft_picks?.reduce(
+            (acc, cur) =>
+              acc +
+              (adpLm?.["Dynasty_auction"]?.[
+                "R" +
+                  +(
+                    (cur.round - 1) * 12 +
+                    (parseInt(
+                      cur.season === parseInt(league.season) && cur.order
+                    ) || 7)
+                  )
+              ]?.adp || 0),
+            0
+          ) || 0),
+        DynastyPlayers:
           roster.players?.reduce(
             (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
             0
           ) || 0,
-        budget_percent_picks:
+        DynastyPicks:
           roster.draft_picks?.reduce(
             (acc, cur) =>
               acc +
@@ -87,20 +107,26 @@ const Standings = ({
               ]?.adp || 0),
             0
           ) || 0,
-        budget_percent_starters:
+        DynastyStarters:
           roster.starters?.reduce(
             (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
             0
           ) || 0,
+        Redraft:
+          roster.players?.reduce(
+            (acc, cur) => acc + (adpLm?.["Redraft_auction"]?.[cur]?.adp || 0),
+            0
+          ) || 0,
+        RedraftStarters:
+          roster.starters?.reduce(
+            (acc, cur) => acc + (adpLm?.["Redraft_auction"]?.[cur]?.adp || 0),
+            0
+          ) || 0,
       };
     })
-    ?.sort(
-      (a, b) =>
-        b.budget_percent_players +
-        b.budget_percent_picks -
-        (a.budget_percent_players + a.budget_percent_picks)
-    );
+    ?.sort((a, b) => b[standingsType] - a[standingsType]);
 
+  /*
   const standings_headers = [
     [
       {
@@ -174,6 +200,63 @@ const Standings = ({
       },
     ],
   ];
+  */
+
+  const standings_headers = [
+    [
+      {
+        text: (
+          <select
+            value={standingsType}
+            onChange={(e) => setStandingsType(e.target.value)}
+          >
+            <option>Dynasty</option>
+            <option>Redraft</option>
+          </select>
+        ),
+        colSpan: 11,
+        className: "half",
+      },
+    ],
+    [
+      {
+        text: "Manager",
+        colSpan: 5,
+        className: "half",
+      },
+      ...(standingsType === "Dynasty"
+        ? [
+            {
+              text: "Players",
+              colSpan: 2,
+              className: "half",
+            },
+            {
+              text: "Picks",
+              colSpan: 2,
+              className: "half",
+            },
+            {
+              text: "Total",
+              colSpan: 2,
+              className: "half",
+            },
+          ]
+        : [
+            { text: "Starters", colSpan: 2, className: "half" },
+            {
+              text: "Bench",
+              colSpan: 2,
+              className: "half",
+            },
+            {
+              text: "Total",
+              colSpan: 2,
+              className: "half",
+            },
+          ]),
+    ],
+  ];
 
   const standings_body = standings?.map((team, index) => {
     return {
@@ -189,21 +272,40 @@ const Standings = ({
             type: "user",
           },
         },
-        {
-          text: team.budget_percent_players?.toFixed(0) + "%" || "-",
-          colSpan: 2,
-        },
-        {
-          text: team.budget_percent_picks?.toFixed(0) + "%" || "-",
-          colSpan: 2,
-        },
-        {
-          text:
-            (team.budget_percent_picks + team.budget_percent_players)?.toFixed(
-              0
-            ) + "%" || "-",
-          colSpan: 2,
-        },
+        ...(standingsType === "Dynasty"
+          ? [
+              {
+                text: team.DynastyPlayers?.toFixed(0) + "%" || "-",
+                colSpan: 2,
+              },
+              {
+                text: team.DynastyPicks?.toFixed(0) + "%" || "-",
+                colSpan: 2,
+              },
+              {
+                text:
+                  (team.DynastyPlayers + team.DynastyPicks)?.toFixed(0) + "%" ||
+                  "-",
+                colSpan: 2,
+              },
+            ]
+          : [
+              {
+                text: team.RedraftStarters?.toFixed(0) + "%" || "-",
+                colSpan: 2,
+              },
+              {
+                text:
+                  ((team.Redraft || 0) - (team.RedraftStarters || 0))?.toFixed(
+                    0
+                  ) + "%" || "-",
+                colSpan: 2,
+              },
+              {
+                text: team.Redraft?.toFixed(0) + "%" || "-",
+                colSpan: 2,
+              },
+            ]),
       ],
     };
   });
