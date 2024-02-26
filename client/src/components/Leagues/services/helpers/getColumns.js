@@ -1,3 +1,9 @@
+import {
+  getRosterValueRankAll,
+  getRosterValueRankPicks,
+  getRosterValueRankPlayers,
+  getRosterValueRankStarters,
+} from "../../../Common/services/helpers/getRosterValueRank";
 import { getTrendColor } from "../../../Common/services/helpers/getTrendColor";
 import { getOptimalLineupADP } from "./getOptimalLineupADP";
 
@@ -44,134 +50,34 @@ export const getColumnValue = (header, league, state, adpLm, allplayers) => {
     0
   );
 
-  const value_rank =
-    league.rosters
-      .sort(
-        (a, b) =>
-          (b.players?.reduce(
-            (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
-            0
-          ) || 0) +
-          (b.draft_picks?.reduce(
-            (acc, cur) =>
-              acc +
-              (adpLm?.["Dynasty_auction"]?.[
-                "R" +
-                  ((cur.round - 1) * 12 +
-                    (parseInt(
-                      cur.season === parseInt(league.season) && cur.order
-                    ) ||
-                      Math.min(
-                        6 +
-                          (parseInt(cur.season) - parseInt(league.season)) * 3,
-                        12
-                      )))
-              ]?.adp || 0),
-            0
-          ) || 0) -
-          ((a.players?.reduce(
-            (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
-            0
-          ) || 0) +
-            (a.draft_picks?.reduce(
-              (acc, cur) =>
-                acc +
-                (adpLm?.["Dynasty_auction"]?.[
-                  "R" +
-                    +(
-                      (cur.round - 1) * 12 +
-                      (parseInt(
-                        cur.season === parseInt(league.season) && cur.order
-                      ) ||
-                        Math.min(
-                          6 +
-                            (parseInt(cur.season) - parseInt(league.season)) *
-                              3,
-                          12
-                        ))
-                    )
-                ]?.adp || 0),
-              0
-            ) || 0))
-      )
-      .findIndex((obj) => obj.roster_id === league.userRoster.roster_id) + 1;
+  const value_rank = getRosterValueRankAll(
+    league,
+    league.userRoster.roster_id,
+    "Dynasty_auction",
+    adpLm
+  );
 
-  const value_rank_players =
-    league.rosters
-      .sort(
-        (a, b) =>
-          (b.players?.reduce(
-            (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
-            0
-          ) || 0) -
-          (a.players?.reduce(
-            (acc, cur) => acc + (adpLm?.["Dynasty_auction"]?.[cur]?.adp || 0),
-            0
-          ) || 0)
-      )
-      .findIndex((obj) => obj.roster_id === league.userRoster.roster_id) + 1;
+  const value_rank_players = getRosterValueRankPlayers(
+    league,
+    league.userRoster.roster_id,
+    "Dynasty_auction",
+    adpLm
+  );
 
-  const value_rank_starters =
-    league.rosters
-      .sort(
-        (a, b) =>
-          (getOptimalLineupADP({
-            roster: b,
-            roster_positions: league.roster_positions,
-            adpLm,
-            allplayers,
-          })?.reduce(
-            (acc, cur) =>
-              acc + (adpLm?.["Dynasty_auction"]?.[cur.player]?.adp || 0),
-            0
-          ) || 0) -
-          (getOptimalLineupADP({
-            roster: a,
-            roster_positions: league.roster_positions,
-            adpLm,
-            allplayers,
-          })?.reduce(
-            (acc, cur) =>
-              acc + (adpLm?.["Dynasty_auction"]?.[cur.player]?.adp || 0),
-            0
-          ) || 0)
-      )
-      .findIndex((obj) => obj.roster_id === league.userRoster.roster_id) + 1;
+  const value_rank_starters = getRosterValueRankStarters(
+    league,
+    league.userRoster.roster_id,
+    "Dynasty_auction",
+    adpLm,
+    allplayers
+  );
 
-  const value_rank_picks =
-    league.rosters
-      .sort(
-        (a, b) =>
-          (b.draft_picks?.reduce(
-            (acc, cur) =>
-              acc +
-              (adpLm?.["Dynasty_auction"]?.[
-                "R" +
-                  +(
-                    (cur.round - 1) * 12 +
-                    (parseInt(
-                      cur.season === parseInt(league.season) && cur.order
-                    ) || 7)
-                  )
-              ]?.adp || 0),
-            0
-          ) || 0) -
-          (a.draft_picks?.reduce(
-            (acc, cur) =>
-              acc +
-              (adpLm?.["Dynasty_auction"]?.[
-                "R" +
-                  +(
-                    (cur.round - 1) * 12 +
-                    (parseInt(
-                      cur.season === parseInt(league.season) && cur.order
-                    ) || 7)
-                  )
-              ]?.adp || 0),
-            0
-          ) || 0)
-      )
-      .findIndex((obj) => obj.roster_id === league.userRoster.roster_id) + 1;
+  const value_rank_picks = getRosterValueRankPicks(
+    league,
+    league.userRoster.roster_id,
+    "Dynasty_auction",
+    adpLm
+  );
 
   const budget_percent_picks = league.userRoster.draft_picks.reduce(
     (acc, cur) =>

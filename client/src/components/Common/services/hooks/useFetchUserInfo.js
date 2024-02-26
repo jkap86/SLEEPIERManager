@@ -21,17 +21,18 @@ const useFetchUserInfo = (to_fetch_array) => {
     type1,
     type2,
     adpLm,
-    leaguemates,
   } = useSelector((state) => state.user);
   const { allplayers, state } = useSelector((state) => state.common);
 
-  console.log({ leaguemates });
+  // Fetch common data if not already loaded
 
   useEffect(() => {
     if (!state) {
       dispatch(fetchCommon("state"));
     }
   }, [state]);
+
+  // Reset state if the username changes
 
   useEffect(() => {
     if (
@@ -42,11 +43,15 @@ const useFetchUserInfo = (to_fetch_array) => {
     }
   }, [dispatch, username, params.username]);
 
+  // Fetch user information if not loaded or loading or if there's an error
+
   useEffect(() => {
     if (!user_id && !isLoadingUser && !errorUser) {
       dispatch(fetchUser(params.username));
     }
   }, [dispatch, user_id, params.username, errorUser, isLoadingUser]);
+
+  // Fetch leagues information if not loaded and user ID is available
 
   useEffect(() => {
     if (user_id && state && !leagues && !isLoadingLeagues && !errorLeagues) {
@@ -58,6 +63,8 @@ const useFetchUserInfo = (to_fetch_array) => {
       );
     }
   }, [dispatch, user_id, state, leagues, isLoadingLeagues, errorLeagues]);
+
+  // Fetch leaguemates IDs if not already loaded
 
   useEffect(() => {
     if ((user_id, leagues && !lmLeagueIds)) {
@@ -74,6 +81,8 @@ const useFetchUserInfo = (to_fetch_array) => {
     }
   }, [dispatch, leagues, lmLeagueIds, user_id]);
 
+  // Fetch allplayers data from IndexedDB or fetch api if not present
+
   useEffect(() => {
     if (leagues) {
       if (!allplayers) {
@@ -89,13 +98,19 @@ const useFetchUserInfo = (to_fetch_array) => {
               })
           );
         } catch (err) {
+          // If there's an error, clear IndexedDB and retry fetching
+
           const retry = async () => {
             await clearIndexedDB("COMMON");
           };
+
+          retry();
         }
       }
     }
   }, [dispatch, allplayers, leagues]);
+
+  // Fetch ADP data for leaguemates if not already loaded
 
   useEffect(() => {
     if (lmLeagueIds && allplayers && !adpLm) {
@@ -111,7 +126,6 @@ const useFetchUserInfo = (to_fetch_array) => {
       );
     }
   }, [dispatch, lmLeagueIds, adpLm, user_id, allplayers]);
-  console.log({ adpLm });
 };
 
 export default useFetchUserInfo;

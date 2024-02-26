@@ -283,10 +283,9 @@ table {
   }
 }
 
-div.secondary.half {
+div.secondary.half,
+div.tertiary.half {
   position: sticky;
-  top: 21rem;
-  z-index: 6;
 
   td {
     background-image: radial-gradient(black -50%, orchid 250%);
@@ -297,4 +296,14 @@ div.secondary.half {
       background-image: radial-gradient(green -250%, black 250%);
     }
   }
+}
+
+div.secondary.half {
+  top: 21rem;
+  z-index: 6;
+}
+
+div.tertiary.half {
+  top: 35rem;
+  z-index: 4;
 }

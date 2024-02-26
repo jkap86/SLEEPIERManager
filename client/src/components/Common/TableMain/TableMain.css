@@ -229,16 +229,27 @@ table div.nav button.active {
   opacity: 1;
 }
 
-div.secondary.half {
+div.secondary.half,
+div.tertiary.half {
   position: sticky;
+}
+div.secondary.half td,
+div.tertiary.half td {
+  background-image: radial-gradient(black -50%, orchid 250%);
+}
+div.secondary.half:last-child td,
+div.tertiary.half:last-child td {
+  background-image: radial-gradient(green -250%, black 250%);
+}
+
+div.secondary.half {
   top: 21rem;
   z-index: 6;
 }
-div.secondary.half td {
-  background-image: radial-gradient(black -50%, orchid 250%);
-}
-div.secondary.half:last-child td {
-  background-image: radial-gradient(green -250%, black 250%);
+
+div.tertiary.half {
+  top: 35rem;
+  z-index: 4;
 }
 
 /*# sourceMappingURL=TableMain.css.map */

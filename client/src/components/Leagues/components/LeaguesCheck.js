@@ -3,40 +3,17 @@ import { setState } from "../redux/actions";
 import TableMain from "../../Common/TableMain/TableMain";
 import { filterLeagues } from "../../Common/services/helpers/filterLeagues";
 import { getColumnValue } from "../services/helpers/getColumns";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { getOptimalLineupADP } from "../services/helpers/getOptimalLineupADP";
-import Modal from "../../Common/Modal/Modal";
 
 const LeaguesCheck = ({ secondaryTable }) => {
   const dispatch = useDispatch();
   const { state, allplayers } = useSelector((state) => state.common);
   const { leagues, type1, type2, adpLm } = useSelector((state) => state.user);
-  const {
-    column1,
-    column2,
-    column3,
-    column4,
-    page,
-    itemActive,
-    searched,
-    primaryContent,
-  } = useSelector((state) => state.leagues);
+  const { column1, column2, column3, column4, page, itemActive, searched } =
+    useSelector((state) => state.leagues);
 
-  /*
-  useEffect(() => {
-    if (primaryContent === "Records") {
-      dispatch(setState({ column1: "W/L" }));
-      dispatch(setState({ column2: "W %" }));
-      dispatch(setState({ column3: "Rank" }));
-      dispatch(setState({ column4: "% FP of Avg" }));
-    } else if (primaryContent === "Checks") {
-      dispatch(setState({ column1: "Open Roster" }));
-      dispatch(setState({ column2: "Open Taxi" }));
-      dispatch(setState({ column3: "Rank" }));
-      dispatch(setState({ column4: "% FP of Avg" }));
-    }
-  }, [primaryContent, dispatch]);
-  */
+  // useMemo hook to optimize processing rosters updated with optimal lineup ADP
 
   const rosters_updated = useMemo(() => {
     return (
@@ -68,6 +45,8 @@ const LeaguesCheck = ({ secondaryTable }) => {
     );
   }, [leagues, adpLm, allplayers]);
 
+  // Column options for the leagues table
+
   const columnOptions = [
     "Open Roster",
     "Open Taxi",
@@ -89,6 +68,8 @@ const LeaguesCheck = ({ secondaryTable }) => {
     "% FP of Avg",
     "League ID",
   ];
+
+  // Headers configuration for the table, utilizing dynamic state for column selection
 
   const headers = [
     [
@@ -173,6 +154,8 @@ const LeaguesCheck = ({ secondaryTable }) => {
     ],
   ];
 
+  // Body data processing for the table, including filtering and mapping league data
+
   const body = filterLeagues(leagues, type1, type2)
     .filter(
       (league) =>
@@ -225,9 +208,10 @@ const LeaguesCheck = ({ secondaryTable }) => {
       };
     });
 
+  // Render TableMain component with dynamic data
+
   return (
     <>
-      {/* <Modal icon={<i className="fa-solid fa-circle-info click"></i>} />*/}
       <TableMain
         type={"primary"}
         headers={headers}

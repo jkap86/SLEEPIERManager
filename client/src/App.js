@@ -3,12 +3,12 @@ import Homepage from "./components/Homepage";
 import LoadingIcon from "./components/Common/LoadingIcon";
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 import { Suspense, lazy } from "react";
-import Leagues from "./components/Leagues";
-import Players from "./components/Players";
-import Leaguemates from "./components/Leaguemates";
-import Trades from "./components/Trades";
-import PickTracker from "./components/Picktracker/picktracker";
-import PlayoffPool from "./components/PlayoffPool/PlayoffPool";
+const Players = lazy(() => import("./components/Players"));
+const Leaguemates = lazy(() => import("./components/Leaguemates"));
+const Trades = lazy(() => import("./components/Trades"));
+const PickTracker = lazy(() => import("./components/Picktracker/picktracker"));
+const PlayoffPool = lazy(() => import("./components/PlayoffPool/PlayoffPool"));
+const Leagues = lazy(() => import("./components/Leagues"));
 const Layout = lazy(() => import("./components/Common/Layout"));
 
 function App() {
@@ -20,22 +20,68 @@ function App() {
             <Route path="/" element={<Homepage />} />
             <Route
               path="/leagues/:username"
-              element={<Layout display={<Leagues />} />}
+              element={
+                <Layout
+                  display={
+                    <Suspense fallback={<LoadingIcon />}>
+                      <Leagues />
+                    </Suspense>
+                  }
+                />
+              }
             />
             <Route
               path="/players/:username"
-              element={<Layout display={<Players />} />}
+              element={
+                <Layout
+                  display={
+                    <Suspense fallback={<LoadingIcon />}>
+                      <Players />
+                    </Suspense>
+                  }
+                />
+              }
             />
             <Route
               path="/leaguemates/:username"
-              element={<Layout display={<Leaguemates />} />}
+              element={
+                <Layout
+                  display={
+                    <Suspense fallback={<LoadingIcon />}>
+                      <Leaguemates />
+                    </Suspense>
+                  }
+                />
+              }
             />
             <Route
               path="/trades/:username"
-              element={<Layout display={<Trades />} />}
+              element={
+                <Layout
+                  display={
+                    <Suspense fallback={<LoadingIcon />}>
+                      <Trades />
+                    </Suspense>
+                  }
+                />
+              }
             />
-            <Route path="/picktracker/:league_id" element={<PickTracker />} />
-            <Route path="/playoffs/:league_id" element={<PlayoffPool />} />
+            <Route
+              path="/picktracker/:league_id"
+              element={
+                <Suspense fallback={<LoadingIcon />}>
+                  <PickTracker />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/playoffs/:league_id"
+              element={
+                <Suspense fallback={<LoadingIcon />}>
+                  <PlayoffPool />
+                </Suspense>
+              }
+            />
           </Routes>
         </Suspense>
       </BrowserRouter>
