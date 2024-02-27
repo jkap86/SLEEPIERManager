@@ -5,6 +5,7 @@ import { filterLeagues } from "../../Common/services/helpers/filterLeagues";
 import { getColumnValue } from "../services/helpers/getColumns";
 import { useMemo } from "react";
 import { getOptimalLineupADP } from "../services/helpers/getOptimalLineupADP";
+import HeaderDropdown from "../../Common/HeaderDropdown";
 
 const LeaguesCheck = ({ secondaryTable }) => {
   const dispatch = useDispatch();
@@ -84,73 +85,44 @@ const LeaguesCheck = ({ secondaryTable }) => {
       },
       {
         text: (
-          <p className="option">
-            {column1}
-
-            <select
-              value={column1}
-              className="hidden_behind click"
-              onChange={(e) => dispatch(setState({ column1: e.target.value }))}
-            >
-              {columnOptions.map((column) => {
-                return <option key={column}>{column}</option>;
-              })}
-            </select>
-          </p>
+          <HeaderDropdown
+            column_text={column1}
+            columnOptions={columnOptions}
+            setState={(value) => dispatch(setState({ column1: value }))}
+          />
         ),
         colSpan: 3,
         className: "left",
       },
       {
         text: (
-          <p className="option">
-            {column2}
-            <select
-              value={column2}
-              className="hidden_behind click"
-              onChange={(e) => dispatch(setState({ column2: e.target.value }))}
-            >
-              {columnOptions.map((column) => {
-                return <option key={column}>{column}</option>;
-              })}
-            </select>
-          </p>
+          <HeaderDropdown
+            column_text={column2}
+            columnOptions={columnOptions}
+            setState={(value) => dispatch(setState({ column2: value }))}
+          />
         ),
         colSpan: 3,
         className: "left",
       },
       {
         text: (
-          <p className="option">
-            {column3}
-            <select
-              value={column3}
-              className="hidden_behind click"
-              onChange={(e) => dispatch(setState({ column3: e.target.value }))}
-            >
-              {columnOptions.map((column) => {
-                return <option key={column}>{column}</option>;
-              })}
-            </select>
-          </p>
+          <HeaderDropdown
+            column_text={column3}
+            columnOptions={columnOptions}
+            setState={(value) => dispatch(setState({ column3: value }))}
+          />
         ),
         colSpan: 3,
         className: "left",
       },
       {
         text: (
-          <p className="option">
-            {column4}
-            <select
-              value={column4}
-              className="hidden_behind click"
-              onChange={(e) => dispatch(setState({ column4: e.target.value }))}
-            >
-              {columnOptions.map((column) => {
-                return <option key={column}>{column}</option>;
-              })}
-            </select>
-          </p>
+          <HeaderDropdown
+            column_text={column4}
+            columnOptions={columnOptions}
+            setState={(value) => dispatch(setState({ column4: value }))}
+          />
         ),
         colSpan: 3,
         className: "left",

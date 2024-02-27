@@ -1,6 +1,6 @@
 import TableMain from "../../Common/TableMain";
 import { useSelector, useDispatch } from "react-redux";
-import { getTrendColor } from "../../Common/services/helpers/getTrendColor";
+import HeaderDropdown from "../../Common/HeaderDropdown/HeaderDropdown";
 import headshot from "../../../images/headshot.png";
 import { filterLeagues } from "../../Common/services/helpers/filterLeagues";
 import { setStatePlayers } from "../redux/actions";
@@ -37,8 +37,6 @@ const Records = ({ secondaryTable }) => {
     "Auction Budget% D",
   ];
 
-  console.log({ userPlayerShares });
-
   const playerShares_headers = [
     [
       {
@@ -47,83 +45,47 @@ const Records = ({ secondaryTable }) => {
       },
       {
         text: (
-          <p className="option">
-            {column1}
-
-            <select
-              value={column1}
-              className="hidden_behind click"
-              onChange={(e) =>
-                dispatch(setStatePlayers({ column1: e.target.value }))
-              }
-            >
-              {columnOptions.map((column) => {
-                return <option key={column}>{column}</option>;
-              })}
-            </select>
-          </p>
+          <HeaderDropdown
+            column_text={column1}
+            columnOptions={columnOptions}
+            setState={(value) => dispatch(setStatePlayers({ column1: value }))}
+          />
         ),
         colSpan: 1,
+        className: "left",
       },
       {
         text: (
-          <p className="option">
-            {column2}
-
-            <select
-              value={column2}
-              className="hidden_behind click"
-              onChange={(e) =>
-                dispatch(setStatePlayers({ column2: e.target.value }))
-              }
-            >
-              {columnOptions.map((column) => {
-                return <option key={column}>{column}</option>;
-              })}
-            </select>
-          </p>
+          <HeaderDropdown
+            column_text={column2}
+            columnOptions={columnOptions}
+            setState={(value) => dispatch(setStatePlayers({ column2: value }))}
+          />
         ),
         colSpan: 1,
+        className: "left",
       },
       {
         text: (
-          <p className="option">
-            {column3}
-
-            <select
-              value={column3}
-              className="hidden_behind click"
-              onChange={(e) =>
-                dispatch(setStatePlayers({ column3: e.target.value }))
-              }
-            >
-              {columnOptions.map((column) => {
-                return <option key={column}>{column}</option>;
-              })}
-            </select>
-          </p>
+          <HeaderDropdown
+            column_text={column3}
+            columnOptions={columnOptions}
+            setState={(value) => dispatch(setStatePlayers({ column3: value }))}
+          />
         ),
         colSpan: 1,
+        className: "left",
       },
       {
         text: (
-          <p className="option">
-            {column4}
-
-            <select
-              value={column4}
-              className="hidden_behind click"
-              onChange={(e) =>
-                dispatch(setStatePlayers({ column4: e.target.value }))
-              }
-            >
-              {columnOptions.map((column) => {
-                return <option key={column}>{column}</option>;
-              })}
-            </select>
-          </p>
+          <HeaderDropdown
+            column_text={column4}
+            columnOptions={columnOptions}
+            setState={(value) => dispatch(setStatePlayers({ column4: value }))}
+          />
         ),
         colSpan: 1,
+        className: "left",
       },
     ],
   ];
@@ -132,20 +94,22 @@ const Records = ({ secondaryTable }) => {
 
     ?.filter(
       (x) =>
-        x &&
-        (x.id.includes("_") || allplayers?.[x.id]) &&
-        (!searched?.id || searched?.id === x.id) &&
-        ((filters.position === "All" &&
-          !x.id.split("_").find((y) => !parseInt(y))) ||
-          filters.position === allplayers?.[x.id]?.position ||
-          filters.position
-            .split("/")
-            .includes(allplayers?.[x.id]?.position?.slice(0, 1)) ||
-          (filters.position.includes("Picks") && x.id?.includes("_"))) &&
-        (filters.team === "All" || allplayers?.[x.id]?.team === filters.team) &&
-        (filters.draftClass === "All" ||
-          parseInt(filters.draftClass) ===
-            state.league_season - allplayers?.[parseInt(x.id)]?.years_exp)
+        (x &&
+          (x.id.includes("_") || allplayers?.[x.id]) &&
+          (!searched?.id || searched?.id === x.id) &&
+          ((filters.position === "All" &&
+            !x.id.split("_").find((y) => !parseInt(y))) ||
+            filters.position === allplayers?.[x.id]?.position ||
+            filters.position
+              .split("/")
+              .includes(allplayers?.[x.id]?.position?.slice(0, 1)) ||
+            (filters.position.includes("Picks") && x.id?.includes("_"))) &&
+          (filters.team === "All" ||
+            allplayers?.[x.id]?.team === filters.team) &&
+          (filters.draftClass === "All" ||
+            parseInt(filters.draftClass) ===
+              state.league_season - allplayers?.[parseInt(x.id)]?.years_exp)) ||
+        (filters.draftClass === state.league_season && x.id.includes("_"))
     )
 
     .map((player) => {
@@ -397,10 +361,13 @@ const Records = ({ secondaryTable }) => {
         (filters.position === allplayers?.[p.id]?.position ||
           filters.position
             .split("/")
-            .includes(allplayers?.[p.id]?.position?.slice(0, 1))) &&
+            .includes(allplayers?.[p.id]?.position?.slice(0, 1)) ||
+          filters.position === "All") &&
         (filters.team === "All" || allplayers?.[p.id]?.team === filters.team)
     )
     ?.map((p) => parseInt(p.id));
+
+  console.log({ filter_p: filters.position });
 
   const draftClassYears = Array.from(
     new Set(
