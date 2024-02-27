@@ -19,6 +19,7 @@ const PlayersComparison = () => {
   const [pagePlayer1, setPagePlayer1] = useState(1);
   const [pagePlayer2, setPagePlayer2] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [filterDays, setFilterDays] = useState(30);
 
   const players_list =
     (leagues &&
@@ -41,74 +42,69 @@ const PlayersComparison = () => {
       })) ||
     [];
 
-  useEffect(() => {
-    const fetchComp = async () => {
-      setIsLoading(true);
+  const fetchComp = async () => {
+    setIsLoading(true);
 
-      const lm_list =
-        leagues &&
-        Object.fromEntries(
-          Array.from(
-            new Set(
-              leagues?.flatMap((league) =>
-                league.rosters?.map((roster) => [
-                  roster.user_id,
-                  { avatar: roster.avatar, username: roster.username },
-                ])
-              )
+    const lm_list =
+      leagues &&
+      Object.fromEntries(
+        Array.from(
+          new Set(
+            leagues?.flatMap((league) =>
+              league.rosters?.map((roster) => [
+                roster.user_id,
+                { avatar: roster.avatar, username: roster.username },
+              ])
             )
           )
-        );
-
-      const comp = await axios.post("/draft/playercomp", {
-        lm_user_ids: Object.keys(lm_list),
-        player1: player1.id,
-        player2: player2.id,
-        user_id: user_id,
-      });
-
-      const obj1 = Object.fromEntries(
-        Array.from(new Set(comp.data.list1.map((p) => p.picked_by))).map(
-          (picked_by) => [
-            picked_by,
-            {
-              user_id: picked_by,
-              username: lm_list[picked_by].username,
-              avatar: lm_list[picked_by].avatar,
-              count: comp.data.list1.filter((p) => p.picked_by === picked_by)
-                .length,
-            },
-          ]
         )
       );
 
-      const obj2 = Object.fromEntries(
-        Array.from(new Set(comp.data.list2.map((p) => p.picked_by))).map(
-          (picked_by) => [
-            picked_by,
-            {
-              user_id: picked_by,
-              username: lm_list[picked_by].username,
-              avatar: lm_list[picked_by].avatar,
-              count: comp.data.list2.filter((p) => p.picked_by === picked_by)
-                .length,
-            },
-          ]
-        )
-      );
+    const comp = await axios.post("/draft/playercomp", {
+      lm_user_ids: Object.keys(lm_list),
+      player1: player1.id,
+      player2: player2.id,
+      user_id: user_id,
+      days: filterDays,
+    });
 
-      console.log({ obj2 });
+    const obj1 = Object.fromEntries(
+      Array.from(new Set(comp.data.list1.map((p) => p.picked_by))).map(
+        (picked_by) => [
+          picked_by,
+          {
+            user_id: picked_by,
+            username: lm_list[picked_by].username,
+            avatar: lm_list[picked_by].avatar,
+            count: comp.data.list1.filter((p) => p.picked_by === picked_by)
+              .length,
+          },
+        ]
+      )
+    );
 
-      setPlayer1Obj(Object.values(obj1));
-      setPlayer2Obj(Object.values(obj2));
+    const obj2 = Object.fromEntries(
+      Array.from(new Set(comp.data.list2.map((p) => p.picked_by))).map(
+        (picked_by) => [
+          picked_by,
+          {
+            user_id: picked_by,
+            username: lm_list[picked_by].username,
+            avatar: lm_list[picked_by].avatar,
+            count: comp.data.list2.filter((p) => p.picked_by === picked_by)
+              .length,
+          },
+        ]
+      )
+    );
 
-      setIsLoading(false);
-    };
+    console.log({ obj2 });
 
-    if (player1?.id && player2?.id) {
-      fetchComp();
-    }
-  }, [player1, player2]);
+    setPlayer1Obj(Object.values(obj1));
+    setPlayer2Obj(Object.values(obj2));
+
+    setIsLoading(false);
+  };
 
   useEffect(() => {
     if (!player1?.id || !player2?.id) {
@@ -225,11 +221,23 @@ const PlayersComparison = () => {
     )
   );
 
-  console.log({ lm_list });
+  console.log({ player2_len: getBody(player2Obj).length });
 
   return (
     <>
       <h2>Which player is drafted first when both available</h2>
+      <h2>
+        Last{" "}
+        <input
+          type="number"
+          value={filterDays}
+          onChange={(e) => setFilterDays(e.target.value)}
+          onBlur={(e) =>
+            e.target.value?.trim() === "" ? setFilterDays(30) : ""
+          }
+        />{" "}
+        Days
+      </h2>
       <Search
         id={"By Player"}
         placeholder={`Player 1`}
@@ -237,7 +245,6 @@ const PlayersComparison = () => {
         searched={player1}
         setSearched={setPlayer1}
       />
-
       <Search
         id={"By Player"}
         placeholder={`Player 2`}
@@ -264,6 +271,9 @@ const PlayersComparison = () => {
             searched={lm}
             setSearched={setLm}
           />
+          <h2>
+            <button onClick={() => fetchComp()}>Search</button>
+          </h2>
           <TableMain
             type={"primary half"}
             headers={getHeaders(player1.id)}
@@ -275,8 +285,8 @@ const PlayersComparison = () => {
             type={"primary half"}
             headers={getHeaders(player2.id)}
             body={getBody(player2Obj)}
-            pagePlayer2={pagePlayer2}
-            setPagePlayer2={setPagePlayer2}
+            page={pagePlayer2}
+            setPage={setPagePlayer2}
           />
         </>
       ) : null}

@@ -132,6 +132,13 @@ exports.playercomp = async (req, res) => {
         {
           model: Draft,
           attributes: [],
+          where: {
+            start_time: {
+              [Op.gt]: new Date(
+                new Date() - req.body.days * 24 * 60 * 60 * 1000
+              ).getTime(),
+            },
+          },
           include: {
             attributes: [],
             model: Draftpick,
