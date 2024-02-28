@@ -201,7 +201,13 @@ exports.higher = async (req, res) => {
     },
     include: {
       model: Draft,
-
+      where: {
+        start_time: {
+          [Op.gt]: new Date(
+            new Date() - req.body.days * 24 * 60 * 60 * 1000
+          ).getTime(),
+        },
+      },
       include: [
         {
           attributes: ["picked_by"],
@@ -247,7 +253,13 @@ exports.lower = async (req, res) => {
     },
     include: {
       model: Draft,
-
+      where: {
+        start_time: {
+          [Op.gt]: new Date(
+            new Date() - req.body.days * 24 * 60 * 60 * 1000
+          ).getTime(),
+        },
+      },
       include: [
         {
           attributes: [],

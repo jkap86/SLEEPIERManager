@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import axios, { all } from "axios";
 import { getAdpFormatted } from "../../Common/services/helpers/getAdpFormatted";
+import LoadingIcon from "../../Common/LoadingIcon";
 
 const RecTrades = () => {
   const dispatch = useDispatch();
@@ -12,15 +13,17 @@ const RecTrades = () => {
     (state) => state.user
   );
   const [player1, setPlayer1] = useState("");
-  const [player2, setPlayer2] = useState("");
   const [poHigher, setPoHigher] = useState({});
   const [poLower, setPoLower] = useState({});
   const [itemActive, setItemActive] = useState("");
   const [itemActive2, setItemActive2] = useState("");
   const [findTab, setFindTab] = useState("Lower");
   const [secondaryTab, setSecondaryTab] = useState("Tips");
+  const [isLoading, setIsLoading] = useState(false);
+  const [filterDays, setFilterDays] = useState(30);
 
   const fetchHigher = async () => {
+    setIsLoading(true);
     setFindTab("Higher");
     const recTrades = await axios.post("/draft/higher", {
       player: player1.id,
@@ -30,6 +33,7 @@ const RecTrades = () => {
           (adpLm?.Dynasty?.[player1.id]?.adp || 999)
       ),
       leaguemate_ids: leaguemate_ids,
+      days: filterDays,
     });
 
     const players_object = Object.fromEntries(
@@ -74,21 +78,11 @@ const RecTrades = () => {
 
     setPoHigher({ player_id: player1.id, data: players_object });
 
-    const leaguemates_object = Object.fromEntries(
-      recTrades.data.map((rec) => [
-        rec.picked_by || rec.draft.draftpicks[0]?.picked_by,
-        recTrades.data
-          .filter(
-            (r) =>
-              (r.picked_by || r.draft.draftpicks[0]?.picked_by) ===
-              (rec.picked_by || rec.draft.draftpicks[0]?.picked_by)
-          )
-          .map((r) => r.player_id),
-      ])
-    );
+    setIsLoading(false);
   };
 
   const fetchLower = async () => {
+    setIsLoading(true);
     setFindTab("Lower");
     const recTrades = await axios.post("/draft/lower", {
       player: player1.id,
@@ -98,6 +92,7 @@ const RecTrades = () => {
           (adpLm?.Dynasty?.[player1.id]?.adp || 999)
       ),
       leaguemate_ids: leaguemate_ids,
+      days: filterDays,
     });
 
     const players_object = Object.fromEntries(
@@ -141,19 +136,7 @@ const RecTrades = () => {
     console.log(players_object);
 
     setPoLower({ player_id: player1.id, data: players_object });
-
-    const leaguemates_object = Object.fromEntries(
-      recTrades.data.map((rec) => [
-        rec.picked_by || rec.draft.draftpicks[0]?.picked_by,
-        recTrades.data
-          .filter(
-            (r) =>
-              (r.picked_by || r.draft.draftpicks[0]?.picked_by) ===
-              (rec.picked_by || rec.draft.draftpicks[0]?.picked_by)
-          )
-          .map((r) => r.player_id),
-      ])
-    );
+    setIsLoading(false);
   };
 
   const header = [
@@ -362,6 +345,18 @@ const RecTrades = () => {
 
   return (
     <>
+      <h2>
+        Last{" "}
+        <input
+          type="number"
+          value={filterDays}
+          onChange={(e) => setFilterDays(e.target.value)}
+          onBlur={(e) =>
+            e.target.value?.trim() === "" ? setFilterDays(30) : ""
+          }
+        />{" "}
+        Days
+      </h2>
       <Search
         id={"By Player"}
         placeholder={`Player 1`}
@@ -413,7 +408,10 @@ const RecTrades = () => {
           </h2>
         )}
       </h2>
-      {player1.id &&
+      {isLoading ? (
+        <LoadingIcon />
+      ) : (
+        player1.id &&
         player1.id ===
           (findTab === "Higher" ? poHigher.player_id : poLower.player_id) && (
           <TableMain
@@ -423,7 +421,8 @@ const RecTrades = () => {
             itemActive={itemActive}
             setItemActive={setItemActive}
           />
-        )}
+        )
+      )}
     </>
   );
 };
