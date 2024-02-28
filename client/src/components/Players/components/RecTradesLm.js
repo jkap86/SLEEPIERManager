@@ -20,14 +20,16 @@ const RecTradesLm = () => {
   const [lmPicks, setLmPicks] = useState([]);
   const [secondaryContent, setSecondaryContent] = useState("Tips");
   const [isLoading, setIsLoading] = useState(false);
+  const [filterDays, setFilterDays] = useState(30);
 
-  useEffect(() => {
+  const fetchData = () => {
     const fetchLmRec = async (higher, lower) => {
       setIsLoading(true);
       const lm_rec = await axios.post("/draft/lm", {
         lm_user_id: searchedLm.id,
         higher: higher,
         lower: lower,
+        days: filterDays,
       });
 
       setLmPicks(
@@ -89,7 +91,7 @@ const RecTradesLm = () => {
 
       fetchLmRec(Object.values(higher), []);
     }
-  }, [leagues, searchedLm]);
+  };
 
   const headers = [
     [
@@ -311,6 +313,18 @@ const RecTradesLm = () => {
     <LoadingIcon />
   ) : (
     <>
+      <h2>
+        Last{" "}
+        <input
+          type="number"
+          value={filterDays}
+          onChange={(e) => setFilterDays(e.target.value)}
+          onBlur={(e) =>
+            e.target.value?.trim() === "" ? setFilterDays(30) : ""
+          }
+        />{" "}
+        Days
+      </h2>
       <Search
         id={"By Leaguemate"}
         placeholder={`Leaguemate`}
@@ -319,13 +333,18 @@ const RecTradesLm = () => {
         setSearched={setSearchedLm}
       />
       {searchedLm?.id ? (
-        <TableMain
-          type={"primary"}
-          headers={headers}
-          body={body}
-          itemActive={itemActive}
-          setItemActive={setItemActive}
-        />
+        <>
+          <h2>
+            <button onClick={() => fetchData()}>Search</button>
+          </h2>
+          <TableMain
+            type={"primary"}
+            headers={headers}
+            body={body}
+            itemActive={itemActive}
+            setItemActive={setItemActive}
+          />
+        </>
       ) : (
         <h2>
           Search Leaguemate to find players you own in common leagues that they

@@ -296,7 +296,13 @@ exports.lm = async (req, res) => {
       },
       include: {
         model: Draft,
-
+        where: {
+          start_time: {
+            [Op.gt]: new Date(
+              new Date() - req.body.days * 24 * 60 * 60 * 1000
+            ).getTime(),
+          },
+        },
         include: [
           {
             attributes: ["picked_by", "player_id", "pick_no"],
