@@ -3,6 +3,10 @@ import LmTrades from "./LmTrades";
 import PcTrades from "./PcTrades";
 import { useSelector, useDispatch } from "react-redux";
 import { setStateTrades } from "../redux/actions";
+import {
+  getPicksList,
+  getPlayersList,
+} from "../services/helpers/getSearchLists";
 
 const Trades1 = ({ secondaryTable }) => {
   const dispatch = useDispatch();
@@ -23,68 +27,9 @@ const Trades1 = ({ secondaryTable }) => {
     ],
   ];
 
-  const picks_list = [];
+  const picks_list = getPicksList(state.league_season);
 
-  Array.from(Array(4).keys()).map((season) => {
-    return Array.from(Array(5).keys()).map((round) => {
-      if (season !== 0) {
-        return picks_list.push({
-          id: `${season + parseInt(state.league_season)} ${round + 1}.${null}`,
-          text: `${season + parseInt(state.league_season)}  Round ${round + 1}`,
-          image: {
-            src: null,
-            alt: "pick headshot",
-            type: "player",
-          },
-        });
-      } else {
-        return Array.from(Array(12).keys()).map((order) => {
-          return picks_list.push({
-            id: `${season + parseInt(state.league_season)} ${round + 1}.${
-              season === 0
-                ? (order + 1).toLocaleString("en-US", {
-                    minimumIntegerDigits: 2,
-                  })
-                : null
-            }`,
-            text: `${season + parseInt(state.league_season)} ${
-              season === 0
-                ? `${round + 1}.${(order + 1).toLocaleString("en-US", {
-                    minimumIntegerDigits: 2,
-                  })}`
-                : ` Round ${round + 1}`
-            }`,
-            image: {
-              src: null,
-              alt: "pick headshot",
-              type: "player",
-            },
-          });
-        });
-      }
-    });
-  });
-
-  const players_list = leagues && [
-    ...Array.from(
-      new Set(
-        leagues
-          ?.map((league) => league.rosters?.map((roster) => roster.players))
-          .flat(3)
-      )
-    ).map((player_id) => {
-      return {
-        id: player_id,
-        text: allplayers[player_id]?.full_name,
-        image: {
-          src: player_id,
-          alt: "player headshot",
-          type: "player",
-        },
-      };
-    }),
-    ...picks_list,
-  ];
+  const players_list = getPlayersList(leagues, allplayers, picks_list);
 
   const props = {
     trades_headers,

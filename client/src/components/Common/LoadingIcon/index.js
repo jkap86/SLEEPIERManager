@@ -1,5 +1,3 @@
-import React from 'react';
-
-const LoadingIcon = React.lazy(() => import('./LoadingIcon'));
+import LoadingIcon from "./LoadingIcon";
 
 export default LoadingIcon;

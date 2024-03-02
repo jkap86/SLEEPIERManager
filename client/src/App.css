@@ -234,6 +234,10 @@ div.half ol.page_numbers {
   width: 50%;
 }
 
+.fa-spinner {
+  color: var(--color2);
+}
+
 @keyframes rotate {
   0% {
     transform: rotate(0deg);

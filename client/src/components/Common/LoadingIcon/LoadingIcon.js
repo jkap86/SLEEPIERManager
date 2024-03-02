@@ -1,4 +1,3 @@
-import sleeperlogo from "../../../images/sleeper_icon.png";
 import loading_flask from "../../../images/loading_flask.png";
 import bubble1 from "../../../images/bubble1.png";
 import "./LoadingIcon.css";

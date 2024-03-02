@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
-import { useEffect, useRef } from "react";
-import sleeperLogo from "../../images/sleeper_icon.png";
+import { useEffect } from "react";
 import thelablogo from "../../images/thelab.png";
 import { useDispatch, useSelector } from "react-redux";
 import { setStateHome } from "./redux/actions";

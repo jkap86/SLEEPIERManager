@@ -1,8 +1,8 @@
 import "./App.css";
-import Homepage from "./components/Homepage";
 import LoadingIcon from "./components/Common/LoadingIcon";
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 import { Suspense, lazy } from "react";
+const Homepage = lazy(() => import("./components/Homepage"));
 const Players = lazy(() => import("./components/Players"));
 const Leaguemates = lazy(() => import("./components/Leaguemates"));
 const Trades = lazy(() => import("./components/Trades"));
