@@ -9,6 +9,18 @@ const Roster = ({ roster, league, type }) => {
   const { state, allplayers } = useSelector((state) => state.common);
   const { adpLm } = useSelector((state) => state.user);
 
+  const rankings_adp = Object.keys(adpLm?.["Dynasty"]).sort(
+    (a, b) =>
+      (adpLm?.["Dynasty"]?.[a]?.adp || 999) -
+      (adpLm?.["Dynasty"]?.[b]?.adp || 999)
+  );
+
+  const rankings_auction = Object.keys(adpLm?.["Dynasty_auction"]).sort(
+    (a, b) =>
+      (adpLm?.["Dynasty_auction"]?.[a]?.adp || 999) -
+      (adpLm?.["Dynasty_auction"]?.[b]?.adp || 999)
+  );
+
   const headers = [
     [
       {
@@ -34,6 +46,7 @@ const Roster = ({ roster, league, type }) => {
         text: (
           <select onChange={(e) => setPpgType(e.target.value)}>
             <option>ADP</option>
+            <option>Auction %</option>
             <option>Total</option>
             <option>In Lineup</option>
             <option>On Bench</option>
@@ -55,12 +68,13 @@ const Roster = ({ roster, league, type }) => {
         className: "half",
       },
       {
-        text: ppgType === "ADP" ? "Draft" : "PPG",
+        text:
+          ppgType === "ADP" ? "Pick" : ppgType === "Auction %" ? "%" : "PPG",
         colSpan: 5,
         className: "half",
       },
       {
-        text: ppgType === "ADP" ? "Auction" : "#",
+        text: ppgType === "ADP" || ppgType === "Auction %" ? "Pos Rk" : "#",
         colSpan: 4,
         className: "half end",
       },
@@ -202,15 +216,31 @@ const Roster = ({ roster, league, type }) => {
                             adpLm?.["Dynasty"]?.[player_id]?.adp
                           )) ||
                         "-"
+                      : ppgType === "Auction %"
+                      ? (adpLm?.["Dynasty_auction"]?.[player_id]?.adp?.toFixed(
+                          0
+                        ) || "0") + "%"
                       : (games > 0 && (points / games).toFixed(1)) || "-",
                   colSpan: 5,
                 },
                 {
                   text:
                     ppgType === "ADP"
-                      ? (adpLm?.["Dynasty_auction"]?.[player_id]?.adp?.toFixed(
-                          0
-                        ) || "0") + "%"
+                      ? rankings_adp
+                          .filter(
+                            (player_id2) =>
+                              allplayers?.[player_id]?.position ===
+                              allplayers?.[player_id2]?.position
+                          )
+                          .indexOf(player_id) + 1
+                      : ppgType === "Auction %"
+                      ? rankings_auction
+                          .filter(
+                            (player_id2) =>
+                              allplayers?.[player_id]?.position ===
+                              allplayers?.[player_id2]?.position
+                          )
+                          .indexOf(player_id) + 1
                       : games?.toString() || "-",
                   colSpan: 4,
                 },
