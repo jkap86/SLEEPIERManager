@@ -62,7 +62,7 @@ export const getPlayersList = (leagues, allplayers, picks_list) => {
           },
         };
       }),
-      ...picks_list,
+      ...(picks_list || []),
     ]) ||
     []
   );
